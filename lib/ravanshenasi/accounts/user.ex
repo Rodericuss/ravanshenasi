@@ -10,6 +10,9 @@ defmodule Ravanshenasi.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
+    field :name, :string
+    field :role, Ecto.Enum, values: [:admin, :therapist]
+    belongs_to :tenant, Ravanshenasi.Accounts.Tenant, type: :binary_id
 
     timestamps(type: :utc_datetime)
   end
@@ -114,6 +117,13 @@ defmodule Ravanshenasi.Accounts.User do
   def confirm_changeset(user) do
     now = DateTime.utc_now(:second)
     change(user, confirmed_at: now)
+  end
+
+  @doc "Campos de tenant/perfil — usado no registro e aceite de convite."
+  def tenant_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:tenant_id, :name, :role])
+    |> validate_required([:tenant_id, :name, :role])
   end
 
   @doc """
