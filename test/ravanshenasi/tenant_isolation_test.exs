@@ -1,8 +1,8 @@
 defmodule Ravanshenasi.TenantIsolationTest do
   use Ravanshenasi.DataCase, async: false
-  # async: false proposital: este teste exercita transact_tenant/with_*_bypass
-  # (transaction + SET LOCAL). Sob o Ecto Sandbox concorrente isso tem race; em
-  # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
+  # async: false intentional: this test exercises transact_tenant/with_*_bypass
+  # (transaction + SET LOCAL). Under concurrent Ecto Sandbox this causes races; in
+  # production each request uses a short isolated tx, so there is no issue. Serialized on purpose.
 
   alias Ravanshenasi.Accounts.{Invitation, Scope, Tenant}
   alias Ravanshenasi.Repo
@@ -41,7 +41,7 @@ defmodule Ravanshenasi.TenantIsolationTest do
   end
 
   test "RLS fail-closed: sem GUC de tenant, query direta retorna 0 linhas" do
-    # nenhum transact_tenant/bypass ativo aqui → app.current_tenant_id é NULL
+    # no transact_tenant/bypass active here → app.current_tenant_id is NULL
     assert Repo.all(Invitation) == []
   end
 end

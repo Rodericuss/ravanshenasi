@@ -28,8 +28,8 @@ defmodule Ravanshenasi.Accounts.Invitation do
   end
 
   @doc """
-  Monta uma invitation com token. Retorna `{raw_token, changeset}` —
-  o token cru vai no link do email; só o hash é persistido.
+  Builds an invitation with a token. Returns `{raw_token, changeset}` —
+  the raw token goes in the email link; only the hash is persisted.
   """
   def build(attrs, opts) do
     raw_token = :crypto.strong_rand_bytes(@token_bytes) |> Base.url_encode64(padding: false)

@@ -1,7 +1,7 @@
 defmodule RavanshenasiWeb.OrgFlowsTest do
   use RavanshenasiWeb.ConnCase, async: false
-  # async: false: o fluxo de aceite usa accept_invitation (with_*_bypass no corpo),
-  # que é flaky em paralelo sob o Ecto Sandbox. Serializado de propósito.
+  # async: false: the acceptance flow uses accept_invitation (with_*_bypass internally),
+  # which is flaky in parallel under the Ecto Sandbox. Serialized on purpose.
   import Phoenix.LiveViewTest
 
   alias Ravanshenasi.Accounts
@@ -19,7 +19,7 @@ defmodule RavanshenasiWeb.OrgFlowsTest do
 
     user = Repo.get_by(User, email: "dona@y.com")
     assert user.role == :admin
-    # magic link de confirmação enviado (igual ao registro solo): token de login criado
+    # confirmation magic link sent (same as solo registration): login token created
     assert Repo.get_by(UserToken, user_id: user.id, context: "login")
   end
 
@@ -43,13 +43,13 @@ defmodule RavanshenasiWeb.OrgFlowsTest do
       |> form("#accept-invitation-form", user: %{name: "Membro", password: "supersecret123"})
       |> render_submit()
 
-    # redireciona pro fluxo de magic link que estabelece a sessão
+    # redirects to the magic link flow that establishes the session
     assert {:error, {:redirect, %{to: "/users/log-in/" <> _token}}} = result
 
     member = Repo.get_by(User, email: "membro@c.com")
     assert member.role == :therapist
     assert member.tenant_id == admin.tenant_id
-    # convite prova o email → membro nasce confirmado (não fica em limbo)
+    # invitation proves email ownership → member is created already confirmed (no limbo)
     assert member.confirmed_at
   end
 

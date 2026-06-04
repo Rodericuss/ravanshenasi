@@ -61,7 +61,7 @@ defmodule Ravanshenasi.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-  @doc "Carrega o tenant por id."
+  @doc "Loads the tenant by id."
   def get_tenant!(id), do: Repo.get!(Tenant, id)
 
   ## Settings
@@ -271,7 +271,7 @@ defmodule Ravanshenasi.Accounts do
 
   ## Invitations
 
-  @doc "Admin cria um convite no seu tenant. Retorna {:ok, raw_token}."
+  @doc "Admin creates an invitation in their tenant. Returns {:ok, raw_token}."
   def create_invitation(%Scope{} = scope, attrs) do
     true = Scope.admin?(scope)
 
@@ -288,7 +288,7 @@ defmodule Ravanshenasi.Accounts do
     end
   end
 
-  @doc "Aceita um convite por token cru: cria user(role) no tenant e marca accepted_at."
+  @doc "Accepts an invitation by raw token: creates user(role) in the tenant and sets accepted_at."
   def accept_invitation(raw_token, attrs) do
     hashed = Invitation.hash_token(raw_token)
 
@@ -303,9 +303,9 @@ defmodule Ravanshenasi.Accounts do
   end
 
   @doc """
-  Gera um token de magic link de login para o usuário e devolve o token cru,
-  sem enviar email. Usado logo após o aceite de convite — o email já foi provado
-  pelo token do convite, então o usuário entra direto via `/users/log-in/<token>`.
+  Generates a magic-link login token for the user and returns the raw token,
+  without sending an email. Used right after invitation acceptance — the email was
+  already proved by the invitation token, so the user logs in directly via `/users/log-in/<token>`.
   """
   def generate_login_token(%User{} = user) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "login")
@@ -327,8 +327,8 @@ defmodule Ravanshenasi.Accounts do
           name: attrs.name,
           role: invitation.role
         })
-        # O convite já provou a posse do email (token enviado a ele), então o
-        # usuário nasce confirmado — evita o limbo confirmed_at: nil + senha.
+        # The invitation already proved email ownership (token sent to it), so the
+        # user is created already confirmed — avoids the confirmed_at: nil limbo.
         |> User.confirm_changeset()
       end)
       |> Multi.update(:invitation, Ecto.Changeset.change(invitation, accepted_at: accepted_at))
@@ -351,7 +351,7 @@ defmodule Ravanshenasi.Accounts do
 
   ## Registration
 
-  @doc "Registra um profissional solo: cria tenant(plan: solo) + user(role: admin)."
+  @doc "Registers a solo practitioner: creates tenant(plan: solo) + user(role: admin)."
   def register_solo(attrs) do
     do_register(%{name: attrs.office_name, plan: :solo}, %{
       email: attrs.email,
@@ -360,7 +360,7 @@ defmodule Ravanshenasi.Accounts do
     })
   end
 
-  @doc "Registra uma clínica: cria tenant(plan: clinic) + user(role: admin gestor)."
+  @doc "Registers a clinic: creates tenant(plan: clinic) + user(role: admin)."
   def register_clinic(attrs) do
     do_register(%{name: attrs.clinic_name, plan: :clinic}, %{
       email: attrs.email,
@@ -389,7 +389,7 @@ defmodule Ravanshenasi.Accounts do
     end
   end
 
-  @doc "Lista usuários do tenant (gestão — só metadados, não dado clínico)."
+  @doc "Lists users of the tenant (management only — metadata, no clinical data)."
   def list_members(%Scope{} = scope) do
     Repo.all(from u in User, where: u.tenant_id == ^scope.tenant.id, order_by: u.name)
   end

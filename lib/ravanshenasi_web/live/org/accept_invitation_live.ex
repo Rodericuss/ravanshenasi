@@ -58,8 +58,8 @@ defmodule RavanshenasiWeb.Org.AcceptInvitationLive do
 
     case Accounts.accept_invitation(socket.assigns.token, attrs) do
       {:ok, user} ->
-        # Usuário já confirmado pelo aceite — gera um magic link e o leva direto
-        # para a tela que estabelece a sessão.
+        # User already confirmed by the acceptance — generates a magic link and takes
+        # them directly to the screen that establishes the session.
         login_token = Accounts.generate_login_token(user)
 
         {:noreply,

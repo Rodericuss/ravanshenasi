@@ -1,8 +1,8 @@
 defmodule Ravanshenasi.RLS do
   @moduledoc """
-  Helper de migration: liga RLS fail-closed numa tabela.
-  Policy compara `column` com o GUC `app.current_tenant_id`,
-  com bypass explícito via `app.auth_bypass = 'on'`.
+  Migration helper: enables fail-closed RLS on a table.
+  The policy compares `column` against the GUC `app.current_tenant_id`,
+  with an explicit bypass via `app.auth_bypass = 'on'`.
   """
   import Ecto.Migration
 

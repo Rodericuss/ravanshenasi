@@ -6,9 +6,9 @@ defmodule Ravanshenasi.Repo do
   alias Ravanshenasi.Accounts.Scope
 
   @doc """
-  Roda `fun` dentro de uma transação com `app.current_tenant_id` setado
-  (SET LOCAL) para o tenant do scope. Retorna o resultado CRU de `fun.()`
-  (não `{:ok, _}`). Levanta com scope sem tenant válido.
+  Runs `fun` inside a transaction with `app.current_tenant_id` set
+  (SET LOCAL) to the scope's tenant. Returns the raw result of `fun.()`
+  (not `{:ok, _}`). Raises if the scope has no loaded tenant.
   """
   def transact_tenant(%Scope{tenant: %{id: id}}, fun) when is_function(fun, 0) do
     transaction(fn ->
@@ -22,17 +22,17 @@ defmodule Ravanshenasi.Repo do
     raise ArgumentError, "transact_tenant requer um %Scope{} com tenant carregado"
   end
 
-  @doc "Bypass de RLS para os 3 lookups pré-tenant (login por email, token de sessão, invitation por token)."
+  @doc "RLS bypass for the 3 pre-tenant lookups (login by email, session token, invitation by token)."
   def with_auth_bypass(fun) when is_function(fun, 0), do: do_bypass(fun)
 
-  @doc "Bypass de RLS para criação pré-tenant (INSERT de tenant/user no registro e aceite)."
+  @doc "RLS bypass for pre-tenant creation (INSERT of tenant/user during registration and invitation acceptance)."
   def with_registration_bypass(fun) when is_function(fun, 0), do: do_bypass(fun)
 
   @doc """
-  Executa um `Ecto.Multi` com bypass de RLS ativo.
-  Não aninha transações — o Multi é a transação principal, e o SET LOCAL é
-  emitido via `Multi.run` no início da mesma transação.
-  Retorna `{:ok, map}` ou `{:error, step, changeset, changes_so_far}`.
+  Runs an `Ecto.Multi` with the RLS bypass active.
+  Does not nest transactions — the Multi is the main transaction, and SET LOCAL is
+  emitted via `Multi.run` at the start of the same transaction.
+  Returns `{:ok, map}` or `{:error, step, changeset, changes_so_far}`.
   """
   def with_registration_bypass_multi(%Ecto.Multi{} = multi) do
     Ecto.Multi.new()
@@ -42,11 +42,11 @@ defmodule Ravanshenasi.Repo do
     end)
     |> Ecto.Multi.append(multi)
     |> Ecto.Multi.run(:__bypass_off__, fn repo, _ ->
-      # Reset no caminho de SUCESSO: sob a transação longa do Sandbox (testes), o
-      # RELEASE do savepoint NÃO reverte o SET LOCAL, então o bypass vazaria pros
-      # asserts seguintes. No caminho de ERRO o ROLLBACK do savepoint já reverte o
-      # 'on', então basta cobrir o sucesso aqui. Em produção é redundante (a
-      # transação fecha logo), mas inofensivo.
+      # Reset on the SUCCESS path: under the Sandbox's long-running transaction (tests),
+      # RELEASE of the savepoint does NOT revert SET LOCAL, so the bypass would leak into
+      # subsequent asserts. On the ERROR path, ROLLBACK of the savepoint already reverts
+      # 'on', so only the success case needs to be covered here. In production this is
+      # redundant (the transaction closes right away), but harmless.
       repo.query!("SELECT set_config('app.auth_bypass', 'off', true)")
       {:ok, :reset}
     end)
@@ -60,26 +60,26 @@ defmodule Ravanshenasi.Repo do
       try do
         fun.()
       after
-        # Reset explícito: sob a transação longa do Sandbox (testes), garante que
-        # o bypass não vaze pros asserts seguintes. Em produção é redundante (a
-        # transação fecha logo), mas inofensivo.
+        # Explicit reset: under the Sandbox's long-running transaction (tests), ensures
+        # the bypass does not leak into subsequent asserts. In production this is
+        # redundant (the transaction closes right away), but harmless.
         set_local("app.auth_bypass", "off")
       end
     end)
     |> unwrap_transaction()
   end
 
-  # Desembrulha o resultado de transaction/1. `{:error, reason}` só ocorre com
-  # `Repo.rollback/1` explícito (que não usamos); se acontecer, levanta com contexto
-  # em vez de um MatchError críptico.
+  # Unwraps the result of transaction/1. `{:error, reason}` only occurs with
+  # an explicit `Repo.rollback/1` (which we don't use); if it happens, raises with
+  # context instead of a cryptic MatchError.
   defp unwrap_transaction({:ok, result}), do: result
 
   defp unwrap_transaction({:error, reason}) do
     raise "Ravanshenasi.Repo: transação revertida inesperadamente: #{inspect(reason)}"
   end
 
-  # is_local = true → vale só na transação atual; em produção a transação é curta
-  # (um checkout do pool), então o GUC nunca vaza entre requests.
+  # is_local = true → applies only to the current transaction; in production the transaction
+  # is short (a single pool checkout), so the GUC never leaks across requests.
   defp set_local(key, value) do
     query!("SELECT set_config($1, $2, true)", [key, to_string(value)])
   end

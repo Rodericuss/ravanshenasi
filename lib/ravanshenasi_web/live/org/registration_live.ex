@@ -60,7 +60,7 @@ defmodule RavanshenasiWeb.Org.RegistrationLive do
            email: params["email"]
          }) do
       {:ok, user} ->
-        # Mesmo fluxo do registro solo: envia o magic link de confirmação.
+        # Same flow as solo registration: sends the confirmation magic link.
         Accounts.deliver_login_instructions(user, &url(~p"/users/log-in/#{&1}"))
 
         {:noreply,

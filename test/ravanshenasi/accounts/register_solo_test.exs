@@ -1,8 +1,8 @@
 defmodule Ravanshenasi.Accounts.RegisterSoloTest do
   use Ravanshenasi.DataCase, async: false
-  # async: false proposital: este teste exercita transact_tenant/with_*_bypass
-  # (transaction + SET LOCAL). Sob o Ecto Sandbox concorrente isso tem race; em
-  # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
+  # async: false intentional: this test exercises transact_tenant/with_*_bypass
+  # (transaction + SET LOCAL). Under concurrent Ecto Sandbox this causes races; in
+  # production each request uses a short isolated tx, so there is no issue. Serialized on purpose.
 
   alias Ravanshenasi.Accounts
   alias Ravanshenasi.Accounts.{Tenant, User}
