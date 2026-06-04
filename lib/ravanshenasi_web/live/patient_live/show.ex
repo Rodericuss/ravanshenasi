@@ -7,8 +7,17 @@ defmodule RavanshenasiWeb.PatientLive.Show do
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     scope = socket.assigns.current_scope
-    patient = Patients.get_patient!(scope, id)
-    {:ok, socket |> assign(patient: patient) |> load_frameworks()}
+
+    case Patients.get_patient(scope, id) do
+      nil ->
+        {:ok,
+         socket
+         |> Phoenix.LiveView.put_flash(:error, gettext("Patient not found"))
+         |> Phoenix.LiveView.push_navigate(to: ~p"/pacientes")}
+
+      patient ->
+        {:ok, socket |> assign(patient: patient) |> load_frameworks()}
+    end
   end
 
   @impl true

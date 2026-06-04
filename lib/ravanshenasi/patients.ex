@@ -68,7 +68,12 @@ defmodule Ravanshenasi.Patients do
     end)
   end
 
-  @doc "Activates a framework on a patient. Validates ownership and framework visibility."
+  @doc """
+  Activates a framework on a patient. Validates ownership and framework visibility.
+
+  Idempotent: re-activating an already-active framework is a no-op that still returns `:ok`.
+  Returns `{:error, :unauthorized}` or `{:error, :not_found}` on access violations.
+  """
   def activate_framework(%Scope{} = scope, %Patient{} = patient, %ThinkingFramework{} = framework) do
     cond do
       not owns?(scope, patient) ->
@@ -89,6 +94,8 @@ defmodule Ravanshenasi.Patients do
             conflict_target: [:patient_id, :thinking_framework_id]
           )
         end)
+
+        :ok
     end
   end
 

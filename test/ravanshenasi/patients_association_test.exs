@@ -13,7 +13,7 @@ defmodule Ravanshenasi.PatientsAssociationTest do
   end
 
   test "activate/deactivate por presença na join", %{scope: s, patient: p, framework: f} do
-    assert {:ok, _} = Patients.activate_framework(s, p, f)
+    assert :ok = Patients.activate_framework(s, p, f)
     assert [%{id: id}] = Patients.list_patient_frameworks(s, p)
     assert id == f.id
 

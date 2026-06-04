@@ -25,4 +25,10 @@ defmodule RavanshenasiWeb.PatientLiveTest do
     assert html =~ "Carlos"
     refute html =~ "Daniela"
   end
+
+  test "clinic-admin é barrado de /pacientes pelo gate clínico" do
+    scope = clinic_admin_scope_fixture()
+    conn = build_conn() |> log_in_user(scope.user)
+    assert {:error, {:redirect, %{to: "/"}}} = live(conn, ~p"/pacientes")
+  end
 end
