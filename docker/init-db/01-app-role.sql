@@ -1,13 +1,13 @@
--- Role de aplicação do Ravanshenasi.
+-- Ravanshenasi application role.
 --
--- A app NÃO pode conectar como superuser nem com BYPASSRLS, senão o Row Level
--- Security (RLS) que isola os tenants é silenciosamente ignorado. Esta role é
--- comum (sem SUPERUSER/BYPASSRLS) e dona dos dados, para que `FORCE RLS` valha.
+-- The app must not connect as a superuser or with BYPASSRLS, otherwise the Row
+-- Level Security (RLS) that isolates tenants is silently bypassed. This role is
+-- regular (without SUPERUSER/BYPASSRLS) and owns the data, so `FORCE RLS` works.
 --
--- Roda automaticamente no PRIMEIRO boot do container (volume vazio), via
--- /docker-entrypoint-initdb.d. Idempotente.
+-- Runs automatically on the container's FIRST boot (empty volume), via
+-- /docker-entrypoint-initdb.d. Idempotent.
 --
--- Se a imagem usada não executar /docker-entrypoint-initdb.d, rode manualmente:
+-- If the image in use does not run /docker-entrypoint-initdb.d, run manually:
 --   docker compose exec -T db psql -U postgres -f /docker-entrypoint-initdb.d/01-app-role.sql
 
 DO $$
@@ -18,7 +18,7 @@ BEGIN
 END
 $$;
 
--- O POSTGRES_DB (ravanshenasi_dev) é criado pelo entrypoint como `postgres`.
--- Passa a ownership para a role da app: as tabelas (criadas via migrations
--- rodando como a app) ficam sob FORCE RLS efetivo.
+-- POSTGRES_DB (ravanshenasi_dev) is created by the entrypoint as `postgres`.
+-- Transfers ownership to the app role: tables (created by migrations running as
+-- the app) remain under effective FORCE RLS.
 ALTER DATABASE ravanshenasi_dev OWNER TO ravanshenasi_app;
