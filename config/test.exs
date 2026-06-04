@@ -42,3 +42,14 @@ config :phoenix_live_view,
 # Sort query params output of verified routes for robust url comparisons
 config :phoenix,
   sort_verified_routes_query_params: true
+
+# Oban: jobs don't run automatically in tests — use Oban.Testing.
+config :ravanshenasi, Oban, testing: :manual
+
+# AI: deterministic stub provider (no network).
+config :ravanshenasi, Ravanshenasi.AI,
+  order: [:stub],
+  providers: %{stub: %{client: Ravanshenasi.AI.Client.Stub, behavior: :ok, model: "stub-model"}}
+
+# Req.Test plug for the OpenAI client (used in Task 7).
+config :ravanshenasi, :ai_req_plug, {Req.Test, Ravanshenasi.AI.Client.OpenAI}

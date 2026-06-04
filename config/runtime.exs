@@ -117,4 +117,32 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Req
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  # AI providers (OpenAI-protocol: OpenAI, NVIDIA NIM, any compatible endpoint).
+  # Whitelist on AI_ORDER — never String.to_atom on external input.
+  config :ravanshenasi, Ravanshenasi.AI,
+    order:
+      System.get_env("AI_ORDER", "openai")
+      |> String.split(",", trim: true)
+      |> Enum.flat_map(fn name ->
+        case String.trim(name) do
+          "openai" -> [:openai]
+          "nim" -> [:nim]
+          _ -> []
+        end
+      end),
+    providers: %{
+      openai: %{
+        client: Ravanshenasi.AI.Client.OpenAI,
+        base_url: System.get_env("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+        api_key: System.get_env("OPENAI_API_KEY"),
+        model: System.get_env("OPENAI_MODEL", "gpt-4o-mini")
+      },
+      nim: %{
+        client: Ravanshenasi.AI.Client.OpenAI,
+        base_url: System.get_env("NIM_BASE_URL", "https://integrate.api.nvidia.com/v1"),
+        api_key: System.get_env("NIM_API_KEY"),
+        model: System.get_env("NIM_MODEL")
+      }
+    }
 end
