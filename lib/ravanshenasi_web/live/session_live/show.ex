@@ -38,8 +38,10 @@ defmodule RavanshenasiWeb.SessionLive.Show do
   end
 
   def handle_event("retry", _, socket) do
-    {:ok, rec} = Records.retry_generation(socket.assigns.current_scope, socket.assigns.record)
-    {:noreply, assign(socket, record: rec)}
+    case Records.retry_generation(socket.assigns.current_scope, socket.assigns.record) do
+      {:ok, rec} -> {:noreply, assign(socket, record: rec)}
+      {:error, _} -> {:noreply, put_flash(socket, :error, gettext("Could not retry generation"))}
+    end
   end
 
   @impl true
@@ -51,21 +53,21 @@ defmodule RavanshenasiWeb.SessionLive.Show do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>{gettext("Session")} — {@patient.name}</.header>
       <p>{@session.notes}</p>
-      <.button :if={@session.status == :draft} phx-click="finalize">
+      <.button :if={@session.status == :draft} id="finalize-session-button" phx-click="finalize">
         {gettext("Finalize")}
       </.button>
 
       <div :if={@record}>
-        <p :if={@record.generation_status in [:pending, :generating]}>
+        <p :if={@record.generation_status in [:pending, :generating]} id="record-generating">
           {gettext("Generating record...")}
         </p>
         <div :if={@record.generation_status == :done}>
           <h3>{gettext("SOAP record")}</h3>
-          <pre>{@record.content}</pre>
+          <pre id="soap-record-content">{@record.content}</pre>
         </div>
-        <div :if={@record.generation_status == :error}>
+        <div :if={@record.generation_status == :error} id="record-error">
           <p>{gettext("Generation failed")}: {@record.error_reason}</p>
-          <.button phx-click="retry">{gettext("Try again")}</.button>
+          <.button id="retry-generation-button" phx-click="retry">{gettext("Try again")}</.button>
         </div>
       </div>
     </Layouts.app>

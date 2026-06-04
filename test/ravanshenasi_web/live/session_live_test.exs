@@ -13,8 +13,8 @@ defmodule RavanshenasiWeb.SessionLiveTest do
   test "cria sessão e finaliza mostra 'gerando'", %{conn: conn, scope: s, patient: p} do
     {:ok, sess} = Sessions.create_session(s, p, %{notes: "n"})
     {:ok, lv, _} = live(conn, ~p"/pacientes/#{p.id}/sessoes/#{sess.id}")
-    html = lv |> element("button[phx-click='finalize']") |> render_click()
-    assert html =~ "Generating" or html =~ "generating"
+    lv |> element("#finalize-session-button") |> render_click()
+    assert has_element?(lv, "#record-generating")
   end
 
   test "broadcast done atualiza a tela", %{conn: conn, scope: s, patient: p} do
@@ -22,6 +22,6 @@ defmodule RavanshenasiWeb.SessionLiveTest do
     {:ok, %{record: rec}} = Sessions.finalize_session(s, sess)
     {:ok, lv, _} = live(conn, ~p"/pacientes/#{p.id}/sessoes/#{sess.id}")
     {:ok, _} = Records.complete(s, rec, "S: pronto\nO:..\nA:..\nP:..", "stub:stub-model")
-    assert render(lv) =~ "pronto"
+    assert has_element?(lv, "#soap-record-content", "pronto")
   end
 end
