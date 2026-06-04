@@ -43,7 +43,9 @@ Sem isolamento por tenant funcionando, nenhuma fatia de negócio pode nascer com
 
 Cada fatia seguinte terá seu próprio ciclo spec → plan → implementação.
 
-### Estado atual do código
+### Estado no início da Fatia 0 (snapshot histórico)
+
+> Isto descreve o ponto de partida de **quando este spec foi escrito**. A Fatia 0 já está implementada (ver **Adendo de implementação** no topo). As seções abaixo refletem o desenho original; onde divergem do que foi construído, o adendo prevalece.
 
 Phoenix 1.8.7 scaffold limpo (`Ravanshenasi` / `RavanshenasiWeb`), TimescaleDB HA pg17 rodando via Docker Compose, Credo + Dialyxir configurados, `mix precommit` passando. **Zero migrations, zero auth, zero contexts de negócio.** Marco zero de implementação.
 

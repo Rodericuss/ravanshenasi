@@ -57,11 +57,15 @@ defmodule RavanshenasiWeb.Org.AcceptInvitationLive do
     }
 
     case Accounts.accept_invitation(socket.assigns.token, attrs) do
-      {:ok, _user} ->
+      {:ok, user} ->
+        # Usuário já confirmado pelo aceite — gera um magic link e o leva direto
+        # para a tela que estabelece a sessão.
+        login_token = Accounts.generate_login_token(user)
+
         {:noreply,
          socket
          |> put_flash(:info, "Bem-vindo(a) à equipe!")
-         |> push_navigate(to: ~p"/users/log-in")}
+         |> redirect(to: ~p"/users/log-in/#{login_token}")}
 
       {:error, reason} ->
         msg = invitation_error_message(reason)

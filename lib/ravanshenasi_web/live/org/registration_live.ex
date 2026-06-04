@@ -59,7 +59,10 @@ defmodule RavanshenasiWeb.Org.RegistrationLive do
            name: params["name"],
            email: params["email"]
          }) do
-      {:ok, _user} ->
+      {:ok, user} ->
+        # Mesmo fluxo do registro solo: envia o magic link de confirmação.
+        Accounts.deliver_login_instructions(user, &url(~p"/users/log-in/#{&1}"))
+
         {:noreply,
          socket
          |> put_flash(:info, "Clínica criada. Confira seu email para confirmar.")

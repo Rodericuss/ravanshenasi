@@ -302,6 +302,17 @@ defmodule Ravanshenasi.Accounts do
     end
   end
 
+  @doc """
+  Gera um token de magic link de login para o usuário e devolve o token cru,
+  sem enviar email. Usado logo após o aceite de convite — o email já foi provado
+  pelo token do convite, então o usuário entra direto via `/users/log-in/<token>`.
+  """
+  def generate_login_token(%User{} = user) do
+    {encoded_token, user_token} = UserToken.build_email_token(user, "login")
+    Repo.insert!(user_token)
+    encoded_token
+  end
+
   defp do_accept_invitation(invitation, attrs) do
     accepted_at = DateTime.utc_now() |> DateTime.truncate(:second)
 
@@ -316,6 +327,9 @@ defmodule Ravanshenasi.Accounts do
           name: attrs.name,
           role: invitation.role
         })
+        # O convite já provou a posse do email (token enviado a ele), então o
+        # usuário nasce confirmado — evita o limbo confirmed_at: nil + senha.
+        |> User.confirm_changeset()
       end)
       |> Multi.update(:invitation, Ecto.Changeset.change(invitation, accepted_at: accepted_at))
 
