@@ -7,6 +7,7 @@ defmodule RavanshenasiWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
+    plug RavanshenasiWeb.Plugs.Locale
     plug :put_root_layout, html: {RavanshenasiWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
@@ -51,7 +52,10 @@ defmodule RavanshenasiWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{RavanshenasiWeb.UserAuth, :require_authenticated}] do
+      on_mount: [
+        {RavanshenasiWeb.Plugs.Locale, :set_locale},
+        {RavanshenasiWeb.UserAuth, :require_authenticated}
+      ] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
     end
@@ -63,7 +67,10 @@ defmodule RavanshenasiWeb.Router do
     pipe_through [:browser]
 
     live_session :current_user,
-      on_mount: [{RavanshenasiWeb.UserAuth, :mount_current_scope}] do
+      on_mount: [
+        {RavanshenasiWeb.Plugs.Locale, :set_locale},
+        {RavanshenasiWeb.UserAuth, :mount_current_scope}
+      ] do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
@@ -80,6 +87,7 @@ defmodule RavanshenasiWeb.Router do
 
     live_session :require_admin,
       on_mount: [
+        {RavanshenasiWeb.Plugs.Locale, :set_locale},
         {RavanshenasiWeb.UserAuth, :require_authenticated},
         {RavanshenasiWeb.UserAuth, :require_admin}
       ] do

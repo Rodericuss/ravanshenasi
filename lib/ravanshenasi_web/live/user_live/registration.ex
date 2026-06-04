@@ -11,13 +11,13 @@ defmodule RavanshenasiWeb.UserLive.Registration do
       <div class="mx-auto max-w-sm">
         <div class="text-center">
           <.header>
-            Register for an account
+            {gettext("Register for an account")}
             <:subtitle>
-              Already registered?
+              {gettext("Already registered?")}
               <.link navigate={~p"/users/log-in"} class="font-semibold text-brand hover:underline">
-                Log in
+                {gettext("Log in")}
               </.link>
-              to your account now.
+              {gettext("to your account now.")}
             </:subtitle>
           </.header>
         </div>
@@ -26,17 +26,17 @@ defmodule RavanshenasiWeb.UserLive.Registration do
           <.input
             field={@form[:email]}
             type="email"
-            label="Email"
+            label={gettext("Email")}
             autocomplete="username"
             spellcheck="false"
             required
             phx-mounted={JS.focus()}
           />
-          <.input field={@form[:name]} type="text" label="Seu nome" required />
-          <.input field={@form[:office_name]} type="text" label="Nome do consultório" required />
+          <.input field={@form[:name]} type="text" label={gettext("Your name")} required />
+          <.input field={@form[:office_name]} type="text" label={gettext("Office name")} required />
 
-          <.button phx-disable-with="Creating account..." class="btn btn-primary w-full">
-            Create an account
+          <.button phx-disable-with={gettext("Creating account...")} class="btn btn-primary w-full">
+            {gettext("Create an account")}
           </.button>
         </.form>
       </div>
@@ -74,7 +74,9 @@ defmodule RavanshenasiWeb.UserLive.Registration do
          socket
          |> put_flash(
            :info,
-           "An email was sent to #{user.email}, please access it to confirm your account."
+           gettext("An email was sent to %{email}, please access it to confirm your account.",
+             email: user.email
+           )
          )
          |> push_navigate(to: ~p"/users/log-in")}
 

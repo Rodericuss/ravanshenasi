@@ -44,6 +44,8 @@ config :ravanshenasi, RavanshenasiWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :ravanshenasi, Ravanshenasi.Mailer, adapter: Swoosh.Adapters.Local
 
+config :ravanshenasi, RavanshenasiWeb.Gettext, default_locale: "en", locales: ~w(en pt)
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",

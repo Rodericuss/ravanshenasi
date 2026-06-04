@@ -9,16 +9,16 @@ defmodule RavanshenasiWeb.Org.MembersLive do
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <div class="mx-auto max-w-2xl">
         <.header>
-          Equipe
-          <:subtitle>Membros da clínica</:subtitle>
+          {gettext("Team")}
+          <:subtitle>{gettext("Clinic members")}</:subtitle>
         </.header>
 
         <table class="w-full mt-4">
           <thead>
             <tr>
-              <th class="text-left">Nome</th>
-              <th class="text-left">Email</th>
-              <th class="text-left">Papel</th>
+              <th class="text-left">{gettext("Name")}</th>
+              <th class="text-left">{gettext("Email")}</th>
+              <th class="text-left">{gettext("Role")}</th>
             </tr>
           </thead>
           <tbody>
@@ -32,14 +32,19 @@ defmodule RavanshenasiWeb.Org.MembersLive do
 
         <div class="mt-8">
           <.header>
-            Convidar membro
+            {gettext("Invite member")}
           </.header>
 
           <.form for={@invite_form} id="invite-form" phx-submit="invite">
-            <.input field={@invite_form[:email]} type="email" label="Email do convidado" required />
+            <.input
+              field={@invite_form[:email]}
+              type="email"
+              label={gettext("Invitee email")}
+              required
+            />
 
-            <.button phx-disable-with="Convidando..." class="btn btn-primary w-full">
-              Enviar convite
+            <.button phx-disable-with={gettext("Inviting...")} class="btn btn-primary w-full">
+              {gettext("Invite therapist")}
             </.button>
           </.form>
         </div>
@@ -66,13 +71,13 @@ defmodule RavanshenasiWeb.Org.MembersLive do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Convite enviado para #{email}.")
+         |> put_flash(:info, gettext("Invitation sent to %{email}.", email: email))
          |> assign(members: members, invite_form: to_form(%{"email" => ""}, as: :invitation))}
 
       {:error, _reason} ->
         {:noreply,
          socket
-         |> put_flash(:error, "Não foi possível enviar o convite.")
+         |> put_flash(:error, gettext("Could not send the invitation."))
          |> assign(invite_form: to_form(%{"email" => email}, as: :invitation))}
     end
   end

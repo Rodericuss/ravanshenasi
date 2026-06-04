@@ -1,0 +1,418 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:127
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Accept invitation"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:14
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:377
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr ""
+
+#: lib/ravanshenasi_web/user_auth.ex:260
+#: lib/ravanshenasi_web/user_auth.ex:299
+#, elixir-autogen, elixir-format
+msgid "Admin access only."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/registration_live.ex:15
+#, elixir-autogen, elixir-format
+msgid "Already have an account?"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/registration.ex:16
+#, elixir-autogen, elixir-format
+msgid "Already registered?"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/registration.ex:77
+#, elixir-autogen, elixir-format
+msgid "An email was sent to %{email}, please access it to confirm your account."
+msgstr ""
+
+#: lib/ravanshenasi_web/components/layouts.ex:99
+#: lib/ravanshenasi_web/components/layouts.ex:111
+#, elixir-autogen, elixir-format
+msgid "Attempting to reconnect"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:28
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:28
+#, elixir-autogen, elixir-format
+msgid "Changing..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/registration_live.ex:68
+#, elixir-autogen, elixir-format
+msgid "Clinic created. Check your email to confirm."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Clinic members"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/registration_live.ex:24
+#, elixir-autogen, elixir-format
+msgid "Clinic name"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:34
+#, elixir-autogen, elixir-format
+msgid "Confirm and log in only this time"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:31
+#, elixir-autogen, elixir-format
+msgid "Confirm and stay logged in"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:60
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:28
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:33
+#, elixir-autogen, elixir-format
+msgid "Confirming..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:83
+#, elixir-autogen, elixir-format
+msgid "Could not accept the invitation."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/registration_live.ex:74
+#, elixir-autogen, elixir-format
+msgid "Could not create the clinic. Check the details."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:75
+#, elixir-autogen, elixir-format
+msgid "Could not send the invitation."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/registration.ex:39
+#, elixir-autogen, elixir-format
+msgid "Create an account"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/registration_live.ex:36
+#, elixir-autogen, elixir-format
+msgid "Create clinic"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/registration.ex:38
+#, elixir-autogen, elixir-format
+msgid "Creating account..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/registration_live.ex:35
+#, elixir-autogen, elixir-format
+msgid "Creating clinic..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:18
+#, elixir-autogen, elixir-format
+msgid "Don't have an account?"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:20
+#: lib/ravanshenasi_web/live/org/registration_live.ex:29
+#: lib/ravanshenasi_web/live/user_live/login.ex:49
+#: lib/ravanshenasi_web/live/user_live/login.ex:74
+#: lib/ravanshenasi_web/live/user_live/registration.ex:29
+#: lib/ravanshenasi_web/live/user_live/settings.ex:23
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:80
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:77
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:15
+#, elixir-autogen, elixir-format
+msgid "Fill in your details to join the team."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:123
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system, you will receive instructions for logging in shortly."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:80
+#, elixir-autogen, elixir-format
+msgid "Invalid invitation."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:82
+#, elixir-autogen, elixir-format
+msgid "Invitation already used."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:81
+#, elixir-autogen, elixir-format
+msgid "Invitation expired."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:69
+#, elixir-autogen, elixir-format
+msgid "Invitation sent to %{email}."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:35
+#, elixir-autogen, elixir-format
+msgid "Invite member"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:42
+#, elixir-autogen, elixir-format
+msgid "Invite therapist"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:39
+#, elixir-autogen, elixir-format
+msgid "Invitee email"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:41
+#, elixir-autogen, elixir-format
+msgid "Inviting..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:30
+#, elixir-autogen, elixir-format
+msgid "Join the team"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:29
+#, elixir-autogen, elixir-format
+msgid "Joining..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:59
+#, elixir-autogen, elixir-format
+msgid "Keep me logged in on this device"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/registration_live.ex:17
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:50
+#: lib/ravanshenasi_web/live/user_live/login.ex:13
+#: lib/ravanshenasi_web/live/user_live/registration.ex:18
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:87
+#, elixir-autogen, elixir-format
+msgid "Log in and stay logged in"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:90
+#, elixir-autogen, elixir-format
+msgid "Log in only this time"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:56
+#, elixir-autogen, elixir-format
+msgid "Log in with email"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:62
+#, elixir-autogen, elixir-format
+msgid "Log me in only this time"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:43
+#, elixir-autogen, elixir-format
+msgid "Log out to accept an invitation for another account."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:49
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:56
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:61
+#, elixir-autogen, elixir-format
+msgid "Logging in..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:85
+#, elixir-autogen, elixir-format
+msgid "Magic link is invalid or it has expired."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:15
+#, elixir-autogen, elixir-format
+msgid "Manage your account email address and password settings"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:19
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:52
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/registration.ex:36
+#, elixir-autogen, elixir-format
+msgid "Office name"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:82
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:25
+#, elixir-autogen, elixir-format
+msgid "Password (optional)"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/registration_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Register clinic"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/registration.ex:14
+#, elixir-autogen, elixir-format
+msgid "Register for an account"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:21
+#, elixir-autogen, elixir-format
+msgid "Role"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:65
+#, elixir-autogen, elixir-format
+msgid "Save Password"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/settings.ex:64
+#, elixir-autogen, elixir-format
+msgid "Saving..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:22
+#, elixir-autogen, elixir-format
+msgid "Sign up"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/layouts.ex:106
+#, elixir-autogen, elixir-format
+msgid "Something went wrong!"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/members_live.ex:12
+#, elixir-autogen, elixir-format
+msgid "Team"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:68
+#, elixir-autogen, elixir-format
+msgid "Tip: If you prefer passwords, you can enable them in the user settings."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:33
+#, elixir-autogen, elixir-format
+msgid "To see sent emails, visit"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/layouts.ex:94
+#, elixir-autogen, elixir-format
+msgid "We can't find the internet"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:67
+#, elixir-autogen, elixir-format
+msgid "Welcome to the team!"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:31
+#, elixir-autogen, elixir-format
+msgid "You are running the local mail adapter."
+msgstr ""
+
+#: lib/ravanshenasi_web/user_auth.ex:232
+#: lib/ravanshenasi_web/user_auth.ex:313
+#, elixir-autogen, elixir-format
+msgid "You must log in to access this page."
+msgstr ""
+
+#: lib/ravanshenasi_web/user_auth.ex:247
+#, elixir-autogen, elixir-format
+msgid "You must re-authenticate to access this page."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:16
+#, elixir-autogen, elixir-format
+msgid "You need to reauthenticate to perform sensitive actions on your account."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:21
+#: lib/ravanshenasi_web/live/org/registration_live.ex:25
+#: lib/ravanshenasi_web/live/user_live/registration.ex:35
+#, elixir-autogen, elixir-format
+msgid "Your name"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:83
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:22
+#, elixir-autogen, elixir-format
+msgid "for an account now."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:60
+#, elixir-autogen, elixir-format
+msgid "or"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/login.ex:33
+#, elixir-autogen, elixir-format
+msgid "the mailbox page"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/registration.ex:20
+#, elixir-autogen, elixir-format
+msgid "to your account now."
+msgstr ""

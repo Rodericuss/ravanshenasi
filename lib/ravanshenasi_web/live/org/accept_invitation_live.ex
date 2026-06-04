@@ -10,24 +10,24 @@ defmodule RavanshenasiWeb.Org.AcceptInvitationLive do
       <div class="mx-auto max-w-sm">
         <div class="text-center">
           <.header>
-            Aceitar convite
+            {gettext("Accept invitation")}
             <:subtitle>
-              Preencha seus dados para entrar na equipe.
+              {gettext("Fill in your details to join the team.")}
             </:subtitle>
           </.header>
         </div>
 
         <.form for={@form} id="accept-invitation-form" phx-submit="accept">
-          <.input field={@form[:name]} type="text" label="Seu nome" required />
+          <.input field={@form[:name]} type="text" label={gettext("Your name")} required />
           <.input
             field={@form[:password]}
             type="password"
-            label="Senha (opcional)"
+            label={gettext("Password (optional)")}
             autocomplete="new-password"
           />
 
-          <.button phx-disable-with="Entrando..." class="btn btn-primary w-full">
-            Entrar na equipe
+          <.button phx-disable-with={gettext("Joining...")} class="btn btn-primary w-full">
+            {gettext("Join the team")}
           </.button>
         </.form>
       </div>
@@ -40,7 +40,7 @@ defmodule RavanshenasiWeb.Org.AcceptInvitationLive do
       when not is_nil(user) do
     {:ok,
      socket
-     |> put_flash(:error, "Saia da sua conta para aceitar um convite em outra.")
+     |> put_flash(:error, gettext("Log out to accept an invitation for another account."))
      |> redirect(to: RavanshenasiWeb.UserAuth.signed_in_path(socket))}
   end
 
@@ -64,7 +64,7 @@ defmodule RavanshenasiWeb.Org.AcceptInvitationLive do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Bem-vindo(a) à equipe!")
+         |> put_flash(:info, gettext("Welcome to the team!"))
          |> redirect(to: ~p"/users/log-in/#{login_token}")}
 
       {:error, reason} ->
@@ -77,10 +77,10 @@ defmodule RavanshenasiWeb.Org.AcceptInvitationLive do
     end
   end
 
-  defp invitation_error_message(:invalid_invitation), do: "Convite inválido."
-  defp invitation_error_message(:expired), do: "Convite expirado."
-  defp invitation_error_message(:already_accepted), do: "Convite já utilizado."
-  defp invitation_error_message(_), do: "Não foi possível aceitar o convite."
+  defp invitation_error_message(:invalid_invitation), do: gettext("Invalid invitation.")
+  defp invitation_error_message(:expired), do: gettext("Invitation expired.")
+  defp invitation_error_message(:already_accepted), do: gettext("Invitation already used.")
+  defp invitation_error_message(_), do: gettext("Could not accept the invitation.")
 
   # nil or empty string → nil (password is optional)
   defp presence(nil), do: nil

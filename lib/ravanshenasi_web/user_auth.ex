@@ -8,6 +8,8 @@ defmodule RavanshenasiWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  use Gettext, backend: RavanshenasiWeb.Gettext
+
   alias Ravanshenasi.Accounts
   alias Ravanshenasi.Accounts.Scope
 
@@ -227,7 +229,7 @@ defmodule RavanshenasiWeb.UserAuth do
     else
       socket =
         socket
-        |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
+        |> Phoenix.LiveView.put_flash(:error, gettext("You must log in to access this page."))
         |> Phoenix.LiveView.redirect(to: ~p"/users/log-in")
 
       {:halt, socket}
@@ -242,7 +244,10 @@ defmodule RavanshenasiWeb.UserAuth do
     else
       socket =
         socket
-        |> Phoenix.LiveView.put_flash(:error, "You must re-authenticate to access this page.")
+        |> Phoenix.LiveView.put_flash(
+          :error,
+          gettext("You must re-authenticate to access this page.")
+        )
         |> Phoenix.LiveView.redirect(to: ~p"/users/log-in")
 
       {:halt, socket}
@@ -255,7 +260,7 @@ defmodule RavanshenasiWeb.UserAuth do
     else
       {:halt,
        socket
-       |> Phoenix.LiveView.put_flash(:error, "Acesso restrito ao administrador.")
+       |> Phoenix.LiveView.put_flash(:error, gettext("Admin access only."))
        |> Phoenix.LiveView.redirect(to: ~p"/")}
     end
   end
@@ -294,7 +299,7 @@ defmodule RavanshenasiWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "Acesso restrito ao administrador.")
+      |> put_flash(:error, gettext("Admin access only."))
       |> redirect(to: ~p"/")
       |> halt()
     end
@@ -308,7 +313,7 @@ defmodule RavanshenasiWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "You must log in to access this page.")
+      |> put_flash(:error, gettext("You must log in to access this page."))
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log-in")
       |> halt()

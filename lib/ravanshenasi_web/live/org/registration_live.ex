@@ -10,30 +10,30 @@ defmodule RavanshenasiWeb.Org.RegistrationLive do
       <div class="mx-auto max-w-sm">
         <div class="text-center">
           <.header>
-            Cadastrar clínica
+            {gettext("Register clinic")}
             <:subtitle>
-              Já tem conta?
+              {gettext("Already have an account?")}
               <.link navigate={~p"/users/log-in"} class="font-semibold text-brand hover:underline">
-                Entrar
+                {gettext("Log in")}
               </.link>
             </:subtitle>
           </.header>
         </div>
 
         <.form for={@form} id="clinic-registration-form" phx-submit="save">
-          <.input field={@form[:clinic_name]} type="text" label="Nome da clínica" required />
-          <.input field={@form[:name]} type="text" label="Seu nome" required />
+          <.input field={@form[:clinic_name]} type="text" label={gettext("Clinic name")} required />
+          <.input field={@form[:name]} type="text" label={gettext("Your name")} required />
           <.input
             field={@form[:email]}
             type="email"
-            label="Email"
+            label={gettext("Email")}
             autocomplete="username"
             spellcheck="false"
             required
           />
 
-          <.button phx-disable-with="Criando clínica..." class="btn btn-primary w-full">
-            Criar clínica
+          <.button phx-disable-with={gettext("Creating clinic...")} class="btn btn-primary w-full">
+            {gettext("Create clinic")}
           </.button>
         </.form>
       </div>
@@ -65,13 +65,13 @@ defmodule RavanshenasiWeb.Org.RegistrationLive do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Clínica criada. Confira seu email para confirmar.")
+         |> put_flash(:info, gettext("Clinic created. Check your email to confirm."))
          |> push_navigate(to: ~p"/users/log-in")}
 
       {:error, _changeset} ->
         {:noreply,
          socket
-         |> put_flash(:error, "Não foi possível criar a clínica. Verifique os dados.")
+         |> put_flash(:error, gettext("Could not create the clinic. Check the details."))
          |> assign(
            form:
              to_form(
