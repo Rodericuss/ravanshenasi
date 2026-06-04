@@ -78,10 +78,13 @@ defmodule Ravanshenasi.Frameworks do
     end
   end
 
-  defp can_manage?(scope, %ThinkingFramework{user_id: nil}), do: Scope.admin?(scope)
+  # Tenant check first: without it, a catalog/own row from another tenant passes the
+  # role check and then raises Ecto.StaleEntryError under RLS instead of rejecting cleanly.
+  defp can_manage?(scope, %ThinkingFramework{tenant_id: tid, user_id: nil}),
+    do: tid == scope.tenant.id and Scope.admin?(scope)
 
-  defp can_manage?(scope, %ThinkingFramework{user_id: uid}),
-    do: scope.user.id == uid and Scope.clinical_access?(scope)
+  defp can_manage?(scope, %ThinkingFramework{tenant_id: tid, user_id: uid}),
+    do: tid == scope.tenant.id and scope.user.id == uid and Scope.clinical_access?(scope)
 
   # Inserts the 7 default lines at tenant level (user_id NULL). Runs inside the
   # registration Multi (bypass active). `repo` is the dynamic repo of the Multi.

@@ -57,15 +57,21 @@ defmodule Ravanshenasi.Patients do
 
   @doc "Active frameworks of a patient (presence in the join = active)."
   def list_patient_frameworks(%Scope{} = scope, %Patient{} = patient) do
-    transact_tenant(scope, fn ->
-      Repo.all(
-        from f in ThinkingFramework,
-          join: pf in PatientFramework,
-          on: pf.thinking_framework_id == f.id,
-          where: pf.patient_id == ^patient.id,
-          order_by: [asc: f.name]
-      )
-    end)
+    # Owner check first: tenant RLS alone does NOT isolate between practitioners of
+    # the same tenant, so a foreign patient struct would otherwise leak its frameworks.
+    if owns?(scope, patient) do
+      transact_tenant(scope, fn ->
+        Repo.all(
+          from f in ThinkingFramework,
+            join: pf in PatientFramework,
+            on: pf.thinking_framework_id == f.id,
+            where: pf.patient_id == ^patient.id,
+            order_by: [asc: f.name]
+        )
+      end)
+    else
+      []
+    end
   end
 
   @doc """
@@ -119,9 +125,14 @@ defmodule Ravanshenasi.Patients do
     end
   end
 
-  # Visible = tenant catalog (user_id NULL) or owned by the scope's user.
-  defp visible?(_scope, %ThinkingFramework{user_id: nil}), do: true
-  defp visible?(scope, %ThinkingFramework{user_id: uid}), do: scope.user.id == uid
+  # Visible = SAME TENANT and (tenant catalog (user_id NULL) or owned by the scope's user).
+  # The tenant check turns a cross-tenant framework into a clean {:error, :not_found}
+  # instead of a downstream Ecto.ConstraintError on the composite FK.
+  defp visible?(scope, %ThinkingFramework{tenant_id: tid, user_id: nil}),
+    do: tid == scope.tenant.id
+
+  defp visible?(scope, %ThinkingFramework{tenant_id: tid, user_id: uid}),
+    do: tid == scope.tenant.id and uid == scope.user.id
 
   defp scoped(query, scope) do
     from p in query, where: p.tenant_id == ^scope.tenant.id and p.user_id == ^scope.user.id
