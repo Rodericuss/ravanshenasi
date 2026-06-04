@@ -2,8 +2,19 @@
 
 **Projeto:** Ravanshenasi (PsiCare) — SaaS de psicologia
 **Data:** 2026-06-03
-**Status:** Spec aprovado, pronto pra virar plano de implementação
+**Status:** ✅ Implementado (Fatia 0 concluída, `mix precommit` verde). Ver **Adendo de implementação** abaixo.
 **Stack:** Phoenix 1.8.7 + LiveView 1.1 + Ecto + TimescaleDB HA pg17 + Swoosh
+
+---
+
+## Adendo de implementação (decisões tomadas durante a execução)
+
+Duas decisões mudaram o desenho original deste spec durante a implementação — ambas conscientes e validadas:
+
+1. **RLS forçado apenas em `invitations` (não em `users`/`tenants`).** Forçar RLS em `users` obrigaria ~8 funções de auth/settings geradas pelo `phx.gen.auth` (login, sessão, magic link, trocar email/senha) a rodar sob bypass — espalhando o bypass sem ganho real (essas tabelas não guardam dado clínico). A defesa em profundidade fica em `invitations` agora e em **todo dado clínico** (`patients`/`sessions`/`records`/`audio`) nas fatias 1+, onde toda query é tenant-scoped. `users`/`tenants` ficam sob **scope explícito + email único global**. Onde este spec abaixo diz "RLS em users/tenants", vale este adendo.
+2. **`Repo.with_registration_bypass_multi/1`** foi adicionado além do `with_registration_bypass/1`: rodar um `Ecto.Multi` dentro de `with_registration_bypass(fn -> Repo.transaction(multi) end)` aninhava transações e quebrava o tratamento de constraint. O `_multi` injeta o `SET LOCAL` como passos do próprio Multi (com reset de bypass no fim), evitando o aninhamento.
+
+**Nota de teste:** os testes que exercitam `transact_tenant`/`with_*_bypass` no corpo são marcados `async: false` — `transaction + SET LOCAL` tem race sob o Ecto Sandbox concorrente (artefato de teste; produção usa transação curta por request). Serialização documentada nos próprios arquivos.
 
 ---
 
