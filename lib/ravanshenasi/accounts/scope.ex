@@ -18,7 +18,7 @@ defmodule Ravanshenasi.Accounts.Scope do
 
   alias Ravanshenasi.Accounts.User
 
-  defstruct user: nil
+  defstruct user: nil, tenant: nil
 
   @doc """
   Creates a scope for the given user.
