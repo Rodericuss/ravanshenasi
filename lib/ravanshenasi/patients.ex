@@ -6,6 +6,8 @@ defmodule Ravanshenasi.Patients do
   alias Ravanshenasi.Repo
   alias Ravanshenasi.Accounts.Scope
   alias Ravanshenasi.Patients.Patient
+  alias Ravanshenasi.Patients.PatientFramework
+  alias Ravanshenasi.Frameworks.ThinkingFramework
 
   @doc "Lists the scope's patients. opts: :status (filter), :q (name ilike)."
   def list_patients(%Scope{} = scope, opts \\ []) do
@@ -52,6 +54,57 @@ defmodule Ravanshenasi.Patients do
   end
 
   def change_patient(%Patient{} = patient, attrs \\ %{}), do: Patient.changeset(patient, attrs)
+
+  @doc "Active frameworks of a patient (presence in the join = active)."
+  def list_patient_frameworks(%Scope{} = scope, %Patient{} = patient) do
+    transact_tenant(scope, fn ->
+      Repo.all(
+        from f in ThinkingFramework,
+          join: pf in PatientFramework,
+          on: pf.thinking_framework_id == f.id,
+          where: pf.patient_id == ^patient.id,
+          order_by: [asc: f.name]
+      )
+    end)
+  end
+
+  @doc "Activates a framework on a patient. Validates ownership and framework visibility."
+  def activate_framework(%Scope{} = scope, %Patient{} = patient, %ThinkingFramework{} = framework) do
+    cond do
+      not owns?(scope, patient) ->
+        {:error, :unauthorized}
+
+      not visible?(scope, framework) ->
+        {:error, :not_found}
+
+      true ->
+        transact_tenant(scope, fn ->
+          %PatientFramework{tenant_id: scope.tenant.id}
+          |> PatientFramework.changeset(%{patient_id: patient.id, thinking_framework_id: framework.id})
+          |> Repo.insert(on_conflict: :nothing, conflict_target: [:patient_id, :thinking_framework_id])
+        end)
+    end
+  end
+
+  @doc "Deactivates a framework on a patient (removes from the join)."
+  def deactivate_framework(%Scope{} = scope, %Patient{} = patient, %ThinkingFramework{} = framework) do
+    if owns?(scope, patient) do
+      transact_tenant(scope, fn ->
+        Repo.delete_all(
+          from pf in PatientFramework,
+            where: pf.patient_id == ^patient.id and pf.thinking_framework_id == ^framework.id
+        )
+      end)
+
+      :ok
+    else
+      {:error, :unauthorized}
+    end
+  end
+
+  # Visible = tenant catalog (user_id NULL) or owned by the scope's user.
+  defp visible?(_scope, %ThinkingFramework{user_id: nil}), do: true
+  defp visible?(scope, %ThinkingFramework{user_id: uid}), do: scope.user.id == uid
 
   defp scoped(query, scope) do
     from p in query, where: p.tenant_id == ^scope.tenant.id and p.user_id == ^scope.user.id
