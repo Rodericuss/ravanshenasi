@@ -36,6 +36,11 @@ defmodule Ravanshenasi.RecordsTest do
     assert {:error, :not_retryable} = Records.retry_generation(s, r)
   end
 
+  test "list_records lista os prontuários do paciente do dono", %{scope: s, record: r} do
+    records = Records.list_records(s, %{id: r.patient_id})
+    assert Enum.any?(records, &(&1.id == r.id))
+  end
+
   defp insert_record(scope, session, patient) do
     Ravanshenasi.Repo.transact_tenant(scope, fn ->
       %Ravanshenasi.Records.Record{

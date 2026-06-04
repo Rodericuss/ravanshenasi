@@ -20,6 +20,17 @@ defmodule Ravanshenasi.Records do
         Record |> scoped(scope) |> Repo.get_by(session_id: session_id)
       end)
 
+  @doc "Histórico de prontuários do paciente (do dono), mais recentes primeiro."
+  def list_records(%Scope{} = scope, %{id: patient_id}) do
+    transact_tenant(scope, fn ->
+      Record
+      |> scoped(scope)
+      |> where([r], r.patient_id == ^patient_id)
+      |> order_by([r], desc: r.inserted_at)
+      |> Repo.all()
+    end)
+  end
+
   @doc "Edita o conteúdo (só quando :done). NÃO confia no struct — recarrega escopado por id."
   def update_record(%Scope{} = scope, %{id: id}, attrs) do
     with_owned(scope, id, fn
