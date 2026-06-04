@@ -8,7 +8,10 @@ defmodule Ravanshenasi.Accounts.InvitationTest do
     inviter_id = Ecto.UUID.generate()
 
     {raw_token, changeset} =
-      Invitation.build(%{email: "novo@ex.com", role: :therapist}, tenant_id: tenant_id, invited_by_user_id: inviter_id)
+      Invitation.build(%{email: "novo@ex.com", role: :therapist},
+        tenant_id: tenant_id,
+        invited_by_user_id: inviter_id
+      )
 
     assert is_binary(raw_token) and byte_size(raw_token) > 20
     assert changeset.valid?

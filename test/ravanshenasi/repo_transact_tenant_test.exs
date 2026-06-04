@@ -1,5 +1,8 @@
 defmodule Ravanshenasi.RepoTransactTenantTest do
-  use Ravanshenasi.DataCase, async: true
+  use Ravanshenasi.DataCase, async: false
+  # async: false proposital: este teste exercita transact_tenant/with_*_bypass
+  # (transaction + SET LOCAL). Sob o Ecto Sandbox concorrente isso tem race; em
+  # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
 
   alias Ravanshenasi.Repo
   alias Ravanshenasi.Accounts.Scope

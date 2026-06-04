@@ -1,5 +1,8 @@
 defmodule Ravanshenasi.Accounts.RegisterSoloTest do
-  use Ravanshenasi.DataCase, async: true
+  use Ravanshenasi.DataCase, async: false
+  # async: false proposital: este teste exercita transact_tenant/with_*_bypass
+  # (transaction + SET LOCAL). Sob o Ecto Sandbox concorrente isso tem race; em
+  # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
 
   alias Ravanshenasi.Accounts
   alias Ravanshenasi.Accounts.{User, Tenant}
@@ -11,7 +14,9 @@ defmodule Ravanshenasi.Accounts.RegisterSoloTest do
     assert user.role == :admin
     assert user.name == "Dra. Ana"
 
-    tenant = Ravanshenasi.Repo.with_auth_bypass(fn -> Ravanshenasi.Repo.get!(Tenant, user.tenant_id) end)
+    tenant =
+      Ravanshenasi.Repo.with_auth_bypass(fn -> Ravanshenasi.Repo.get!(Tenant, user.tenant_id) end)
+
     assert tenant.plan == :solo
     assert tenant.name == "Consultório Ana"
   end
@@ -28,7 +33,9 @@ defmodule Ravanshenasi.Accounts.RegisterSoloTest do
   end
 
   test "valida formato do email" do
-    assert {:error, cs} = Accounts.register_solo(%{name: "A", email: "not valid", office_name: "C"})
+    assert {:error, cs} =
+             Accounts.register_solo(%{name: "A", email: "not valid", office_name: "C"})
+
     assert %{email: ["must have the @ sign and no spaces"]} = errors_on(cs)
   end
 

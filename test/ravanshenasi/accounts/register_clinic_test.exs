@@ -1,5 +1,8 @@
 defmodule Ravanshenasi.Accounts.RegisterClinicTest do
-  use Ravanshenasi.DataCase, async: true
+  use Ravanshenasi.DataCase, async: false
+  # async: false proposital: este teste exercita transact_tenant/with_*_bypass
+  # (transaction + SET LOCAL). Sob o Ecto Sandbox concorrente isso tem race; em
+  # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
 
   alias Ravanshenasi.Accounts
   alias Ravanshenasi.Accounts.{User, Tenant}
@@ -10,7 +13,9 @@ defmodule Ravanshenasi.Accounts.RegisterClinicTest do
     assert {:ok, %User{} = user} = Accounts.register_clinic(attrs)
     assert user.role == :admin
 
-    tenant = Ravanshenasi.Repo.with_auth_bypass(fn -> Ravanshenasi.Repo.get!(Tenant, user.tenant_id) end)
+    tenant =
+      Ravanshenasi.Repo.with_auth_bypass(fn -> Ravanshenasi.Repo.get!(Tenant, user.tenant_id) end)
+
     assert tenant.plan == :clinic
     assert tenant.name == "Clínica Z"
   end

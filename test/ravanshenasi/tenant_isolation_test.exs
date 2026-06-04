@@ -1,15 +1,26 @@
 defmodule Ravanshenasi.TenantIsolationTest do
   use Ravanshenasi.DataCase, async: false
+  # async: false proposital: este teste exercita transact_tenant/with_*_bypass
+  # (transaction + SET LOCAL). Sob o Ecto Sandbox concorrente isso tem race; em
+  # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
 
   alias Ravanshenasi.Repo
   alias Ravanshenasi.Accounts.{Scope, Tenant, Invitation}
 
   setup do
-    {:ok, ta} = Repo.with_registration_bypass(fn -> Repo.insert(%Tenant{name: "A", plan: :clinic}) end)
-    {:ok, tb} = Repo.with_registration_bypass(fn -> Repo.insert(%Tenant{name: "B", plan: :clinic}) end)
+    {:ok, ta} =
+      Repo.with_registration_bypass(fn -> Repo.insert(%Tenant{name: "A", plan: :clinic}) end)
+
+    {:ok, tb} =
+      Repo.with_registration_bypass(fn -> Repo.insert(%Tenant{name: "B", plan: :clinic}) end)
 
     insert_inv = fn tenant, email ->
-      {_raw, cs} = Invitation.build(%{email: email, role: :therapist}, tenant_id: tenant.id, invited_by_user_id: nil)
+      {_raw, cs} =
+        Invitation.build(%{email: email, role: :therapist},
+          tenant_id: tenant.id,
+          invited_by_user_id: nil
+        )
+
       {:ok, inv} = Repo.with_registration_bypass(fn -> Repo.insert(cs) end)
       inv
     end
