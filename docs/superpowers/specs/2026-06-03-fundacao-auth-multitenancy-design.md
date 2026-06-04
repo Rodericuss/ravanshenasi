@@ -16,6 +16,12 @@ Duas decisões mudaram o desenho original deste spec durante a implementação �
 
 **Nota de teste:** os testes que exercitam `transact_tenant`/`with_*_bypass` no corpo são marcados `async: false` — `transaction + SET LOCAL` tem race sob o Ecto Sandbox concorrente (artefato de teste; produção usa transação curta por request). Serialização documentada nos próprios arquivos.
 
+### Follow-ups conhecidos (do code review final — não bloqueantes, sem impacto de segurança)
+
+- **Double-accept de convite (race):** dois aceites simultâneos do mesmo token — o 2º falha no `unique_index(:users, email)` e retorna `{:error, changeset}` em vez de `{:error, :already_accepted}`. UX confusa, sem corrupção. Tratar quando houver remoção de membros (`SELECT FOR UPDATE` no lookup ou traduzir o erro do step `:user`).
+- **Re-convite bloqueado:** `unique_index(:invitations, [tenant_id, email])` impede reconvidar um email já convidado mesmo após o membro sair. Avaliar índice parcial `WHERE accepted_at IS NULL` quando entrar gestão de membros.
+- **Email de convite fora da transação:** `deliver_invitation_email/3` roda após o commit e ignora o retorno do `Mailer`. Se o SMTP falhar, a invitation fica criada sem aviso. Logar a falha de entrega / expor variante de retorno.
+
 ---
 
 ## 1. Contexto e objetivo
