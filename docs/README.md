@@ -165,14 +165,14 @@ erDiagram
 ## 🚀 Como Rodar (em breve)
 
 ```bash
-# 📦 Instalar dependências
+# Install dependencies
 mix deps.get
 npm install --prefix assets
 
-# 🐘 Configurar banco de dados
+# Configure the database
 mix ecto.setup
 
-# ⚡ Iniciar servidor
+# Start the server
 mix phx.server
 ```
 

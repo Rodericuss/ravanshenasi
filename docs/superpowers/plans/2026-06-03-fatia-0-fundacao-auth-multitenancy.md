@@ -244,14 +244,14 @@ end
 Abra `lib/ravanshenasi/accounts/user.ex`. No bloco `schema "users" do`, adicione os campos; depois adicione a função `tenant_changeset/2`.
 
 ```elixir
-# dentro de schema "users" do ... (após os campos existentes)
+# inside schema "users" do ... (after the existing fields)
 field :name, :string
 field :role, Ecto.Enum, values: [:admin, :therapist]
 belongs_to :tenant, Ravanshenasi.Accounts.Tenant, type: :binary_id
 ```
 
 ```elixir
-# nova função pública no módulo User
+# new public function in the User module
 @doc "Campos de tenant/perfil — usado no registro e aceite de convite."
 def tenant_changeset(user, attrs) do
   user
@@ -515,7 +515,7 @@ defmodule Ravanshenasi.Repo.Migrations.EnableTenantRls do
     enable_tenant_rls("tenants", "id")
     enable_tenant_rls("users")
     enable_tenant_rls("invitations")
-    # users_tokens fica FORA do RLS-por-tenant (sem tenant_id) — protegida por token + scope.
+    # users_tokens stays outside tenant RLS (no tenant_id), protected by token + scope.
   end
 end
 ```
@@ -615,8 +615,8 @@ def transact_tenant(%Scope{tenant: nil}, _fun) do
   raise ArgumentError, "transact_tenant requer um %Scope{} com tenant carregado"
 end
 
-# is_local = true → vale só na transação atual; em produção a transação é curta
-# (um checkout do pool), então o GUC nunca vaza entre requests.
+# is_local = true -> applies only to the current transaction; in production the
+# transaction is short (a single pool checkout), so the GUC never leaks between requests.
 defp set_local(key, value) do
   query!("SELECT set_config($1, $2, true)", [key, to_string(value)])
 end
@@ -694,9 +694,9 @@ defp do_bypass(fun) do
       try do
         fun.()
       after
-        # Reset explícito: sob a transação longa do Sandbox (testes), garante que
-        # o bypass não vaze pros asserts seguintes. Em produção é redundante (a
-        # transação fecha logo), mas inofensivo.
+        # Explicit reset: under the Sandbox's long-running transaction (tests),
+        # ensures the bypass does not leak into subsequent asserts. In production
+        # this is redundant (the transaction closes right away), but harmless.
         set_local("app.auth_bypass", "off")
       end
     end)
@@ -740,7 +740,7 @@ defmodule Ravanshenasi.Accounts.AuthLookupsRlsTest do
 
   test "get_user_by_email acha o user apesar do RLS forçado em users" do
     {:ok, user} = Accounts.register_solo(%{name: "Ana", email: "ana@ex.com", office_name: "C"})
-    # sem tenant no contexto — simula o momento do login, antes de saber o tenant
+    # no tenant in context: simulates login before the tenant is known
     assert %{id: id} = Accounts.get_user_by_email("ana@ex.com")
     assert id == user.id
   end
@@ -830,7 +830,7 @@ defmodule Ravanshenasi.TenantIsolationTest do
   end
 
   test "RLS fail-closed: sem GUC de tenant, query direta retorna 0 linhas" do
-    # nenhum transact_tenant/bypass ativo aqui → app.current_tenant_id é NULL
+    # no active transact_tenant/bypass here -> app.current_tenant_id is NULL
     assert Repo.all(Invitation) == []
   end
 end
@@ -1167,7 +1167,7 @@ defmodule Ravanshenasi.Accounts.InvitationsTest do
 
   test "convite expirado falha", %{scope: scope} do
     {:ok, raw} = Accounts.create_invitation(scope, %{email: "exp@c.com", role: :therapist})
-    # força expiração
+    # force expiration
     Ravanshenasi.Repo.with_auth_bypass(fn ->
       Ravanshenasi.Repo.update_all(Ravanshenasi.Accounts.Invitation, set: [expires_at: ~U[2000-01-01 00:00:00Z]])
     end)
@@ -1263,7 +1263,7 @@ end
 ```
 
 ```elixir
-# lib/ravanshenasi/accounts/user_notifier.ex  (segue o padrão dos deliver_* gerados)
+# lib/ravanshenasi/accounts/user_notifier.ex (follows the generated deliver_* pattern)
 def deliver_invitation(email, tenant_name, url) do
   deliver(email, "Convite para #{tenant_name}", """
 
@@ -1435,11 +1435,11 @@ Expected: FAIL — rotas/LiveViews inexistentes.
 Em `lib/ravanshenasi_web/router.ex`, dentro do escopo público (sem auth) adicione registro de clínica e aceite; e um escopo autenticado+admin pra membros. Use os `live_session` gerados como modelo:
 
 ```elixir
-# escopo público (mesma live_session dos registros gerados) — dentro de `scope "/", RavanshenasiWeb`
+# public scope (same live_session as generated registrations), inside `scope "/", RavanshenasiWeb`
 live "/registrar/clinica", Org.RegistrationLive, :new
 live "/convites/:token", Org.AcceptInvitationLive, :new
 
-# escopo autenticado + admin
+# authenticated + admin scope
 live_session :require_admin,
   on_mount: [{RavanshenasiWeb.UserAuth, :require_authenticated}, {RavanshenasiWeb.UserAuth, :require_admin}] do
   live "/equipe", Org.MembersLive, :index
@@ -1651,7 +1651,7 @@ attrs = %{name: params["name"], email: params["email"], office_name: params["off
 
 case Accounts.register_solo(attrs) do
   {:ok, user} ->
-    # reusa o deliver de confirmação gerado (ex.: Accounts.deliver_login_instructions/2)
+    # reuses the generated confirmation deliver (for example, Accounts.deliver_login_instructions/2)
     {:noreply, socket |> put_flash(:info, "Conta criada. Confira seu email.") |> ...}
   {:error, _changeset} ->
     {:noreply, ...}

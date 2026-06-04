@@ -25,21 +25,21 @@ Modelo adotado: **um schema PostgreSQL por tenant** (ou `tenant_id` em todas as 
 ```
 lib/
   psicare/
-    accounts/         # Usuários, tenants, autenticação
-    patients/         # Cadastro e perfil de pacientes
-    sessions/         # Sessões terapêuticas e notas
-    records/          # Prontuários gerados
-    ai/               # Módulos de integração com IA
+    accounts/         # Users, tenants, authentication
+    patients/         # Patient registration and profiles
+    sessions/         # Therapy sessions and notes
+    records/          # Generated records
+    ai/               # AI integration modules
       profile_analysis.ex
       session_record.ex
       audio_response.ex
-    whatsapp/         # Upload e processamento de áudio
+    whatsapp/         # Audio upload and processing
   psicare_web/
     live/
       patients/
       sessions/
       records/
-      settings/       # Configuração de linhas de pensamento
+      settings/       # Thought-line configuration
 ```
 
 ## Comunicação com IA

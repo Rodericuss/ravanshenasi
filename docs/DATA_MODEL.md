@@ -150,7 +150,7 @@ CREATE INDEX ON patients (tenant_id, name);
 Todas as queries **devem** filtrar por `tenant_id` primeiro. No contexto do Ecto, isso será feito via um `Repo` wrapper ou um scope padrão que adiciona o filtro automaticamente, evitando vazamento de dados entre tenants.
 
 ```elixir
-# Padrão em todos os contexts
+# Standard pattern in every context
 def list_patients(%User{} = user) do
   Patient
   |> where(tenant_id: ^user.tenant_id, user_id: ^user.id)

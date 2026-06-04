@@ -124,10 +124,10 @@ Array JSON com 2–4 objetos. Parseado e exibido em cards na UI.
 ### Etapa 1: Transcrição (Whisper)
 
 ```elixir
-# Chamada para OpenAI Whisper API
-# Arquivo de áudio enviado como multipart/form-data
-# Modelo: whisper-1
-# Language: pt (português)
+# Call to the OpenAI Whisper API
+# Audio file sent as multipart/form-data
+# Model: whisper-1
+# Language: pt (Portuguese)
 ```
 
 ### Etapa 2: Sugestão de resposta (Claude)
