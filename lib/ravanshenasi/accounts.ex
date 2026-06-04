@@ -7,7 +7,8 @@ defmodule Ravanshenasi.Accounts do
   alias Ravanshenasi.Repo
 
   alias Ecto.Multi
-  alias Ravanshenasi.Accounts.{User, UserToken, UserNotifier, Tenant}
+  alias Ravanshenasi.Accounts.{User, UserToken, UserNotifier, Tenant, Invitation}
+  alias Ravanshenasi.Accounts.Scope
 
   ## Database getters
 
@@ -266,6 +267,68 @@ defmodule Ravanshenasi.Accounts do
   end
 
   ## Token helper
+
+  ## Registration
+
+  ## Invitations
+
+  @doc "Admin cria um convite no seu tenant. Retorna {:ok, raw_token}."
+  def create_invitation(%Scope{} = scope, attrs) do
+    true = Scope.admin?(scope)
+
+    {raw_token, changeset} =
+      Invitation.build(attrs, tenant_id: scope.tenant.id, invited_by_user_id: scope.user.id)
+
+    case Repo.transact_tenant(scope, fn -> Repo.insert(changeset) end) do
+      {:ok, invitation} ->
+        deliver_invitation_email(invitation, scope.tenant, raw_token)
+        {:ok, raw_token}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
+  @doc "Aceita um convite por token cru: cria user(role) no tenant e marca accepted_at."
+  def accept_invitation(raw_token, attrs) do
+    hashed = Invitation.hash_token(raw_token)
+
+    invitation = Repo.with_auth_bypass(fn -> Repo.get_by(Invitation, token: hashed) end)
+
+    cond do
+      is_nil(invitation) -> {:error, :invalid_invitation}
+      not is_nil(invitation.accepted_at) -> {:error, :already_accepted}
+      DateTime.compare(invitation.expires_at, DateTime.utc_now()) != :gt -> {:error, :expired}
+      true -> do_accept_invitation(invitation, attrs)
+    end
+  end
+
+  defp do_accept_invitation(invitation, attrs) do
+    accepted_at = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    multi =
+      Multi.new()
+      |> Multi.insert(:user, fn _ ->
+        %User{}
+        |> User.email_changeset(%{email: invitation.email})
+        |> maybe_put_password(attrs[:password])
+        |> User.tenant_changeset(%{tenant_id: invitation.tenant_id, name: attrs.name, role: invitation.role})
+      end)
+      |> Multi.update(:invitation, Ecto.Changeset.change(invitation, accepted_at: accepted_at))
+
+    case Repo.with_registration_bypass_multi(multi) do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, _step, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  defp maybe_put_password(changeset, nil), do: changeset
+  defp maybe_put_password(changeset, password), do: User.password_changeset(changeset, %{password: password})
+
+  defp deliver_invitation_email(invitation, tenant, raw_token) do
+    url = RavanshenasiWeb.Endpoint.url() <> "/convites/#{raw_token}"
+    UserNotifier.deliver_invitation(invitation.email, tenant.name, url)
+  end
 
   ## Registration
 

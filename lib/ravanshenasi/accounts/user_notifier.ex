@@ -81,4 +81,20 @@ defmodule Ravanshenasi.Accounts.UserNotifier do
     ==============================
     """)
   end
+
+  @doc """
+  Deliver an invitation email to a new team member.
+  """
+  def deliver_invitation(email, tenant_name, url) do
+    deliver(email, "Convite para #{tenant_name}", """
+
+    Você foi convidado(a) para a equipe de #{tenant_name} no PsiCare.
+
+    Aceite seu convite em:
+
+    #{url}
+
+    Se você não esperava este convite, ignore este email.
+    """)
+  end
 end
