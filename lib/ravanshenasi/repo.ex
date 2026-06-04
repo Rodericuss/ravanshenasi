@@ -43,6 +43,15 @@ defmodule Ravanshenasi.Repo do
       {:ok, :bypassed}
     end)
     |> Ecto.Multi.append(multi)
+    |> Ecto.Multi.run(:__bypass_off__, fn repo, _ ->
+      # Reset no caminho de SUCESSO: sob a transação longa do Sandbox (testes), o
+      # RELEASE do savepoint NÃO reverte o SET LOCAL, então o bypass vazaria pros
+      # asserts seguintes. No caminho de ERRO o ROLLBACK do savepoint já reverte o
+      # 'on', então basta cobrir o sucesso aqui. Em produção é redundante (a
+      # transação fecha logo), mas inofensivo.
+      repo.query!("SELECT set_config('app.auth_bypass', 'off', true)")
+      {:ok, :reset}
+    end)
     |> transaction()
   end
 
