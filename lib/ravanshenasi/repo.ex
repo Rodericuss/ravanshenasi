@@ -30,6 +30,22 @@ defmodule Ravanshenasi.Repo do
   @doc "Bypass de RLS para criação pré-tenant (INSERT de tenant/user no registro e aceite)."
   def with_registration_bypass(fun) when is_function(fun, 0), do: do_bypass(fun)
 
+  @doc """
+  Executa um `Ecto.Multi` com bypass de RLS ativo.
+  Não aninha transações — o Multi é a transação principal, e o SET LOCAL é
+  emitido via `Multi.run` no início da mesma transação.
+  Retorna `{:ok, map}` ou `{:error, step, changeset, changes_so_far}`.
+  """
+  def with_registration_bypass_multi(%Ecto.Multi{} = multi) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:__bypass_on__, fn repo, _ ->
+      repo.query!("SELECT set_config('app.auth_bypass', 'on', true)")
+      {:ok, :bypassed}
+    end)
+    |> Ecto.Multi.append(multi)
+    |> transaction()
+  end
+
   defp do_bypass(fun) do
     {:ok, result} =
       transaction(fn ->

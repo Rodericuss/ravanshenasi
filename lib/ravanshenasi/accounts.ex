@@ -6,7 +6,8 @@ defmodule Ravanshenasi.Accounts do
   import Ecto.Query, warn: false
   alias Ravanshenasi.Repo
 
-  alias Ravanshenasi.Accounts.{User, UserToken, UserNotifier}
+  alias Ecto.Multi
+  alias Ravanshenasi.Accounts.{User, UserToken, UserNotifier, Tenant}
 
   ## Database getters
 
@@ -282,6 +283,34 @@ defmodule Ravanshenasi.Accounts do
   end
 
   ## Token helper
+
+  ## Registration
+
+  @doc "Registra um profissional solo: cria tenant(plan: solo) + user(role: admin)."
+  def register_solo(attrs) do
+    do_register(%{name: attrs.office_name, plan: :solo}, %{email: attrs.email, name: attrs.name, role: :admin})
+  end
+
+  @doc "Registra uma clínica: cria tenant(plan: clinic) + user(role: admin gestor)."
+  def register_clinic(attrs) do
+    do_register(%{name: attrs.clinic_name, plan: :clinic}, %{email: attrs.email, name: attrs.name, role: :admin})
+  end
+
+  defp do_register(tenant_attrs, user_attrs) do
+    multi =
+      Multi.new()
+      |> Multi.insert(:tenant, Tenant.changeset(%Tenant{}, tenant_attrs))
+      |> Multi.insert(:user, fn %{tenant: tenant} ->
+        %User{}
+        |> User.email_changeset(%{email: user_attrs.email})
+        |> User.tenant_changeset(%{tenant_id: tenant.id, name: user_attrs.name, role: user_attrs.role})
+      end)
+
+    case Repo.with_registration_bypass_multi(multi) do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, _step, changeset, _} -> {:error, changeset}
+    end
+  end
 
   defp update_user_and_delete_all_tokens(changeset) do
     Repo.transact(fn ->
