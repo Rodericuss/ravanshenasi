@@ -245,6 +245,17 @@ defmodule RavanshenasiWeb.UserAuth do
     end
   end
 
+  def on_mount(:require_admin, _params, _session, socket) do
+    if Scope.admin?(socket.assigns[:current_scope]) do
+      {:cont, socket}
+    else
+      {:halt,
+       socket
+       |> Phoenix.LiveView.put_flash(:error, "Acesso restrito ao administrador.")
+       |> Phoenix.LiveView.redirect(to: ~p"/")}
+    end
+  end
+
   defp mount_current_scope(socket, session) do
     Phoenix.Component.assign_new(socket, :current_scope, fn ->
       {user, _} =
@@ -272,6 +283,18 @@ defmodule RavanshenasiWeb.UserAuth do
   end
 
   def signed_in_path(_), do: ~p"/"
+
+  @doc "Plug: exige role admin no current_scope."
+  def require_admin(conn, _opts) do
+    if Scope.admin?(conn.assigns[:current_scope]) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "Acesso restrito ao administrador.")
+      |> redirect(to: ~p"/")
+      |> halt()
+    end
+  end
 
   @doc """
   Plug for routes that require the user to be authenticated.
