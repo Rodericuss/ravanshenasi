@@ -87,4 +87,38 @@ defmodule Ravanshenasi.AccountsFixtures do
       set: [inserted_at: dt, authenticated_at: dt]
     )
   end
+
+  @doc """
+  Scope of a therapist invited into a CLINIC tenant. Invitations are clinic-only
+  (require_clinic_admin), so when tenant is nil a fresh clinic is created. Pass a
+  clinic tenant to put two therapists in the same one.
+  """
+  def therapist_scope_fixture(tenant \\ nil) do
+    admin_scope =
+      case tenant do
+        nil -> clinic_admin_scope_fixture()
+        t -> admin_scope_for(t)
+      end
+
+    email = "therapist#{System.unique_integer()}@example.com"
+    {:ok, raw} = Ravanshenasi.Accounts.create_invitation(admin_scope, %{email: email, role: :therapist})
+    {:ok, user} = Ravanshenasi.Accounts.accept_invitation(raw, %{name: "Therapist", password: "supersecret123"})
+    user = Ravanshenasi.Repo.with_auth_bypass(fn -> Ravanshenasi.Repo.preload(user, :tenant) end)
+    Ravanshenasi.Accounts.Scope.for_user(user) |> Ravanshenasi.Accounts.Scope.put_tenant(user.tenant)
+  end
+
+  @doc "Scope of a clinic admin (plan: :clinic), who manages but does not attend."
+  def clinic_admin_scope_fixture do
+    {:ok, user} = Ravanshenasi.Accounts.register_clinic(%{clinic_name: "Clinic", name: "Admin", email: "admin#{System.unique_integer()}@example.com"})
+    user = Ravanshenasi.Repo.with_auth_bypass(fn -> Ravanshenasi.Repo.preload(user, :tenant) end)
+    Ravanshenasi.Accounts.Scope.for_user(user) |> Ravanshenasi.Accounts.Scope.put_tenant(user.tenant)
+  end
+
+  # Private: admin scope from an existing tenant (picks its first admin).
+  defp admin_scope_for(tenant) do
+    user = Ravanshenasi.Repo.with_auth_bypass(fn ->
+      Ravanshenasi.Repo.one!(from u in Ravanshenasi.Accounts.User, where: u.tenant_id == ^tenant.id and u.role == :admin, limit: 1)
+    end)
+    Ravanshenasi.Accounts.Scope.for_user(user) |> Ravanshenasi.Accounts.Scope.put_tenant(tenant)
+  end
 end
