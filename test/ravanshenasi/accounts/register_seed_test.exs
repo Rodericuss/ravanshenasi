@@ -12,18 +12,36 @@ defmodule Ravanshenasi.Accounts.RegisterSeedTest do
   end
 
   test "register_solo cria 7 frameworks de catálogo" do
-    {:ok, user} = Accounts.register_solo(%{name: "A", email: "solo#{System.unique_integer()}@ex.com", office_name: "C"})
+    {:ok, user} =
+      Accounts.register_solo(%{
+        name: "A",
+        email: "solo#{System.unique_integer()}@ex.com",
+        office_name: "C"
+      })
+
     assert length(Frameworks.list_frameworks(scope_of(user))) == 7
   end
 
   test "register_clinic cria 7 frameworks de catálogo" do
-    {:ok, user} = Accounts.register_clinic(%{clinic_name: "C", name: "A", email: "cli#{System.unique_integer()}@ex.com"})
+    {:ok, user} =
+      Accounts.register_clinic(%{
+        clinic_name: "C",
+        name: "A",
+        email: "cli#{System.unique_integer()}@ex.com"
+      })
+
     assert length(Frameworks.list_frameworks(scope_of(user))) == 7
   end
 
   test "accept_invitation NÃO duplica catálogo (therapist herda)" do
     admin = clinic_admin_scope_fixture()
-    {:ok, raw} = Accounts.create_invitation(admin, %{email: "m#{System.unique_integer()}@ex.com", role: :therapist})
+
+    {:ok, raw} =
+      Accounts.create_invitation(admin, %{
+        email: "m#{System.unique_integer()}@ex.com",
+        role: :therapist
+      })
+
     {:ok, member} = Accounts.accept_invitation(raw, %{name: "M", password: "supersecret123"})
     # vê os 7 do tenant, nenhum próprio
     assert length(Frameworks.list_frameworks(scope_of(member))) == 7

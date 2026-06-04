@@ -22,7 +22,15 @@ defmodule Ravanshenasi.Patients.Patient do
   @doc "User-editable fields (tenant_id/user_id are set server-side, never from the form)."
   def changeset(patient, attrs) do
     patient
-    |> cast(attrs, [:name, :birth_date, :phone, :email, :chief_complaint, :relevant_history, :status])
+    |> cast(attrs, [
+      :name,
+      :birth_date,
+      :phone,
+      :email,
+      :chief_complaint,
+      :relevant_history,
+      :status
+    ])
     |> validate_required([:name])
   end
 end

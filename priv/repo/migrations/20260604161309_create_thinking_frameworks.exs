@@ -9,7 +9,11 @@ defmodule Ravanshenasi.Repo.Migrations.CreateThinkingFrameworks do
       # Composite FK: own frameworks belong to a user OF THE SAME TENANT.
       # user_id NULL = tenant catalog; MATCH SIMPLE skips the FK check when null.
       add :user_id,
-          references(:users, type: :binary_id, with: [tenant_id: :tenant_id], on_delete: :delete_all)
+          references(:users,
+            type: :binary_id,
+            with: [tenant_id: :tenant_id],
+            on_delete: :delete_all
+          )
 
       add :name, :string, null: false
       add :description, :text

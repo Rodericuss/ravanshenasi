@@ -8,7 +8,11 @@ defmodule Ravanshenasi.Repo.Migrations.CreatePatients do
       add :tenant_id, references(:tenants, type: :binary_id, on_delete: :delete_all), null: false
       # Composite FK: owner must be a user OF THE SAME TENANT.
       add :user_id,
-          references(:users, type: :binary_id, with: [tenant_id: :tenant_id], on_delete: :restrict),
+          references(:users,
+            type: :binary_id,
+            with: [tenant_id: :tenant_id],
+            on_delete: :restrict
+          ),
           null: false
 
       add :name, :string, null: false
