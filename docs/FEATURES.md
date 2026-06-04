@@ -1,34 +1,6 @@
-# Features
+# Features (backlog — Fatias 2–5)
 
-## 1. Autenticação e Multi-tenancy
-
-- Registro de conta (profissional solo ou clínica)
-- Login / logout
-- Profissional pertence a um tenant
-- Clínica pode ter múltiplos profissionais, cada um vê apenas seus próprios pacientes
-- Roles: `admin` (dono da clínica) e `therapist`
-
----
-
-## 2. Cadastro de Pacientes
-
-Cada paciente pertence a um profissional (e por consequência ao tenant).
-
-**Campos do perfil do paciente:**
-- Nome completo
-- Data de nascimento
-- Contato (telefone / email)
-- Queixa principal (texto livre)
-- Histórico relevante (texto livre)
-- Linha(s) de pensamento terapêutico associadas a esse paciente
-- Status: ativo / inativo / em espera
-
-**Comportamento:**
-- Listagem de pacientes com busca e filtro por status
-- Página de perfil individual do paciente
-- O perfil é a "memória de longo prazo" que a IA usa para análises
-
----
+> **Migrado para `docs/superpowers/specs/`:** Feature #1 (Autenticação e Multi-tenancy) → Fatia 0; Features #2 (Cadastro de Pacientes) e #7 (Configuração de Linhas de Pensamento) → Fatia 1. As seções abaixo são o backlog do que ainda **não** foi especificado. A numeração original é preservada para não quebrar referências.
 
 ## 3. Registro de Sessões
 
@@ -79,7 +51,7 @@ A partir do perfil do paciente, a IA sugere diferentes vertentes de abordagem pa
 **Input para a IA:**
 - Perfil do paciente
 - Histórico de sessões e prontuários
-- Linhas de pensamento configuradas pelo profissional (ver Feature 7)
+- Linhas de pensamento configuradas pelo profissional (ver Linhas de Pensamento — Fatia 1)
 
 **Output:**
 - 2 a 4 sugestões de abordagem, cada uma com:
@@ -121,31 +93,6 @@ O profissional recebe um áudio de um paciente via WhatsApp e faz upload no sist
 - Upload aceita arquivos até 25MB
 - Processamento assíncrono com indicador de progresso
 - Histórico de áudios processados vinculado ao paciente
-
----
-
-## 7. Configuração de Linhas de Pensamento
-
-Cada profissional pode configurar as linhas teóricas que usa em sua prática.
-
-**Linhas pré-definidas disponíveis:**
-- Terapia Cognitivo-Comportamental (TCC)
-- Psicanálise
-- Psicologia Analítica (Jung)
-- Gestalt-terapia
-- ACT (Terapia de Aceitação e Compromisso)
-- DBT (Terapia Comportamental Dialética)
-- Humanista / Centrada na Pessoa
-
-**Customização:**
-- Profissional pode criar suas próprias linhas
-- Cada linha customizada tem: nome, descrição, princípios-guia (texto livre)
-- Essas descrições são injetadas no prompt da IA para contextualizar as sugestões
-
-**Comportamento:**
-- Configuração acessível em Settings
-- Profissional ativa/desativa linhas por paciente individualmente
-- As linhas ativas de um paciente influenciam todas as análises de IA daquele paciente
 
 ---
 

@@ -1,24 +1,10 @@
-# Modelo de Dados
+# Modelo de Dados (backlog — Fatias 2–5)
 
-## Entidades e Relacionamentos
+> **Migrado para `docs/superpowers/specs/`:** `tenants`, `users`, `invitations` → Fatia 0; `patients`, `thinking_frameworks`, `patient_frameworks` → Fatia 1. As tabelas abaixo são o backlog ainda **não** especificado.
+
+## Entidades restantes
 
 ```
-Tenant
-  └── has_many: Users
-  └── has_many: ThinkingFrameworks (linhas de pensamento customizadas)
-
-User (profissional)
-  └── belongs_to: Tenant
-  └── has_many: Patients
-
-Patient
-  └── belongs_to: User
-  └── belongs_to: Tenant
-  └── has_many: Sessions
-  └── has_many: Records (via Sessions)
-  └── has_many: AudioUploads
-  └── many_to_many: ThinkingFrameworks
-
 Session
   └── belongs_to: Patient
   └── has_one: Record
@@ -28,49 +14,12 @@ Record (prontuário)
 
 AudioUpload
   └── belongs_to: Patient
-  └── has_one: AudioAnalysis
-
-ThinkingFramework
-  └── belongs_to: Tenant (se customizada) | null (se pré-definida/global)
+  └── has_one (campos): transcription + suggested_response
 ```
 
 ---
 
 ## Tabelas
-
-### tenants
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| id | uuid | PK |
-| name | string | Nome da clínica ou profissional |
-| plan | enum | `solo`, `clinic` |
-| inserted_at | timestamp | |
-
-### users
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| id | uuid | PK |
-| tenant_id | uuid | FK → tenants |
-| email | string | Único por tenant |
-| hashed_password | string | |
-| name | string | |
-| role | enum | `admin`, `therapist` |
-| inserted_at | timestamp | |
-
-### patients
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| id | uuid | PK |
-| tenant_id | uuid | FK → tenants |
-| user_id | uuid | FK → users (profissional responsável) |
-| name | string | |
-| birth_date | date | |
-| phone | string | |
-| email | string | |
-| chief_complaint | text | Queixa principal |
-| relevant_history | text | Histórico relevante |
-| status | enum | `active`, `inactive`, `waitlist` |
-| inserted_at | timestamp | |
 
 ### sessions
 | Coluna | Tipo | Descrição |
@@ -111,49 +60,14 @@ ThinkingFramework
 | processing_status | enum | `pending`, `transcribing`, `analyzing`, `done`, `error` |
 | inserted_at | timestamp | |
 
-### thinking_frameworks
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| id | uuid | PK |
-| tenant_id | uuid | null = pré-definida/global |
-| name | string | Ex: "TCC", "Psicanálise" |
-| description | text | Princípios-guia (usado no prompt da IA) |
-| is_predefined | boolean | true = vem do sistema |
-| inserted_at | timestamp | |
-
-### patient_frameworks (join table)
-| Coluna | Tipo | Descrição |
-|---|---|---|
-| patient_id | uuid | FK → patients |
-| thinking_framework_id | uuid | FK → thinking_frameworks |
-
 ---
 
-## Índices importantes
+## Nota sobre Multi-tenancy (padrão já implementado)
 
-```sql
--- Isolamento por tenant em todas as tabelas críticas
-CREATE INDEX ON patients (tenant_id, user_id);
-CREATE INDEX ON sessions (tenant_id, patient_id);
-CREATE INDEX ON records (tenant_id, patient_id);
-CREATE INDEX ON audio_uploads (tenant_id, patient_id);
+O padrão real, estabelecido na Fatia 0 e aplicado em todo dado clínico, é **RLS fail-closed por `tenant_id` + scope explícito** via `Repo.transact_tenant(scope, fn -> … end)` — não o `Repo`-wrapper antigo. Toda tabela clínica nova (`sessions`, `records`, `audio_uploads`) deve:
 
--- Busca de pacientes
-CREATE INDEX ON patients (tenant_id, status);
-CREATE INDEX ON patients (tenant_id, name);
-```
+- ter `tenant_id` (+ `user_id` quando for dado do profissional) com FKs compostas tenant-aware;
+- chamar `Ravanshenasi.RLS.enable_tenant_rls(tabela)` na migration;
+- ser acessada exclusivamente dentro de `transact_tenant`.
 
----
-
-## Nota sobre Multi-tenancy
-
-Todas as queries **devem** filtrar por `tenant_id` primeiro. No contexto do Ecto, isso será feito via um `Repo` wrapper ou um scope padrão que adiciona o filtro automaticamente, evitando vazamento de dados entre tenants.
-
-```elixir
-# Standard pattern in every context
-def list_patients(%User{} = user) do
-  Patient
-  |> where(tenant_id: ^user.tenant_id, user_id: ^user.id)
-  |> Repo.all()
-end
-```
+Ver `docs/superpowers/specs/2026-06-03-fundacao-auth-multitenancy-design.md` e `docs/superpowers/specs/2026-06-03-fatia-1-pacientes-linhas-pensamento-design.md`.
