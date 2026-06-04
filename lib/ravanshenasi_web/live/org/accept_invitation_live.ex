@@ -36,6 +36,14 @@ defmodule RavanshenasiWeb.Org.AcceptInvitationLive do
   end
 
   @impl true
+  def mount(_params, _session, %{assigns: %{current_scope: %{user: user}}} = socket)
+      when not is_nil(user) do
+    {:ok,
+     socket
+     |> put_flash(:error, "Saia da sua conta para aceitar um convite em outra.")
+     |> redirect(to: RavanshenasiWeb.UserAuth.signed_in_path(socket))}
+  end
+
   def mount(%{"token" => token}, _session, socket) do
     form = to_form(%{"name" => "", "password" => ""}, as: :user)
     {:ok, assign(socket, form: form, token: token)}

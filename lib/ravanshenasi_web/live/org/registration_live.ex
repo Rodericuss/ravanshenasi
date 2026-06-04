@@ -76,7 +76,9 @@ defmodule RavanshenasiWeb.Org.RegistrationLive do
                  "clinic_name" => params["clinic_name"],
                  "name" => params["name"],
                  "email" => params["email"]
-               }, as: :clinic)
+               },
+               as: :clinic
+             )
          )}
     end
   end

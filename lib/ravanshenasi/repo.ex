@@ -11,13 +11,11 @@ defmodule Ravanshenasi.Repo do
   (não `{:ok, _}`). Levanta com scope sem tenant válido.
   """
   def transact_tenant(%Scope{tenant: %{id: id}}, fun) when is_function(fun, 0) do
-    {:ok, result} =
-      transaction(fn ->
-        set_local("app.current_tenant_id", id)
-        fun.()
-      end)
-
-    result
+    transaction(fn ->
+      set_local("app.current_tenant_id", id)
+      fun.()
+    end)
+    |> unwrap_transaction()
   end
 
   def transact_tenant(%Scope{tenant: nil}, _fun) do
@@ -56,21 +54,28 @@ defmodule Ravanshenasi.Repo do
   end
 
   defp do_bypass(fun) do
-    {:ok, result} =
-      transaction(fn ->
-        set_local("app.auth_bypass", "on")
+    transaction(fn ->
+      set_local("app.auth_bypass", "on")
 
-        try do
-          fun.()
-        after
-          # Reset explícito: sob a transação longa do Sandbox (testes), garante que
-          # o bypass não vaze pros asserts seguintes. Em produção é redundante (a
-          # transação fecha logo), mas inofensivo.
-          set_local("app.auth_bypass", "off")
-        end
-      end)
+      try do
+        fun.()
+      after
+        # Reset explícito: sob a transação longa do Sandbox (testes), garante que
+        # o bypass não vaze pros asserts seguintes. Em produção é redundante (a
+        # transação fecha logo), mas inofensivo.
+        set_local("app.auth_bypass", "off")
+      end
+    end)
+    |> unwrap_transaction()
+  end
 
-    result
+  # Desembrulha o resultado de transaction/1. `{:error, reason}` só ocorre com
+  # `Repo.rollback/1` explícito (que não usamos); se acontecer, levanta com contexto
+  # em vez de um MatchError críptico.
+  defp unwrap_transaction({:ok, result}), do: result
+
+  defp unwrap_transaction({:error, reason}) do
+    raise "Ravanshenasi.Repo: transação revertida inesperadamente: #{inspect(reason)}"
   end
 
   # is_local = true → vale só na transação atual; em produção a transação é curta

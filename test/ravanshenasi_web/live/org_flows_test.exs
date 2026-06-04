@@ -44,4 +44,23 @@ defmodule RavanshenasiWeb.OrgFlowsTest do
     assert member.role == :therapist
     assert member.tenant_id == admin.tenant_id
   end
+
+  test "usuário já logado é redirecionado ao abrir um convite", %{conn: conn} do
+    {:ok, admin} =
+      Accounts.register_clinic(%{clinic_name: "C2", name: "A2", email: "admin2@c.com"})
+
+    admin = Repo.preload(admin, :tenant)
+
+    scope =
+      Scope.for_user(admin)
+      |> Scope.put_tenant(admin.tenant)
+
+    {:ok, raw} =
+      Accounts.create_invitation(scope, %{email: "outro@c.com", role: :therapist})
+
+    assert {:error, {:redirect, _}} =
+             conn
+             |> log_in_user(admin)
+             |> live(~p"/convites/#{raw}")
+  end
 end
