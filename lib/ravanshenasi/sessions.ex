@@ -111,7 +111,9 @@ defmodule Ravanshenasi.Sessions do
 
       case rows do
         [] ->
-          Repo.rollback(:already_finalized)
+          # 0 linhas: distingue "já finalizada (do próprio dono)" de "acesso a sessão
+          # alheia". A query escopada (tenant_id + user_id) só encontra se for do dono.
+          Repo.rollback(finalize_failure_reason(scope, id))
 
         [session] ->
           record =
@@ -130,6 +132,13 @@ defmodule Ravanshenasi.Sessions do
           %{session: session, record: record}
       end
     end)
+  end
+
+  defp finalize_failure_reason(scope, id) do
+    case Session |> scoped(scope) |> Repo.get(id) do
+      nil -> :unauthorized
+      _ -> :already_finalized
+    end
   end
 
   @doc "Últimas `limit` sessões finalizadas do paciente, EXCLUINDO `exclude_session_id`."

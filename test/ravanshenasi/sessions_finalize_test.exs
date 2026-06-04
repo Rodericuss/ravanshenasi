@@ -25,4 +25,15 @@ defmodule Ravanshenasi.SessionsFinalizeTest do
     assert {:error, :already_finalized} = Sessions.finalize_session(s, again)
     assert [_one] = all_enqueued(worker: GenerateSoapWorker)
   end
+
+  test "finalizar sessão de OUTRO profissional do mesmo tenant → :unauthorized (não :already_finalized)" do
+    admin = clinic_admin_scope_fixture()
+    a = therapist_scope_fixture(admin.tenant)
+    b = therapist_scope_fixture(admin.tenant)
+    {:ok, pa} = Patients.create_patient(a, %{name: "PA"})
+    {:ok, sess} = Sessions.create_session(a, pa, %{notes: "n"})
+
+    assert {:error, :unauthorized} = Sessions.finalize_session(b, sess)
+    assert [] = all_enqueued(worker: GenerateSoapWorker)
+  end
 end
