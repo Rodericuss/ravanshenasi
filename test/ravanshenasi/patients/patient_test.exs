@@ -25,8 +25,8 @@ defmodule Ravanshenasi.Patients.PatientFkTest do
 
   import Ravanshenasi.AccountsFixtures
 
-  alias Ravanshenasi.Repo
   alias Ravanshenasi.Patients.Patient
+  alias Ravanshenasi.Repo
 
   test "FK composta rejeita paciente com user_id de OUTRO tenant" do
     a = user_scope_fixture()

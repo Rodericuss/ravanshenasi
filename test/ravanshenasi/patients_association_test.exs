@@ -3,7 +3,7 @@ defmodule Ravanshenasi.PatientsAssociationTest do
 
   import Ravanshenasi.AccountsFixtures
 
-  alias Ravanshenasi.{Patients, Frameworks}
+  alias Ravanshenasi.{Frameworks, Patients}
 
   setup do
     s = user_scope_fixture()

@@ -1,8 +1,8 @@
 defmodule RavanshenasiWeb.FrameworkLive.Index do
   use RavanshenasiWeb, :live_view
 
-  alias Ravanshenasi.Frameworks
   alias Ravanshenasi.Accounts.Scope
+  alias Ravanshenasi.Frameworks
 
   @impl true
   def mount(_params, _session, socket) do

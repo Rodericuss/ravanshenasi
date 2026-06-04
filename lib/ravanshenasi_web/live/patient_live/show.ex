@@ -1,7 +1,8 @@
 defmodule RavanshenasiWeb.PatientLive.Show do
   use RavanshenasiWeb, :live_view
 
-  alias Ravanshenasi.{Patients, Frameworks}
+  alias Ravanshenasi.Frameworks
+  alias Ravanshenasi.Patients
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do

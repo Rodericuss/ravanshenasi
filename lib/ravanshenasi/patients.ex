@@ -3,11 +3,11 @@ defmodule Ravanshenasi.Patients do
 
   import Ecto.Query
 
-  alias Ravanshenasi.Repo
   alias Ravanshenasi.Accounts.Scope
+  alias Ravanshenasi.Frameworks.ThinkingFramework
   alias Ravanshenasi.Patients.Patient
   alias Ravanshenasi.Patients.PatientFramework
-  alias Ravanshenasi.Frameworks.ThinkingFramework
+  alias Ravanshenasi.Repo
 
   @doc "Lists the scope's patients. opts: :status (filter), :q (name ilike)."
   def list_patients(%Scope{} = scope, opts \\ []) do
@@ -80,14 +80,24 @@ defmodule Ravanshenasi.Patients do
       true ->
         transact_tenant(scope, fn ->
           %PatientFramework{tenant_id: scope.tenant.id}
-          |> PatientFramework.changeset(%{patient_id: patient.id, thinking_framework_id: framework.id})
-          |> Repo.insert(on_conflict: :nothing, conflict_target: [:patient_id, :thinking_framework_id])
+          |> PatientFramework.changeset(%{
+            patient_id: patient.id,
+            thinking_framework_id: framework.id
+          })
+          |> Repo.insert(
+            on_conflict: :nothing,
+            conflict_target: [:patient_id, :thinking_framework_id]
+          )
         end)
     end
   end
 
   @doc "Deactivates a framework on a patient (removes from the join)."
-  def deactivate_framework(%Scope{} = scope, %Patient{} = patient, %ThinkingFramework{} = framework) do
+  def deactivate_framework(
+        %Scope{} = scope,
+        %Patient{} = patient,
+        %ThinkingFramework{} = framework
+      ) do
     if owns?(scope, patient) do
       transact_tenant(scope, fn ->
         Repo.delete_all(

@@ -8,6 +8,8 @@ defmodule Ravanshenasi.AccountsFixtures do
 
   alias Ravanshenasi.Accounts
   alias Ravanshenasi.Accounts.Scope
+  alias Ravanshenasi.Accounts.User
+  alias Ravanshenasi.Repo
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
   def valid_user_password, do: "hello world!"
@@ -65,7 +67,7 @@ defmodule Ravanshenasi.AccountsFixtures do
   end
 
   def override_token_authenticated_at(token, authenticated_at) when is_binary(token) do
-    Ravanshenasi.Repo.update_all(
+    Repo.update_all(
       from(t in Accounts.UserToken,
         where: t.token == ^token
       ),
@@ -75,14 +77,14 @@ defmodule Ravanshenasi.AccountsFixtures do
 
   def generate_user_magic_link_token(user) do
     {encoded_token, user_token} = Accounts.UserToken.build_email_token(user, "login")
-    Ravanshenasi.Repo.insert!(user_token)
+    Repo.insert!(user_token)
     {encoded_token, user_token.token}
   end
 
   def offset_user_token(token, amount_to_add, unit) do
     dt = DateTime.add(DateTime.utc_now(:second), amount_to_add, unit)
 
-    Ravanshenasi.Repo.update_all(
+    Repo.update_all(
       from(ut in Accounts.UserToken, where: ut.token == ^token),
       set: [inserted_at: dt, authenticated_at: dt]
     )
@@ -101,24 +103,48 @@ defmodule Ravanshenasi.AccountsFixtures do
       end
 
     email = "therapist#{System.unique_integer()}@example.com"
-    {:ok, raw} = Ravanshenasi.Accounts.create_invitation(admin_scope, %{email: email, role: :therapist})
-    {:ok, user} = Ravanshenasi.Accounts.accept_invitation(raw, %{name: "Therapist", password: "supersecret123"})
-    user = Ravanshenasi.Repo.with_auth_bypass(fn -> Ravanshenasi.Repo.preload(user, :tenant) end)
-    Ravanshenasi.Accounts.Scope.for_user(user) |> Ravanshenasi.Accounts.Scope.put_tenant(user.tenant)
+
+    {:ok, raw} =
+      Accounts.create_invitation(admin_scope, %{email: email, role: :therapist})
+
+    {:ok, user} =
+      Accounts.accept_invitation(raw, %{
+        name: "Therapist",
+        password: "supersecret123"
+      })
+
+    user = Repo.with_auth_bypass(fn -> Repo.preload(user, :tenant) end)
+
+    Scope.for_user(user)
+    |> Scope.put_tenant(user.tenant)
   end
 
   @doc "Scope of a clinic admin (plan: :clinic), who manages but does not attend."
   def clinic_admin_scope_fixture do
-    {:ok, user} = Ravanshenasi.Accounts.register_clinic(%{clinic_name: "Clinic", name: "Admin", email: "admin#{System.unique_integer()}@example.com"})
-    user = Ravanshenasi.Repo.with_auth_bypass(fn -> Ravanshenasi.Repo.preload(user, :tenant) end)
-    Ravanshenasi.Accounts.Scope.for_user(user) |> Ravanshenasi.Accounts.Scope.put_tenant(user.tenant)
+    {:ok, user} =
+      Accounts.register_clinic(%{
+        clinic_name: "Clinic",
+        name: "Admin",
+        email: "admin#{System.unique_integer()}@example.com"
+      })
+
+    user = Repo.with_auth_bypass(fn -> Repo.preload(user, :tenant) end)
+
+    Scope.for_user(user)
+    |> Scope.put_tenant(user.tenant)
   end
 
   # Private: admin scope from an existing tenant (picks its first admin).
   defp admin_scope_for(tenant) do
-    user = Ravanshenasi.Repo.with_auth_bypass(fn ->
-      Ravanshenasi.Repo.one!(from u in Ravanshenasi.Accounts.User, where: u.tenant_id == ^tenant.id and u.role == :admin, limit: 1)
-    end)
-    Ravanshenasi.Accounts.Scope.for_user(user) |> Ravanshenasi.Accounts.Scope.put_tenant(tenant)
+    user =
+      Repo.with_auth_bypass(fn ->
+        Repo.one!(
+          from u in User,
+            where: u.tenant_id == ^tenant.id and u.role == :admin,
+            limit: 1
+        )
+      end)
+
+    Scope.for_user(user) |> Scope.put_tenant(tenant)
   end
 end

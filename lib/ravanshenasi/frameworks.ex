@@ -3,9 +3,9 @@ defmodule Ravanshenasi.Frameworks do
 
   import Ecto.Query
 
-  alias Ravanshenasi.Repo
   alias Ravanshenasi.Accounts.Scope
   alias Ravanshenasi.Frameworks.{Defaults, ThinkingFramework}
+  alias Ravanshenasi.Repo
 
   @doc "The 7 predefined lines (name + description)."
   def default_frameworks, do: Defaults.all()
@@ -79,7 +79,9 @@ defmodule Ravanshenasi.Frameworks do
   end
 
   defp can_manage?(scope, %ThinkingFramework{user_id: nil}), do: Scope.admin?(scope)
-  defp can_manage?(scope, %ThinkingFramework{user_id: uid}), do: scope.user.id == uid and Scope.clinical_access?(scope)
+
+  defp can_manage?(scope, %ThinkingFramework{user_id: uid}),
+    do: scope.user.id == uid and Scope.clinical_access?(scope)
 
   # Inserts the 7 default lines at tenant level (user_id NULL). Runs inside the
   # registration Multi (bypass active). `repo` is the dynamic repo of the Multi.
