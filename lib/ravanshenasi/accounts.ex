@@ -389,6 +389,10 @@ defmodule Ravanshenasi.Accounts do
           role: user_attrs.role
         })
       end)
+      |> Multi.run(:seed_frameworks, fn repo, %{tenant: tenant} ->
+        Ravanshenasi.Frameworks.seed_tenant_defaults(repo, tenant.id)
+        {:ok, :seeded}
+      end)
 
     case Repo.with_registration_bypass_multi(multi) do
       {:ok, %{user: user}} -> {:ok, user}

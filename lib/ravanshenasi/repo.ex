@@ -13,17 +13,17 @@ defmodule Ravanshenasi.Repo do
   def transact_tenant(%Scope{tenant: %{id: id}}, fun) when is_function(fun, 0) do
     transaction(fn ->
       set_local("app.current_tenant_id", id)
-
-      try do
-        fun.()
-      after
-        # Reset like do_bypass: under the Sandbox's long-running transaction (tests),
-        # RELEASE of the savepoint does NOT revert SET LOCAL, so the tenant GUC would
-        # leak into later direct queries in the same test. The policy reads it via
-        # NULLIF, so '' is treated as "no tenant" (fail-closed). In production this is
-        # redundant (the transaction closes right away), but harmless.
-        set_local("app.current_tenant_id", "")
-      end
+      result = fun.()
+      # Reset on the SUCCESS path only (mirrors with_registration_bypass_multi).
+      # Under the Sandbox's long-running transaction (tests), RELEASE of the savepoint
+      # does NOT revert SET LOCAL, so without this the tenant GUC would leak into later
+      # direct queries in the same test (the policy reads it via NULLIF, so '' is
+      # fail-closed "no tenant"). On the ERROR path we must NOT reset here: if fun raised
+      # a DB error the savepoint is aborted, its ROLLBACK already reverts this SET LOCAL,
+      # and calling set_local on an aborted tx would itself fail and mask the original
+      # error. In production this reset is redundant (short tx) but harmless.
+      set_local("app.current_tenant_id", "")
+      result
     end)
     |> unwrap_transaction()
   end
@@ -66,15 +66,12 @@ defmodule Ravanshenasi.Repo do
   defp do_bypass(fun) do
     transaction(fn ->
       set_local("app.auth_bypass", "on")
-
-      try do
-        fun.()
-      after
-        # Explicit reset: under the Sandbox's long-running transaction (tests), ensures
-        # the bypass does not leak into subsequent asserts. In production this is
-        # redundant (the transaction closes right away), but harmless.
-        set_local("app.auth_bypass", "off")
-      end
+      result = fun.()
+      # Reset on the SUCCESS path only (see transact_tenant for the aborted-tx rationale):
+      # on the ERROR path the savepoint's ROLLBACK reverts this SET LOCAL, and resetting
+      # an aborted tx would fail and mask the original error.
+      set_local("app.auth_bypass", "off")
+      result
     end)
     |> unwrap_transaction()
   end

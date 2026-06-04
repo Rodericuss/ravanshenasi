@@ -1,0 +1,109 @@
+defmodule RavanshenasiWeb.PatientLive.Form do
+  use RavanshenasiWeb, :live_view
+
+  alias Ravanshenasi.Patients
+  alias Ravanshenasi.Patients.Patient
+
+  @impl true
+  def mount(params, _session, socket) do
+    {:ok, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :new, _params) do
+    assign(socket,
+      page_title: gettext("New patient"),
+      patient: %Patient{},
+      form: to_form(Patients.change_patient(%Patient{}))
+    )
+  end
+
+  defp apply_action(socket, :edit, %{"id" => id}) do
+    patient = Patients.get_patient!(socket.assigns.current_scope, id)
+
+    assign(socket,
+      page_title: gettext("Edit patient"),
+      patient: patient,
+      form: to_form(Patients.change_patient(patient))
+    )
+  end
+
+  @impl true
+  def handle_event("validate", %{"patient" => params}, socket) do
+    form =
+      socket.assigns.patient
+      |> Patients.change_patient(params)
+      |> to_form(action: :validate)
+
+    {:noreply, assign(socket, form: form)}
+  end
+
+  def handle_event("save", %{"patient" => params}, socket) do
+    save(socket, socket.assigns.live_action, params)
+  end
+
+  defp save(socket, :new, params) do
+    case Patients.create_patient(socket.assigns.current_scope, params) do
+      {:ok, p} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Patient created"))
+         |> push_navigate(to: ~p"/pacientes/#{p.id}")}
+
+      {:error, %Ecto.Changeset{} = cs} ->
+        {:noreply, assign(socket, form: to_form(cs))}
+
+      {:error, :unauthorized} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, gettext("Not authorized"))
+         |> push_navigate(to: ~p"/pacientes")}
+    end
+  end
+
+  defp save(socket, :edit, params) do
+    case Patients.update_patient(socket.assigns.current_scope, socket.assigns.patient, params) do
+      {:ok, p} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Patient updated"))
+         |> push_navigate(to: ~p"/pacientes/#{p.id}")}
+
+      {:error, %Ecto.Changeset{} = cs} ->
+        {:noreply, assign(socket, form: to_form(cs))}
+
+      {:error, :unauthorized} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, gettext("Not authorized"))
+         |> push_navigate(to: ~p"/pacientes")}
+    end
+  end
+
+  @impl true
+  def render(assigns) do
+    ~H"""
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
+      <.header>{@page_title}</.header>
+      <.form for={@form} id="patient-form" phx-change="validate" phx-submit="save">
+        <.input field={@form[:name]} label={gettext("Name")} required />
+        <.input field={@form[:birth_date]} type="date" label={gettext("Birth date")} />
+        <.input field={@form[:phone]} label={gettext("Phone")} />
+        <.input field={@form[:email]} type="email" label={gettext("Email")} />
+        <.input field={@form[:chief_complaint]} type="textarea" label={gettext("Chief complaint")} />
+        <.input field={@form[:relevant_history]} type="textarea" label={gettext("Relevant history")} />
+        <.input
+          field={@form[:status]}
+          type="select"
+          label={gettext("Status")}
+          options={[
+            {gettext("Active"), :active},
+            {gettext("Inactive"), :inactive},
+            {gettext("Waitlist"), :waitlist}
+          ]}
+        />
+        <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
+      </.form>
+    </Layouts.app>
+    """
+  end
+end

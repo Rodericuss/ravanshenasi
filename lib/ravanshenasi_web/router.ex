@@ -58,6 +58,20 @@ defmodule RavanshenasiWeb.Router do
       ] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
+
+      live "/linhas", FrameworkLive.Index, :index
+    end
+
+    live_session :require_clinical,
+      on_mount: [
+        {RavanshenasiWeb.Plugs.Locale, :set_locale},
+        {RavanshenasiWeb.UserAuth, :require_authenticated},
+        {RavanshenasiWeb.UserAuth, :require_clinical_access}
+      ] do
+      live "/pacientes", PatientLive.Index, :index
+      live "/pacientes/novo", PatientLive.Form, :new
+      live "/pacientes/:id", PatientLive.Show, :show
+      live "/pacientes/:id/editar", PatientLive.Form, :edit
     end
 
     post "/users/update-password", UserSessionController, :update_password
