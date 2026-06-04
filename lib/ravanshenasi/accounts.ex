@@ -61,6 +61,9 @@ defmodule Ravanshenasi.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  @doc "Carrega o tenant por id."
+  def get_tenant!(id), do: Repo.get!(Tenant, id)
+
   ## Settings
 
   @doc """

@@ -19,10 +19,10 @@ defmodule Ravanshenasi.AccountsFixtures do
   end
 
   def unconfirmed_user_fixture(attrs \\ %{}) do
+    %{email: email} = valid_user_attributes(attrs)
+
     {:ok, user} =
-      attrs
-      |> valid_user_attributes()
-      |> Accounts.register_user()
+      Accounts.register_solo(%{name: "Test User", email: email, office_name: "Test Office"})
 
     user
   end
@@ -47,7 +47,8 @@ defmodule Ravanshenasi.AccountsFixtures do
   end
 
   def user_scope_fixture(user) do
-    Scope.for_user(user)
+    tenant = Ravanshenasi.Accounts.get_tenant!(user.tenant_id)
+    Scope.for_user(user) |> Ravanshenasi.Accounts.Scope.put_tenant(tenant)
   end
 
   def set_password(user) do

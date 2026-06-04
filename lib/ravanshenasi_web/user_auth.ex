@@ -68,10 +68,10 @@ defmodule RavanshenasiWeb.UserAuth do
     with {token, conn} <- ensure_user_token(conn),
          {user, token_inserted_at} <- Accounts.get_user_by_session_token(token) do
       conn
-      |> assign(:current_scope, Scope.for_user(user))
+      |> assign(:current_scope, Scope.for_user(user) |> with_tenant())
       |> maybe_reissue_user_session_token(user, token_inserted_at)
     else
-      nil -> assign(conn, :current_scope, Scope.for_user(nil))
+      nil -> assign(conn, :current_scope, Scope.for_user(nil) |> with_tenant())
     end
   end
 
@@ -252,9 +252,18 @@ defmodule RavanshenasiWeb.UserAuth do
           Accounts.get_user_by_session_token(user_token)
         end || {nil, nil}
 
-      Scope.for_user(user)
+      Scope.for_user(user) |> with_tenant()
     end)
   end
+
+  defp with_tenant(nil), do: nil
+
+  defp with_tenant(%Ravanshenasi.Accounts.Scope{user: %{tenant_id: tenant_id}} = scope)
+       when not is_nil(tenant_id) do
+    Ravanshenasi.Accounts.Scope.put_tenant(scope, Ravanshenasi.Accounts.get_tenant!(tenant_id))
+  end
+
+  defp with_tenant(scope), do: scope
 
   @doc "Returns the path to redirect to after log in."
   # the user was already logged in, redirect to settings

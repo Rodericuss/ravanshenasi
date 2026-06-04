@@ -16,7 +16,7 @@ defmodule Ravanshenasi.Accounts.Scope do
   growing application requirements.
   """
 
-  alias Ravanshenasi.Accounts.User
+  alias Ravanshenasi.Accounts.{User, Tenant}
 
   defstruct user: nil, tenant: nil
 
@@ -30,4 +30,17 @@ defmodule Ravanshenasi.Accounts.Scope do
   end
 
   def for_user(nil), do: nil
+
+  @doc "Attaches a tenant to an existing scope."
+  def put_tenant(%__MODULE__{} = scope, %Tenant{} = tenant) do
+    %{scope | tenant: tenant}
+  end
+
+  @doc "Returns true if the scope's user has the :admin role."
+  def admin?(%__MODULE__{user: %{role: :admin}}), do: true
+  def admin?(_), do: false
+
+  @doc "Returns true if the scope's user has the :therapist role."
+  def therapist?(%__MODULE__{user: %{role: :therapist}}), do: true
+  def therapist?(_), do: false
 end
