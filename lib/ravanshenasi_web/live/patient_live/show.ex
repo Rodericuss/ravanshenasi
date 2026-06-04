@@ -21,6 +21,22 @@ defmodule RavanshenasiWeb.PatientLive.Show do
   end
 
   @impl true
+  def handle_event("inactivate", _, socket) do
+    scope = socket.assigns.current_scope
+
+    case Patients.inactivate_patient(scope, socket.assigns.patient) do
+      {:ok, patient} ->
+        {:noreply,
+         socket
+         |> assign(patient: patient)
+         |> put_flash(:info, gettext("Patient inactivated"))}
+
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, gettext("Could not inactivate patient"))}
+    end
+  end
+
+  @impl true
   def handle_event("toggle-framework", %{"id" => fw_id, "on" => on}, socket) do
     scope = socket.assigns.current_scope
     framework = Frameworks.get_framework!(scope, fw_id)
@@ -68,6 +84,13 @@ defmodule RavanshenasiWeb.PatientLive.Show do
         </li>
       </ul>
       <.button navigate={~p"/pacientes/#{@patient.id}/editar"}>{gettext("Edit")}</.button>
+      <.button
+        :if={@patient.status != :inactive}
+        phx-click="inactivate"
+        data-confirm={gettext("Inactivate this patient?")}
+      >
+        {gettext("Inactivate patient")}
+      </.button>
     </Layouts.app>
     """
   end

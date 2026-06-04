@@ -60,6 +60,10 @@ defmodule Ravanshenasi.Frameworks do
     end)
   end
 
+  @doc "Returns a changeset for a framework (used to pre-populate edit forms)."
+  def change_framework(%ThinkingFramework{} = fw, attrs \\ %{}),
+    do: ThinkingFramework.changeset(fw, attrs)
+
   @doc "Updates a line. Catalog lines require admin; own lines require clinical access."
   def update_framework(%Scope{} = scope, %ThinkingFramework{} = fw, attrs) do
     if can_manage?(scope, fw) do
@@ -78,10 +82,14 @@ defmodule Ravanshenasi.Frameworks do
     end
   end
 
-  defp can_manage?(scope, %ThinkingFramework{user_id: nil}), do: Scope.admin?(scope)
+  @doc "True if the scope may edit/delete this framework (catalog → admin same tenant; own → owner with clinical access)."
+  # Tenant check first: without it, a catalog/own row from another tenant passes the
+  # role check and then raises Ecto.StaleEntryError under RLS instead of rejecting cleanly.
+  def can_manage?(scope, %ThinkingFramework{tenant_id: tid, user_id: nil}),
+    do: tid == scope.tenant.id and Scope.admin?(scope)
 
-  defp can_manage?(scope, %ThinkingFramework{user_id: uid}),
-    do: scope.user.id == uid and Scope.clinical_access?(scope)
+  def can_manage?(scope, %ThinkingFramework{tenant_id: tid, user_id: uid}),
+    do: tid == scope.tenant.id and scope.user.id == uid and Scope.clinical_access?(scope)
 
   # Inserts the 7 default lines at tenant level (user_id NULL). Runs inside the
   # registration Multi (bypass active). `repo` is the dynamic repo of the Multi.

@@ -31,4 +31,30 @@ defmodule RavanshenasiWeb.PatientLiveTest do
     conn = build_conn() |> log_in_user(scope.user)
     assert {:error, {:redirect, %{to: "/"}}} = live(conn, ~p"/pacientes")
   end
+
+  test "filtro de status exibe só pacientes do status selecionado", %{conn: conn, scope: scope} do
+    {:ok, _} =
+      Ravanshenasi.Patients.create_patient(scope, %{name: "Ativo Teste", status: :active})
+
+    {:ok, _} =
+      Ravanshenasi.Patients.create_patient(scope, %{name: "Espera Teste", status: :waitlist})
+
+    {:ok, lv, _} = live(conn, ~p"/pacientes")
+    html = lv |> form("#patient-filter", %{"status" => "waitlist"}) |> render_change()
+    assert html =~ "Espera Teste"
+    refute html =~ "Ativo Teste"
+  end
+
+  test "inativar paciente na página do perfil atualiza status", %{conn: conn, scope: scope} do
+    {:ok, patient} =
+      Ravanshenasi.Patients.create_patient(scope, %{name: "Paciente Inativar"})
+
+    {:ok, lv, _} = live(conn, ~p"/pacientes/#{patient.id}")
+    assert render(lv) =~ "Inactivate patient"
+
+    lv |> element("button[phx-click='inactivate']") |> render_click()
+
+    reloaded = Ravanshenasi.Patients.get_patient!(scope, patient.id)
+    assert reloaded.status == :inactive
+  end
 end

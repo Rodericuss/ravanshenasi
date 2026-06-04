@@ -57,4 +57,13 @@ defmodule Ravanshenasi.FrameworksTest do
     # própria do colega — invisível
     refute "Linha do Outro" in names
   end
+
+  test "update_framework rejeita catálogo de OUTRO tenant com :unauthorized" do
+    admin_a = clinic_admin_scope_fixture()
+    admin_b = clinic_admin_scope_fixture()
+    foreign_catalog = Frameworks.list_frameworks(admin_b) |> Enum.find(&is_nil(&1.user_id))
+
+    assert {:error, :unauthorized} =
+             Frameworks.update_framework(admin_a, foreign_catalog, %{name: "Hack"})
+  end
 end
