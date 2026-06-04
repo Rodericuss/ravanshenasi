@@ -1,8 +1,12 @@
 defmodule Ravanshenasi.Accounts.UserNotifier do
+  @moduledoc """
+  Handles delivery of notification emails to users (login link, email update, etc.).
+  """
+
   import Swoosh.Email
 
-  alias Ravanshenasi.Mailer
   alias Ravanshenasi.Accounts.User
+  alias Ravanshenasi.Mailer
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do

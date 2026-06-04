@@ -47,8 +47,8 @@ defmodule Ravanshenasi.AccountsFixtures do
   end
 
   def user_scope_fixture(user) do
-    tenant = Ravanshenasi.Accounts.get_tenant!(user.tenant_id)
-    Scope.for_user(user) |> Ravanshenasi.Accounts.Scope.put_tenant(tenant)
+    tenant = Accounts.get_tenant!(user.tenant_id)
+    Scope.for_user(user) |> Scope.put_tenant(tenant)
   end
 
   def set_password(user) do

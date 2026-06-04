@@ -4,9 +4,9 @@ defmodule Ravanshenasi.RepoTransactTenantTest do
   # (transaction + SET LOCAL). Sob o Ecto Sandbox concorrente isso tem race; em
   # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
 
-  alias Ravanshenasi.Repo
   alias Ravanshenasi.Accounts.Scope
   alias Ravanshenasi.Accounts.Tenant
+  alias Ravanshenasi.Repo
 
   defp scope_for(tenant), do: %Scope{tenant: tenant}
 

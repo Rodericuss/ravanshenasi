@@ -7,8 +7,7 @@ defmodule Ravanshenasi.Accounts do
   alias Ravanshenasi.Repo
 
   alias Ecto.Multi
-  alias Ravanshenasi.Accounts.{User, UserToken, UserNotifier, Tenant, Invitation}
-  alias Ravanshenasi.Accounts.Scope
+  alias Ravanshenasi.Accounts.{Invitation, Scope, Tenant, User, UserNotifier, UserToken}
 
   ## Database getters
 

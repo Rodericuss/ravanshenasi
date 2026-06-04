@@ -5,7 +5,7 @@ defmodule Ravanshenasi.Accounts.RegisterClinicTest do
   # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
 
   alias Ravanshenasi.Accounts
-  alias Ravanshenasi.Accounts.{User, Tenant}
+  alias Ravanshenasi.Accounts.{Tenant, User}
 
   test "cria tenant clinic + user admin (gestor)" do
     attrs = %{clinic_name: "Clínica Z", name: "Admin Z", email: "admin@z.com"}

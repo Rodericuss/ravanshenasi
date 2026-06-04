@@ -1,4 +1,8 @@
 defmodule RavanshenasiWeb.UserAuth do
+  @moduledoc """
+  Plug and LiveView hooks for user authentication, session management, and access control.
+  """
+
   use RavanshenasiWeb, :verified_routes
 
   import Plug.Conn
@@ -269,9 +273,9 @@ defmodule RavanshenasiWeb.UserAuth do
 
   defp with_tenant(nil), do: nil
 
-  defp with_tenant(%Ravanshenasi.Accounts.Scope{user: %{tenant_id: tenant_id}} = scope)
+  defp with_tenant(%Scope{user: %{tenant_id: tenant_id}} = scope)
        when not is_nil(tenant_id) do
-    Ravanshenasi.Accounts.Scope.put_tenant(scope, Ravanshenasi.Accounts.get_tenant!(tenant_id))
+    Scope.put_tenant(scope, Accounts.get_tenant!(tenant_id))
   end
 
   defp with_tenant(scope), do: scope

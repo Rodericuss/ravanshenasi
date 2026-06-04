@@ -16,7 +16,7 @@ defmodule Ravanshenasi.Accounts.Scope do
   growing application requirements.
   """
 
-  alias Ravanshenasi.Accounts.{User, Tenant}
+  alias Ravanshenasi.Accounts.{Tenant, User}
 
   defstruct user: nil, tenant: nil
 

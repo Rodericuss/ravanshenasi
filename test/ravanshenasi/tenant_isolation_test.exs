@@ -4,8 +4,8 @@ defmodule Ravanshenasi.TenantIsolationTest do
   # (transaction + SET LOCAL). Sob o Ecto Sandbox concorrente isso tem race; em
   # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
 
+  alias Ravanshenasi.Accounts.{Invitation, Scope, Tenant}
   alias Ravanshenasi.Repo
-  alias Ravanshenasi.Accounts.{Scope, Tenant, Invitation}
 
   setup do
     {:ok, ta} =

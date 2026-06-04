@@ -1,7 +1,7 @@
 defmodule Ravanshenasi.Accounts.ScopeTest do
   use ExUnit.Case, async: true
 
-  alias Ravanshenasi.Accounts.{Scope, User, Tenant}
+  alias Ravanshenasi.Accounts.{Scope, Tenant, User}
 
   test "put_tenant + admin?/therapist?" do
     user = %User{role: :admin}

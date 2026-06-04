@@ -5,7 +5,7 @@ defmodule Ravanshenasi.Accounts.RegisterSoloTest do
   # produção cada request usa tx curta isolada, sem o problema. Serializado de propósito.
 
   alias Ravanshenasi.Accounts
-  alias Ravanshenasi.Accounts.{User, Tenant}
+  alias Ravanshenasi.Accounts.{Tenant, User}
 
   test "cria tenant solo + user admin atomicamente" do
     attrs = %{name: "Dra. Ana", email: "ana@ex.com", office_name: "Consultório Ana"}
