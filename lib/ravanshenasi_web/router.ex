@@ -67,9 +67,23 @@ defmodule RavanshenasiWeb.Router do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
+      live "/registrar/clinica", Org.RegistrationLive, :new
+      live "/convites/:token", Org.AcceptInvitationLive, :new
     end
 
     post "/users/log-in", UserSessionController, :create
     delete "/users/log-out", UserSessionController, :delete
+  end
+
+  scope "/", RavanshenasiWeb do
+    pipe_through [:browser]
+
+    live_session :require_admin,
+      on_mount: [
+        {RavanshenasiWeb.UserAuth, :require_authenticated},
+        {RavanshenasiWeb.UserAuth, :require_admin}
+      ] do
+      live "/equipe", Org.MembersLive, :index
+    end
   end
 end

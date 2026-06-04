@@ -376,6 +376,11 @@ defmodule Ravanshenasi.Accounts do
     end
   end
 
+  @doc "Lista usuários do tenant (gestão — só metadados, não dado clínico)."
+  def list_members(%Scope{} = scope) do
+    Repo.all(from u in User, where: u.tenant_id == ^scope.tenant.id, order_by: u.name)
+  end
+
   defp update_user_and_delete_all_tokens(changeset) do
     Repo.transact(fn ->
       with {:ok, user} <- Repo.update(changeset) do
