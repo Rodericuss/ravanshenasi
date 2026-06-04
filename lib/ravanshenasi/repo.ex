@@ -19,7 +19,7 @@ defmodule Ravanshenasi.Repo do
   end
 
   def transact_tenant(%Scope{tenant: nil}, _fun) do
-    raise ArgumentError, "transact_tenant requer um %Scope{} com tenant carregado"
+    raise ArgumentError, "transact_tenant requires a %Scope{} with a loaded tenant"
   end
 
   @doc "RLS bypass for the 3 pre-tenant lookups (login by email, session token, invitation by token)."
@@ -75,7 +75,7 @@ defmodule Ravanshenasi.Repo do
   defp unwrap_transaction({:ok, result}), do: result
 
   defp unwrap_transaction({:error, reason}) do
-    raise "Ravanshenasi.Repo: transação revertida inesperadamente: #{inspect(reason)}"
+    raise "Ravanshenasi.Repo: transaction unexpectedly rolled back: #{inspect(reason)}"
   end
 
   # is_local = true → applies only to the current transaction; in production the transaction
