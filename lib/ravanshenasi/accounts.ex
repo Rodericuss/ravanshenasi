@@ -271,9 +271,12 @@ defmodule Ravanshenasi.Accounts do
 
   ## Invitations
 
-  @doc "Admin creates an invitation in their tenant. Returns {:ok, raw_token}."
+  @doc "Clinic admin creates an invitation in their tenant. Returns {:ok, raw_token}."
   def create_invitation(%Scope{} = scope, attrs) do
-    true = Scope.admin?(scope)
+    # Only clinic admins invite members (spec §5.3/§6). Defense in depth: the
+    # `/equipe` route also enforces `:require_clinic_admin`. A solo admin would
+    # otherwise pass the plain `admin?` check.
+    true = Scope.clinic_admin?(scope)
 
     {raw_token, changeset} =
       Invitation.build(attrs, tenant_id: scope.tenant.id, invited_by_user_id: scope.user.id)

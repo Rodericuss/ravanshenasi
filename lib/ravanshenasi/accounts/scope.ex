@@ -43,4 +43,13 @@ defmodule Ravanshenasi.Accounts.Scope do
   @doc "Returns true if the scope's user has the :therapist role."
   def therapist?(%__MODULE__{user: %{role: :therapist}}), do: true
   def therapist?(_), do: false
+
+  @doc """
+  Returns true only for an :admin whose tenant is on the :clinic plan.
+
+  Member management (invites, listing, removal) belongs to clinic admins only —
+  a solo admin manages a single-seat tenant and has no one to invite (spec §5.3/§6).
+  """
+  def clinic_admin?(%__MODULE__{user: %{role: :admin}, tenant: %{plan: :clinic}}), do: true
+  def clinic_admin?(_), do: false
 end

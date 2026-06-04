@@ -34,6 +34,18 @@ defmodule Ravanshenasi.Accounts.InvitationsTest do
     assert {:error, :invalid_invitation} = Accounts.accept_invitation("naoexiste", %{name: "X"})
   end
 
+  test "create_invitation barra admin de tenant solo (convite é só de clínica)" do
+    {:ok, solo} =
+      Accounts.register_solo(%{name: "Solo", email: "solo@s.com", office_name: "Consult Solo"})
+
+    solo = Ravanshenasi.Repo.preload(solo, :tenant)
+    solo_scope = Scope.for_user(solo) |> Scope.put_tenant(solo.tenant)
+
+    assert_raise MatchError, fn ->
+      Accounts.create_invitation(solo_scope, %{email: "x@s.com", role: :therapist})
+    end
+  end
+
   test "convite expirado falha", %{scope: scope} do
     {:ok, raw} = Accounts.create_invitation(scope, %{email: "exp@c.com", role: :therapist})
 

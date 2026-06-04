@@ -85,11 +85,11 @@ defmodule RavanshenasiWeb.Router do
   scope "/", RavanshenasiWeb do
     pipe_through [:browser]
 
-    live_session :require_admin,
+    live_session :require_clinic_admin,
       on_mount: [
         {RavanshenasiWeb.Plugs.Locale, :set_locale},
         {RavanshenasiWeb.UserAuth, :require_authenticated},
-        {RavanshenasiWeb.UserAuth, :require_admin}
+        {RavanshenasiWeb.UserAuth, :require_clinic_admin}
       ] do
       live "/equipe", Org.MembersLive, :index
     end

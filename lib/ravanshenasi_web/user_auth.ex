@@ -265,6 +265,17 @@ defmodule RavanshenasiWeb.UserAuth do
     end
   end
 
+  def on_mount(:require_clinic_admin, _params, _session, socket) do
+    if Scope.clinic_admin?(socket.assigns[:current_scope]) do
+      {:cont, socket}
+    else
+      {:halt,
+       socket
+       |> Phoenix.LiveView.put_flash(:error, gettext("Clinic admin access only."))
+       |> Phoenix.LiveView.redirect(to: ~p"/")}
+    end
+  end
+
   defp mount_current_scope(socket, session) do
     Phoenix.Component.assign_new(socket, :current_scope, fn ->
       {user, _} =

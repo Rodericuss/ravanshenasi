@@ -19,4 +19,20 @@ defmodule Ravanshenasi.Accounts.ScopeTest do
     assert Scope.therapist?(scope)
     refute Scope.admin?(scope)
   end
+
+  test "clinic_admin? só para admin de tenant clinic" do
+    admin = %User{role: :admin}
+    clinic = %Tenant{id: Ecto.UUID.generate(), plan: :clinic}
+    solo = %Tenant{id: Ecto.UUID.generate(), plan: :solo}
+
+    assert Scope.clinic_admin?(Scope.for_user(admin) |> Scope.put_tenant(clinic))
+    refute Scope.clinic_admin?(Scope.for_user(admin) |> Scope.put_tenant(solo))
+
+    refute Scope.clinic_admin?(
+             Scope.for_user(%User{role: :therapist})
+             |> Scope.put_tenant(clinic)
+           )
+
+    refute Scope.clinic_admin?(Scope.for_user(admin))
+  end
 end
