@@ -11,6 +11,8 @@ services:
       - "5432:5432"
     volumes:
       - ravanshenasi_pgdata:/home/postgres/pgdata/data
+      # Cria a role de app sem superuser/BYPASSRLS no primeiro boot (volume vazio).
+      - ./docker/init-db:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s

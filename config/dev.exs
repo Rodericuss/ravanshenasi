@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :ravanshenasi, Ravanshenasi.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "ravanshenasi_app",
+  password: "ravanshenasi_app",
   hostname: "localhost",
   database: "ravanshenasi_dev",
   stacktrace: true,
