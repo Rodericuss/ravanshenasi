@@ -3,15 +3,15 @@ defmodule Ravanshenasi.Repo.Migrations.EnableTenantRls do
   import Ravanshenasi.RLS
 
   def change do
-    # RLS forçado só onde o isolamento por tenant rende defesa em profundidade real:
-    # invitations agora, e todo dado clínico (patients/sessions/records/audio) nas
-    # fatias 1+, onde TODA query é tenant-scoped.
+    # Enforce RLS only where tenant isolation provides real defense in depth:
+    # invitations now, and all clinical data (patients/sessions/records/audio)
+    # in slices 1+, where every query is tenant-scoped.
     #
-    # users/tenants ficam FORA: não guardam dado clínico e participam de fluxos de
-    # auth/settings pré-tenant (login, sessão, magic link, trocar email/senha). São
-    # protegidos por scope explícito nas queries + email único global. Forçar RLS
-    # neles obrigaria ~8 operações de identidade-do-próprio-user a rodar sob bypass,
-    # espalhando o bypass sem ganho de segurança proporcional.
+    # users/tenants stay out: they do not store clinical data and participate in
+    # pre-tenant auth/settings flows (login, session, magic link, email/password
+    # changes). They are protected by explicit query scoping plus a global unique
+    # email. Enforcing RLS there would force roughly 8 own-user identity operations
+    # to run under bypass, spreading bypass without proportional security value.
     enable_tenant_rls("invitations")
   end
 end

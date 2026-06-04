@@ -34,4 +34,12 @@ defmodule Ravanshenasi.RepoTransactTenantTest do
       Repo.transact_tenant(%Scope{tenant: nil}, fn -> :nope end)
     end
   end
+
+  test "reseta app.current_tenant_id após o bloco (não vaza no Sandbox)" do
+    tenant = %Tenant{id: Ecto.UUID.generate()}
+    Repo.transact_tenant(scope_for(tenant), fn -> :ok end)
+
+    %{rows: [[v]]} = Repo.query!("SELECT current_setting('app.current_tenant_id', true)")
+    assert v in [nil, ""], "esperava GUC resetado após transact_tenant, vazou: #{inspect(v)}"
+  end
 end

@@ -13,7 +13,17 @@ defmodule Ravanshenasi.Repo do
   def transact_tenant(%Scope{tenant: %{id: id}}, fun) when is_function(fun, 0) do
     transaction(fn ->
       set_local("app.current_tenant_id", id)
-      fun.()
+
+      try do
+        fun.()
+      after
+        # Reset like do_bypass: under the Sandbox's long-running transaction (tests),
+        # RELEASE of the savepoint does NOT revert SET LOCAL, so the tenant GUC would
+        # leak into later direct queries in the same test. The policy reads it via
+        # NULLIF, so '' is treated as "no tenant" (fail-closed). In production this is
+        # redundant (the transaction closes right away), but harmless.
+        set_local("app.current_tenant_id", "")
+      end
     end)
     |> unwrap_transaction()
   end

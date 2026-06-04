@@ -44,4 +44,11 @@ defmodule Ravanshenasi.TenantIsolationTest do
     # no transact_tenant/bypass active here → app.current_tenant_id is NULL
     assert Repo.all(Invitation) == []
   end
+
+  test "RLS fail-closed: GUC de tenant vazio ('') retorna 0 linhas sem erro de cast" do
+    # A GUC reset (set_config/RESET) leaves the value as '' (not NULL). The policy must
+    # treat '' as "no tenant" via NULLIF, otherwise ''::uuid would raise instead of fail-closed.
+    Repo.query!("SELECT set_config('app.current_tenant_id', '', true)")
+    assert Repo.all(Invitation) == []
+  end
 end
