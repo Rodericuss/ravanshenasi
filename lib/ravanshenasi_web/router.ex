@@ -72,6 +72,10 @@ defmodule RavanshenasiWeb.Router do
       live "/pacientes/novo", PatientLive.Form, :new
       live "/pacientes/:id", PatientLive.Show, :show
       live "/pacientes/:id/editar", PatientLive.Form, :edit
+
+      live "/pacientes/:patient_id/sessoes", SessionLive.Index, :index
+      live "/pacientes/:patient_id/sessoes/nova", SessionLive.Form, :new
+      live "/pacientes/:patient_id/sessoes/:id", SessionLive.Show, :show
     end
 
     post "/users/update-password", UserSessionController, :update_password
