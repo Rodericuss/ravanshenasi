@@ -13,6 +13,17 @@ defmodule RavanshenasiWeb.PatientLive.Index do
     {:noreply, socket |> assign(q: q) |> load()}
   end
 
+  @impl true
+  def handle_event("filter", %{"status" => status}, socket) do
+    parsed =
+      case status do
+        "" -> nil
+        s -> String.to_existing_atom(s)
+      end
+
+    {:noreply, socket |> assign(status: parsed) |> load()}
+  end
+
   defp load(socket) do
     patients =
       Patients.list_patients(socket.assigns.current_scope,
@@ -36,6 +47,15 @@ defmodule RavanshenasiWeb.PatientLive.Index do
 
       <form id="patient-search" phx-change="search">
         <.input type="text" name="q" value={@q} placeholder={gettext("Search by name")} />
+      </form>
+
+      <form id="patient-filter" phx-change="filter">
+        <select name="status">
+          <option value="">{gettext("All")}</option>
+          <option value="active" selected={@status == :active}>{gettext("Active")}</option>
+          <option value="inactive" selected={@status == :inactive}>{gettext("Inactive")}</option>
+          <option value="waitlist" selected={@status == :waitlist}>{gettext("Waitlist")}</option>
+        </select>
       </form>
 
       <ul id="patients">
