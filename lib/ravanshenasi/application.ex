@@ -12,6 +12,7 @@ defmodule Ravanshenasi.Application do
       Ravanshenasi.Repo,
       {DNSCluster, query: Application.get_env(:ravanshenasi, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Ravanshenasi.PubSub},
+      {Oban, Application.fetch_env!(:ravanshenasi, Oban)},
       # Start a worker by calling: Ravanshenasi.Worker.start_link(arg)
       # {Ravanshenasi.Worker, arg},
       # Start to serve requests, typically the last entry

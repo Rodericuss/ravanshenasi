@@ -26,6 +26,8 @@ defmodule Ravanshenasi.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Ravanshenasi.DataCase
+
+      use Oban.Testing, repo: Ravanshenasi.Repo
     end
   end
 
