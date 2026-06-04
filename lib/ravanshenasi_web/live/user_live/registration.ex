@@ -34,6 +34,12 @@ defmodule RavanshenasiWeb.UserLive.Registration do
           />
           <.input field={@form[:name]} type="text" label={gettext("Your name")} required />
           <.input field={@form[:office_name]} type="text" label={gettext("Office name")} required />
+          <.input
+            field={@form[:password]}
+            type="password"
+            label={gettext("Password (optional)")}
+            autocomplete="new-password"
+          />
 
           <.button phx-disable-with={gettext("Creating account...")} class="btn btn-primary w-full">
             {gettext("Create an account")}
@@ -61,7 +67,8 @@ defmodule RavanshenasiWeb.UserLive.Registration do
     case Accounts.register_solo(%{
            name: user_params["name"],
            email: user_params["email"],
-           office_name: user_params["office_name"]
+           office_name: user_params["office_name"],
+           password: user_params["password"]
          }) do
       {:ok, user} ->
         {:ok, _} =

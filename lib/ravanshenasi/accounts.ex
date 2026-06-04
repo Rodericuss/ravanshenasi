@@ -343,6 +343,7 @@ defmodule Ravanshenasi.Accounts do
   end
 
   defp maybe_put_password(changeset, nil), do: changeset
+  defp maybe_put_password(changeset, ""), do: changeset
 
   defp maybe_put_password(changeset, password),
     do: User.password_changeset(changeset, %{password: password})
@@ -359,7 +360,8 @@ defmodule Ravanshenasi.Accounts do
     do_register(%{name: attrs.office_name, plan: :solo}, %{
       email: attrs.email,
       name: attrs.name,
-      role: :admin
+      role: :admin,
+      password: attrs[:password]
     })
   end
 
@@ -368,7 +370,8 @@ defmodule Ravanshenasi.Accounts do
     do_register(%{name: attrs.clinic_name, plan: :clinic}, %{
       email: attrs.email,
       name: attrs.name,
-      role: :admin
+      role: :admin,
+      password: attrs[:password]
     })
   end
 
@@ -379,6 +382,7 @@ defmodule Ravanshenasi.Accounts do
       |> Multi.insert(:user, fn %{tenant: tenant} ->
         %User{}
         |> User.email_changeset(%{email: user_attrs.email})
+        |> maybe_put_password(user_attrs[:password])
         |> User.tenant_changeset(%{
           tenant_id: tenant.id,
           name: user_attrs.name,

@@ -19,4 +19,24 @@ defmodule Ravanshenasi.Accounts.RegisterClinicTest do
     assert tenant.plan == :clinic
     assert tenant.name == "Clínica Z"
   end
+
+  test "define senha quando password é informado" do
+    attrs = %{
+      clinic_name: "Clínica P",
+      name: "Admin P",
+      email: "admin-pwd@p.com",
+      password: "supersecret123"
+    }
+
+    assert {:ok, %User{} = user} = Accounts.register_clinic(attrs)
+    assert is_binary(user.hashed_password)
+    assert User.valid_password?(user, "supersecret123")
+  end
+
+  test "sem password fica só-magic-link (hashed_password nil)" do
+    attrs = %{clinic_name: "Clínica N", name: "Admin N", email: "admin-nopwd@n.com"}
+
+    assert {:ok, %User{} = user} = Accounts.register_clinic(attrs)
+    assert is_nil(user.hashed_password)
+  end
 end

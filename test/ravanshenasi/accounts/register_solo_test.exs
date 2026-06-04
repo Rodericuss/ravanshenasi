@@ -21,6 +21,26 @@ defmodule Ravanshenasi.Accounts.RegisterSoloTest do
     assert tenant.name == "Consultório Ana"
   end
 
+  test "define senha quando password é informado" do
+    attrs = %{
+      name: "Ana",
+      email: "ana-pwd@ex.com",
+      office_name: "C",
+      password: "supersecret123"
+    }
+
+    assert {:ok, %User{} = user} = Accounts.register_solo(attrs)
+    assert is_binary(user.hashed_password)
+    assert User.valid_password?(user, "supersecret123")
+  end
+
+  test "sem password fica só-magic-link (hashed_password nil)" do
+    attrs = %{name: "Ana", email: "ana-nopwd@ex.com", office_name: "C"}
+
+    assert {:ok, %User{} = user} = Accounts.register_solo(attrs)
+    assert is_nil(user.hashed_password)
+  end
+
   test "email duplicado falha" do
     attrs = %{name: "A", email: "dup@ex.com", office_name: "C"}
     assert {:ok, _} = Accounts.register_solo(attrs)

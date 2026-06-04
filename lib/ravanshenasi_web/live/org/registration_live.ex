@@ -31,6 +31,12 @@ defmodule RavanshenasiWeb.Org.RegistrationLive do
             spellcheck="false"
             required
           />
+          <.input
+            field={@form[:password]}
+            type="password"
+            label={gettext("Password (optional)")}
+            autocomplete="new-password"
+          />
 
           <.button phx-disable-with={gettext("Creating clinic...")} class="btn btn-primary w-full">
             {gettext("Create clinic")}
@@ -57,7 +63,8 @@ defmodule RavanshenasiWeb.Org.RegistrationLive do
     case Accounts.register_clinic(%{
            clinic_name: params["clinic_name"],
            name: params["name"],
-           email: params["email"]
+           email: params["email"],
+           password: params["password"]
          }) do
       {:ok, user} ->
         # Same flow as solo registration: sends the confirmation magic link.
