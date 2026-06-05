@@ -26,7 +26,7 @@ msgstr "Aceitar convite"
 msgid "Account Settings"
 msgstr "Configurações da conta"
 
-#: lib/ravanshenasi_web/components/core_components.ex:489
+#: lib/ravanshenasi_web/components/core_components.ex:536
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr "Ações"
@@ -52,8 +52,8 @@ msgstr "Já tem uma conta?"
 msgid "An email was sent to %{email}, please access it to confirm your account."
 msgstr "Um email foi enviado para %{email}, acesse-o para confirmar sua conta."
 
-#: lib/ravanshenasi_web/components/layouts.ex:188
-#: lib/ravanshenasi_web/components/layouts.ex:200
+#: lib/ravanshenasi_web/components/layouts.ex:189
+#: lib/ravanshenasi_web/components/layouts.ex:201
 #, elixir-autogen, elixir-format
 msgid "Attempting to reconnect"
 msgstr "Tentando reconectar"
@@ -344,7 +344,7 @@ msgstr "Salvando..."
 msgid "Sign up"
 msgstr "Cadastre-se"
 
-#: lib/ravanshenasi_web/components/layouts.ex:195
+#: lib/ravanshenasi_web/components/layouts.ex:196
 #, elixir-autogen, elixir-format
 msgid "Something went wrong!"
 msgstr "Algo deu errado!"
@@ -364,7 +364,7 @@ msgstr "Dica: se você preferir senha, pode habilitá-la nas configurações da 
 msgid "To see sent emails, visit"
 msgstr "Para ver os emails enviados, acesse"
 
-#: lib/ravanshenasi_web/components/layouts.ex:183
+#: lib/ravanshenasi_web/components/layouts.ex:184
 #, elixir-autogen, elixir-format
 msgid "We can't find the internet"
 msgstr "Sem conexão com a internet"
@@ -443,8 +443,8 @@ msgstr "Acesso restrito a profissionais."
 msgid "Active"
 msgstr "Ativo"
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:31
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:106
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:32
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:117
 #, elixir-autogen, elixir-format
 msgid "Active patients"
 msgstr "Pacientes ativos"
@@ -583,11 +583,6 @@ msgstr "Não foi possível atualizar a sugestão"
 msgid "Create the first session for this patient."
 msgstr "Crie a primeira sessão para este paciente."
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:26
-#, elixir-autogen, elixir-format
-msgid "Dashboard"
-msgstr "Painel"
-
 #: lib/ravanshenasi_web/live/framework_live/index.ex:136
 #, elixir-autogen, elixir-format
 msgid "Delete"
@@ -692,7 +687,7 @@ msgstr "Inativo"
 msgid "Lines of thought"
 msgstr "Linhas de pensamento"
 
-#: lib/ravanshenasi_web/components/layouts.ex:82
+#: lib/ravanshenasi_web/components/layouts.ex:83
 #, elixir-autogen, elixir-format
 msgid "Log out"
 msgstr "Sair"
@@ -714,7 +709,7 @@ msgstr "Novo paciente"
 msgid "New session"
 msgstr "Nova sessão"
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:107
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:118
 #, elixir-autogen, elixir-format
 msgid "No active patients."
 msgstr "Nenhum paciente ativo."
@@ -744,17 +739,17 @@ msgstr "Sem anotações."
 msgid "No patients found."
 msgstr "Nenhum paciente encontrado."
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:70
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:79
 #, elixir-autogen, elixir-format
 msgid "No recent audios."
 msgstr "Nenhum áudio recente."
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:89
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:99
 #, elixir-autogen, elixir-format
 msgid "No recent sessions."
 msgstr "Nenhuma sessão recente."
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:52
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:60
 #, elixir-autogen, elixir-format
 msgid "No records pending review."
 msgstr "Nenhum prontuário pendente de revisão."
@@ -785,11 +780,6 @@ msgstr "Não autorizado"
 msgid "Notes"
 msgstr "Anotações"
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:27
-#, elixir-autogen, elixir-format
-msgid "Overview of your clinical work"
-msgstr "Visão geral do seu trabalho clínico"
-
 #: lib/ravanshenasi_web/live/patient_live/form.ex:49
 #, elixir-autogen, elixir-format
 msgid "Patient created"
@@ -815,7 +805,7 @@ msgstr "Paciente atualizado"
 msgid "Patients"
 msgstr "Pacientes"
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:33
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:38
 #, elixir-autogen, elixir-format
 msgid "Pending review"
 msgstr "Pendente de revisão"
@@ -835,19 +825,19 @@ msgstr "Por favor, faça o upload do áudio novamente."
 msgid "Queued…"
 msgstr "Na fila…"
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:38
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:69
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:44
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:78
 #, elixir-autogen, elixir-format
 msgid "Recent audios"
 msgstr "Áudios recentes"
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:43
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:88
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:50
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:98
 #, elixir-autogen, elixir-format
 msgid "Recent sessions"
 msgstr "Sessões recentes"
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:51
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:59
 #, elixir-autogen, elixir-format
 msgid "Records pending review"
 msgstr "Prontuários pendentes de revisão"
@@ -912,7 +902,7 @@ msgstr "Sessão não encontrada"
 msgid "Sessions"
 msgstr "Sessões"
 
-#: lib/ravanshenasi_web/components/layouts.ex:74
+#: lib/ravanshenasi_web/components/layouts.ex:75
 #, elixir-autogen, elixir-format
 msgid "Settings"
 msgstr "Configurações"
@@ -932,7 +922,7 @@ msgstr "Status"
 msgid "Suggested response"
 msgstr "Resposta sugerida"
 
-#: lib/ravanshenasi_web/components/layouts.ex:100
+#: lib/ravanshenasi_web/components/layouts.ex:101
 #, elixir-autogen, elixir-format
 msgid "Toggle menu"
 msgstr "Alternar menu"
@@ -1109,3 +1099,13 @@ msgstr "Áudio do WhatsApp, transcrito"
 #, elixir-autogen, elixir-format
 msgid "Your patients, organized"
 msgstr "Seus pacientes, organizados"
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:26
+#, elixir-autogen, elixir-format
+msgid "Hello, %{name} 👋"
+msgstr "Olá, %{name} 👋"
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:27
+#, elixir-autogen, elixir-format
+msgid "Here's what's happening in your practice today."
+msgstr "Veja o que está rolando no seu consultório hoje."
