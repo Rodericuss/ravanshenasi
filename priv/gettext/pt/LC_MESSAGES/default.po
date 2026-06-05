@@ -230,7 +230,8 @@ msgstr "Entrando..."
 msgid "Keep me logged in on this device"
 msgstr "Manter conectado neste dispositivo"
 
-#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:20
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:36
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:77
 #: lib/ravanshenasi_web/live/org/registration_live.ex:16
 #: lib/ravanshenasi_web/live/user_live/confirmation.ex:57
 #: lib/ravanshenasi_web/live/user_live/login.ex:12
@@ -434,341 +435,340 @@ msgstr "Acesso restrito ao administrador da clínica."
 #: lib/ravanshenasi_web/user_auth.ex:287
 #, elixir-autogen, elixir-format
 msgid "Access restricted to practitioners."
-msgstr ""
+msgstr "Acesso restrito a profissionais."
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:112
 #: lib/ravanshenasi_web/live/patient_live/index.ex:59
 #, elixir-autogen, elixir-format
 msgid "Active"
-msgstr ""
+msgstr "Ativo"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:31
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:106
 #, elixir-autogen, elixir-format
 msgid "Active patients"
-msgstr ""
+msgstr "Pacientes ativos"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:114
 #, elixir-autogen, elixir-format
 msgid "Add a therapeutic framework to get started."
-msgstr ""
+msgstr "Adicione uma linha terapêutica para começar."
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:101
 #, elixir-autogen, elixir-format
 msgid "Add line"
-msgstr ""
+msgstr "Adicionar linha"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:93
 #, elixir-autogen, elixir-format
 msgid "Add new line"
-msgstr ""
+msgstr "Nova linha"
 
 #: lib/ravanshenasi_web/live/patient_live/index.ex:58
 #, elixir-autogen, elixir-format
 msgid "All"
-msgstr ""
+msgstr "Todos"
 
 #: lib/ravanshenasi_web/live/session_live/index.ex:20
 #, elixir-autogen, elixir-format
 msgid "All sessions for this patient"
-msgstr ""
+msgstr "Todas as sessões deste paciente"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:33
 #, elixir-autogen, elixir-format
 msgid "Already finalized"
-msgstr ""
+msgstr "Já finalizado"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:216
 #, elixir-autogen, elixir-format
 msgid "Analysis failed."
-msgstr ""
+msgstr "Análise falhou."
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:190
 #, elixir-autogen, elixir-format
 msgid "Analyze patient"
-msgstr ""
+msgstr "Analisar paciente"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:208
 #, elixir-autogen, elixir-format
 msgid "Analyzing…"
-msgstr ""
+msgstr "Analisando…"
 
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:88
 #: lib/ravanshenasi_web/live/patient_live/show.ex:187
 #, elixir-autogen, elixir-format
 msgid "Approach suggestions"
-msgstr ""
+msgstr "Sugestões de abordagem"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:104
 #, elixir-autogen, elixir-format
 msgid "Audio file"
-msgstr ""
+msgstr "Arquivo de áudio"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:97
 #, elixir-autogen, elixir-format
 msgid "Birth date"
-msgstr ""
+msgstr "Data de nascimento"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:161
 #: lib/ravanshenasi_web/live/patient_live/form.ex:119
 #: lib/ravanshenasi_web/live/session_live/form.ex:65
 #, elixir-autogen, elixir-format
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:101
 #, elixir-autogen, elixir-format
 msgid "Chief complaint"
-msgstr ""
+msgstr "Queixa principal"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:199
 #, elixir-autogen, elixir-format
 msgid "Configure lines of thought for this patient before analyzing."
-msgstr ""
+msgstr "Configure as linhas de pensamento para este paciente antes de analisar."
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:186
 #, elixir-autogen, elixir-format
 msgid "Copy"
-msgstr ""
+msgstr "Copiar"
 
 #: lib/ravanshenasi_web/live/session_live/form.ex:51
 #, elixir-autogen, elixir-format
 msgid "Could not create session"
-msgstr ""
+msgstr "Não foi possível criar a sessão"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:36
 #, elixir-autogen, elixir-format
 msgid "Could not finalize"
-msgstr ""
+msgstr "Não foi possível finalizar"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:38
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Could not inactivate patient"
-msgstr "Não foi possível aceitar o convite."
+msgstr "Não foi possível inativar o paciente"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:254
 #, elixir-autogen, elixir-format
 msgid "Could not process the audio"
-msgstr ""
+msgstr "Não foi possível processar o áudio"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:81
 #, elixir-autogen, elixir-format
 msgid "Could not retry"
-msgstr ""
+msgstr "Não foi possível tentar novamente"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:43
 #, elixir-autogen, elixir-format
 msgid "Could not retry generation"
-msgstr ""
+msgstr "Não foi possível tentar gerar novamente"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:69
 #, elixir-autogen, elixir-format
 msgid "Could not save"
-msgstr ""
+msgstr "Não foi possível salvar"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:79
 #, elixir-autogen, elixir-format
 msgid "Could not start the analysis"
-msgstr ""
+msgstr "Não foi possível iniciar a análise"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:87
 #: lib/ravanshenasi_web/live/patient_live/show.ex:95
 #, elixir-autogen, elixir-format
 msgid "Could not update suggestion"
-msgstr ""
+msgstr "Não foi possível atualizar a sugestão"
 
 #: lib/ravanshenasi_web/live/session_live/index.ex:32
 #, elixir-autogen, elixir-format
 msgid "Create the first session for this patient."
-msgstr ""
+msgstr "Crie a primeira sessão para este paciente."
 
-#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:6
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:26
 #, elixir-autogen, elixir-format
 msgid "Dashboard"
-msgstr ""
+msgstr "Painel"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:136
 #, elixir-autogen, elixir-format
 msgid "Delete"
-msgstr ""
+msgstr "Excluir"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:134
 #, elixir-autogen, elixir-format
 msgid "Delete this line?"
-msgstr ""
+msgstr "Excluir esta linha?"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:259
 #, elixir-autogen, elixir-format
 msgid "Discard"
-msgstr ""
+msgstr "Descartar"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:261
 #, elixir-autogen, elixir-format
 msgid "Done"
-msgstr ""
+msgstr "Concluído"
 
 #: lib/ravanshenasi_web/live/session_live/form.ex:77
 #, elixir-autogen, elixir-format
 msgid "Duration (minutes)"
-msgstr ""
+msgstr "Duração (minutos)"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:128
 #: lib/ravanshenasi_web/live/patient_live/show.ex:145
 #, elixir-autogen, elixir-format
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:24
 #, elixir-autogen, elixir-format
 msgid "Edit patient"
-msgstr ""
+msgstr "Editar paciente"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:262
 #, elixir-autogen, elixir-format
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:199
 #, elixir-autogen, elixir-format
 msgid "Failed."
-msgstr ""
+msgstr "Falhou."
 
 #: lib/ravanshenasi_web/live/session_live/form.ex:62
 #, elixir-autogen, elixir-format
 msgid "Fill in the session details below"
-msgstr ""
+msgstr "Preencha os detalhes da sessão abaixo"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:65
 #, elixir-autogen, elixir-format
 msgid "Finalize"
-msgstr ""
+msgstr "Finalizar"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:85
 #, elixir-autogen, elixir-format
 msgid "Frameworks and therapeutic approaches used in your practice"
-msgstr ""
+msgstr "Frameworks e abordagens terapêuticas utilizados na sua prática"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:87
 #, elixir-autogen, elixir-format
 msgid "Generating record..."
-msgstr ""
+msgstr "Gerando prontuário..."
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:260
 #, elixir-autogen, elixir-format
 msgid "Generating reply…"
-msgstr ""
+msgstr "Gerando resposta…"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:100
 #, elixir-autogen, elixir-format
 msgid "Generation failed"
-msgstr ""
+msgstr "Falha na geração"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:99
 #: lib/ravanshenasi_web/live/framework_live/index.ex:156
 #, elixir-autogen, elixir-format
 msgid "Guiding principles"
-msgstr ""
+msgstr "Princípios norteadores"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:153
 #, elixir-autogen, elixir-format
 msgid "Inactivate patient"
-msgstr ""
+msgstr "Inativar paciente"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:151
 #, elixir-autogen, elixir-format
 msgid "Inactivate this patient?"
-msgstr ""
+msgstr "Inativar este paciente?"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:113
 #: lib/ravanshenasi_web/live/patient_live/index.ex:60
 #, elixir-autogen, elixir-format
 msgid "Inactive"
-msgstr ""
+msgstr "Inativo"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:83
 #: lib/ravanshenasi_web/live/patient_live/show.ex:161
 #, elixir-autogen, elixir-format
 msgid "Lines of thought"
-msgstr ""
+msgstr "Linhas de pensamento"
 
 #: lib/ravanshenasi_web/components/layouts.ex:82
-#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:16
 #, elixir-autogen, elixir-format
 msgid "Log out"
-msgstr ""
+msgstr "Sair"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:100
 #, elixir-autogen, elixir-format
 msgid "New audio"
-msgstr ""
+msgstr "Novo áudio"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:14
 #: lib/ravanshenasi_web/live/patient_live/index.ex:44
 #, elixir-autogen, elixir-format
 msgid "New patient"
-msgstr ""
+msgstr "Novo paciente"
 
 #: lib/ravanshenasi_web/live/session_live/form.ex:17
 #: lib/ravanshenasi_web/live/session_live/index.ex:24
 #, elixir-autogen, elixir-format
 msgid "New session"
-msgstr ""
+msgstr "Nova sessão"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:107
 #, elixir-autogen, elixir-format
 msgid "No active patients."
-msgstr ""
+msgstr "Nenhum paciente ativo."
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:125
 #, elixir-autogen, elixir-format
 msgid "No audios yet."
-msgstr ""
+msgstr "Nenhum áudio ainda."
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:165
 #, elixir-autogen, elixir-format
 msgid "No lines configured."
-msgstr ""
+msgstr "Nenhuma linha configurada."
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:112
 #, elixir-autogen, elixir-format
 msgid "No lines yet"
-msgstr ""
+msgstr "Nenhuma linha ainda"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:74
 #, elixir-autogen, elixir-format
 msgid "No notes."
-msgstr ""
+msgstr "Sem anotações."
 
 #: lib/ravanshenasi_web/live/patient_live/index.ex:67
 #, elixir-autogen, elixir-format
 msgid "No patients found."
-msgstr ""
+msgstr "Nenhum paciente encontrado."
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:70
 #, elixir-autogen, elixir-format
 msgid "No recent audios."
-msgstr ""
+msgstr "Nenhum áudio recente."
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:89
 #, elixir-autogen, elixir-format
 msgid "No recent sessions."
-msgstr ""
+msgstr "Nenhuma sessão recente."
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:52
 #, elixir-autogen, elixir-format
 msgid "No records pending review."
-msgstr ""
+msgstr "Nenhum prontuário pendente de revisão."
 
 #: lib/ravanshenasi_web/live/session_live/index.ex:31
 #, elixir-autogen, elixir-format
 msgid "No sessions yet."
-msgstr ""
+msgstr "Nenhuma sessão ainda."
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:250
 #: lib/ravanshenasi_web/live/patient_live/show.ex:75
 #, elixir-autogen, elixir-format
 msgid "Not allowed"
-msgstr ""
+msgstr "Não permitido"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:26
 #: lib/ravanshenasi_web/live/framework_live/index.ex:54
@@ -777,95 +777,90 @@ msgstr ""
 #: lib/ravanshenasi_web/live/patient_live/form.ex:77
 #, elixir-autogen, elixir-format
 msgid "Not authorized"
-msgstr ""
+msgstr "Não autorizado"
 
 #: lib/ravanshenasi_web/live/session_live/form.ex:73
 #: lib/ravanshenasi_web/live/session_live/show.ex:72
 #, elixir-autogen, elixir-format
 msgid "Notes"
-msgstr ""
+msgstr "Anotações"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:27
 #, elixir-autogen, elixir-format
 msgid "Overview of your clinical work"
-msgstr ""
+msgstr "Visão geral do seu trabalho clínico"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:49
 #, elixir-autogen, elixir-format
 msgid "Patient created"
-msgstr ""
+msgstr "Paciente criado"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:35
 #, elixir-autogen, elixir-format
 msgid "Patient inactivated"
-msgstr ""
+msgstr "Paciente inativado"
 
 #: lib/ravanshenasi_web/live/patient_live/show.ex:16
 #, elixir-autogen, elixir-format
 msgid "Patient not found"
-msgstr ""
+msgstr "Paciente não encontrado"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:68
 #, elixir-autogen, elixir-format
 msgid "Patient updated"
-msgstr ""
+msgstr "Paciente atualizado"
 
 #: lib/ravanshenasi_web/live/patient_live/index.ex:42
 #, elixir-autogen, elixir-format
 msgid "Patients"
-msgstr ""
+msgstr "Pacientes"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:33
 #, elixir-autogen, elixir-format
 msgid "Pending review"
-msgstr ""
+msgstr "Pendente de revisão"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:98
 #, elixir-autogen, elixir-format
 msgid "Phone"
-msgstr ""
+msgstr "Telefone"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:213
 #, elixir-autogen, elixir-format
 msgid "Please upload the audio again."
-msgstr ""
+msgstr "Por favor, faça o upload do áudio novamente."
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:258
 #, elixir-autogen, elixir-format
 msgid "Queued…"
-msgstr ""
+msgstr "Na fila…"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:38
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:69
 #, elixir-autogen, elixir-format
 msgid "Recent audios"
-msgstr ""
+msgstr "Áudios recentes"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:43
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:88
 #, elixir-autogen, elixir-format
 msgid "Recent sessions"
-msgstr ""
+msgstr "Sessões recentes"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:51
 #, elixir-autogen, elixir-format
 msgid "Records pending review"
-msgstr ""
-
-#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:23
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Register"
-msgstr "Cadastrar clínica"
+msgstr "Prontuários pendentes de revisão"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:105
 #, elixir-autogen, elixir-format
 msgid "Relevant history"
-msgstr ""
+msgstr "Histórico relevante"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:79
 #, elixir-autogen, elixir-format
 msgid "SOAP Record"
-msgstr ""
+msgstr "Prontuário SOAP"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:190
 #: lib/ravanshenasi_web/live/framework_live/index.ex:159
@@ -874,134 +869,243 @@ msgstr ""
 #: lib/ravanshenasi_web/live/session_live/form.ex:80
 #, elixir-autogen, elixir-format
 msgid "Save"
-msgstr ""
+msgstr "Salvar"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:66
 #, elixir-autogen, elixir-format
 msgid "Saved"
-msgstr ""
+msgstr "Salvo"
 
 #: lib/ravanshenasi_web/live/patient_live/index.ex:50
 #, elixir-autogen, elixir-format
 msgid "Search by name"
-msgstr ""
+msgstr "Buscar por nome"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:57
 #, elixir-autogen, elixir-format
 msgid "Select an audio file"
-msgstr ""
+msgstr "Selecionar um arquivo de áudio"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:55
 #, elixir-autogen, elixir-format
 msgid "Session"
-msgstr ""
+msgstr "Sessão"
 
 #: lib/ravanshenasi_web/live/session_live/form.ex:42
 #, elixir-autogen, elixir-format
 msgid "Session created"
-msgstr ""
+msgstr "Sessão criada"
 
 #: lib/ravanshenasi_web/live/session_live/form.ex:71
 #, elixir-autogen, elixir-format
 msgid "Session data"
-msgstr ""
+msgstr "Dados da sessão"
 
 #: lib/ravanshenasi_web/live/session_live/show.ex:15
 #, elixir-autogen, elixir-format
 msgid "Session not found"
-msgstr ""
+msgstr "Sessão não encontrada"
 
 #: lib/ravanshenasi_web/live/session_live/index.ex:19
 #: lib/ravanshenasi_web/live/session_live/index.ex:30
 #, elixir-autogen, elixir-format
 msgid "Sessions"
-msgstr ""
+msgstr "Sessões"
 
 #: lib/ravanshenasi_web/components/layouts.ex:74
-#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:9
 #, elixir-autogen, elixir-format
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:121
 #, elixir-autogen, elixir-format
 msgid "Standard"
-msgstr ""
+msgstr "Padrão"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:110
 #, elixir-autogen, elixir-format
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:168
 #, elixir-autogen, elixir-format
 msgid "Suggested response"
-msgstr ""
+msgstr "Resposta sugerida"
 
 #: lib/ravanshenasi_web/components/layouts.ex:100
 #, elixir-autogen, elixir-format
 msgid "Toggle menu"
-msgstr ""
+msgstr "Alternar menu"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:110
 #, elixir-autogen, elixir-format
 msgid "Tone"
-msgstr ""
+msgstr "Tom"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:120
 #, elixir-autogen, elixir-format
 msgid "Transcribe and suggest"
-msgstr ""
+msgstr "Transcrever e sugerir"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:259
 #, elixir-autogen, elixir-format
 msgid "Transcribing…"
-msgstr ""
+msgstr "Transcrevendo…"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:158
 #, elixir-autogen, elixir-format
 msgid "Transcription"
-msgstr ""
+msgstr "Transcrição"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:209
 #: lib/ravanshenasi_web/live/patient_live/show.ex:218
 #: lib/ravanshenasi_web/live/session_live/show.ex:109
 #, elixir-autogen, elixir-format
 msgid "Try again"
-msgstr ""
+msgstr "Tentar novamente"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:89
 #, elixir-autogen, elixir-format
 msgid "Update patient information"
-msgstr ""
+msgstr "Atualizar informações do paciente"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:126
 #, elixir-autogen, elixir-format
 msgid "Upload an audio above to get started."
-msgstr ""
+msgstr "Faça upload de um áudio acima para começar."
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:96
 #, elixir-autogen, elixir-format
 msgid "Upload and transcribe audio messages from patients"
-msgstr ""
+msgstr "Faça upload e transcreva mensagens de áudio dos pacientes"
 
 #: lib/ravanshenasi_web/live/patient_live/form.ex:114
 #: lib/ravanshenasi_web/live/patient_live/index.ex:61
 #, elixir-autogen, elixir-format
 msgid "Waitlist"
-msgstr ""
+msgstr "Lista de espera"
 
 #: lib/ravanshenasi_web/live/user_live/confirmation.ex:12
 #, elixir-autogen, elixir-format
 msgid "Welcome"
-msgstr ""
+msgstr "Bem-vindo(a)"
 
 #: lib/ravanshenasi_web/live/audio_live/index.ex:95
 #, elixir-autogen, elixir-format
 msgid "WhatsApp audios"
-msgstr ""
+msgstr "Áudios do WhatsApp"
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:108
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Your lines"
-msgstr "Seu nome"
+msgstr "Suas linhas"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:96
+#, elixir-autogen, elixir-format
+msgid "A clear dashboard"
+msgstr "Um painel completo"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:89
+#, elixir-autogen, elixir-format
+msgid "AI suggests therapy approaches based on the frameworks you chose for each patient."
+msgstr "A IA sugere abordagens terapêuticas com base nos frameworks que você escolheu para cada paciente."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:52
+#, elixir-autogen, elixir-format
+msgid "AI-assisted clinical practice for psychologists"
+msgstr "Prática clínica com IA para psicólogos"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:126
+#, elixir-autogen, elixir-format
+msgid "Create my clinic"
+msgstr "Criar minha clínica"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:86
+#, elixir-autogen, elixir-format
+msgid "Finalize a session and get a structured SOAP draft generated by AI."
+msgstr "Finalize uma sessão e receba um rascunho SOAP estruturado gerado pela IA."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:42
+#, elixir-autogen, elixir-format
+msgid "Get started"
+msgstr "Começar"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:29
+#, elixir-autogen, elixir-format
+msgid "Go to dashboard"
+msgstr "Ir ao painel"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:55
+#, elixir-autogen, elixir-format
+msgid "Less paperwork."
+msgstr "Menos burocracia."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:57
+#, elixir-autogen, elixir-format
+msgid "More presence."
+msgstr "Mais presença."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:97
+#, elixir-autogen, elixir-format
+msgid "Pending reviews, recent sessions and audios — all in one place."
+msgstr "Revisões pendentes, sessões e áudios recentes — tudo em um só lugar."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:102
+#, elixir-autogen, elixir-format
+msgid "Private by design"
+msgstr "Privacidade por design"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:139
+#, elixir-autogen, elixir-format
+msgid "Private by design — tenant-isolated and RLS-enforced."
+msgstr "Privacidade por design — isolamento por tenant e RLS ativo."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:100
+#, elixir-autogen, elixir-format
+msgid "Profiles, sessions and clinical history, scoped to you."
+msgstr "Perfis, sessões e histórico clínico, visíveis apenas para você."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:61
+#, elixir-autogen, elixir-format
+msgid "PsiCare turns your session notes into structured records, suggests therapy approaches, and transcribes patient audios — so you spend your time where it matters."
+msgstr "O PsiCare transforma suas anotações de sessão em prontuários estruturados, sugere abordagens terapêuticas e transcreve áudios dos pacientes — para você focar no que realmente importa."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:117
+#, elixir-autogen, elixir-format
+msgid "Ready to lighten your practice?"
+msgstr "Pronto para aliviar a sua rotina clínica?"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:85
+#, elixir-autogen, elixir-format
+msgid "SOAP records, automatically"
+msgstr "Prontuários SOAP, automaticamente"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:120
+#, elixir-autogen, elixir-format
+msgid "Set up your clinic in minutes. No credit card required."
+msgstr "Configure sua clínica em minutos. Sem necessidade de cartão de crédito."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:70
+#, elixir-autogen, elixir-format
+msgid "Start free"
+msgstr "Começar grátis"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:103
+#, elixir-autogen, elixir-format
+msgid "Tenant isolation with row-level security on every clinical record."
+msgstr "Isolamento por tenant com segurança em nível de linha em cada prontuário."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:94
+#, elixir-autogen, elixir-format
+msgid "Upload a patient audio and get the transcript plus a suggested reply."
+msgstr "Faça upload de um áudio do paciente e receba a transcrição mais uma resposta sugerida."
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:93
+#, elixir-autogen, elixir-format
+msgid "WhatsApp audio, transcribed"
+msgstr "Áudio do WhatsApp, transcrito"
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:99
+#, elixir-autogen, elixir-format
+msgid "Your patients, organized"
+msgstr "Seus pacientes, organizados"
