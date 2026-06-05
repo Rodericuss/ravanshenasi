@@ -6,44 +6,44 @@ defmodule RavanshenasiWeb.Org.RegistrationLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <div class="mx-auto max-w-sm">
-        <div class="text-center">
-          <.header>
-            {gettext("Register clinic")}
-            <:subtitle>
-              {gettext("Already have an account?")}
-              <.link navigate={~p"/users/log-in"} class="font-semibold text-brand hover:underline">
-                {gettext("Log in")}
-              </.link>
-            </:subtitle>
-          </.header>
-        </div>
+    <Layouts.auth flash={@flash} current_scope={@current_scope}>
+      <div class="space-y-6">
+        <.header>
+          {gettext("Register clinic")}
+          <:subtitle>
+            {gettext("Already have an account?")}
+            <.link navigate={~p"/users/log-in"} class="font-semibold text-primary hover:underline">
+              {gettext("Log in")}
+            </.link>
+          </:subtitle>
+        </.header>
 
         <.form for={@form} id="clinic-registration-form" phx-submit="save">
-          <.input field={@form[:clinic_name]} type="text" label={gettext("Clinic name")} required />
-          <.input field={@form[:name]} type="text" label={gettext("Your name")} required />
-          <.input
-            field={@form[:email]}
-            type="email"
-            label={gettext("Email")}
-            autocomplete="username"
-            spellcheck="false"
-            required
-          />
-          <.input
-            field={@form[:password]}
-            type="password"
-            label={gettext("Password (optional)")}
-            autocomplete="new-password"
-          />
+          <div class="space-y-4">
+            <.input field={@form[:clinic_name]} type="text" label={gettext("Clinic name")} required />
+            <.input field={@form[:name]} type="text" label={gettext("Your name")} required />
+            <.input
+              field={@form[:email]}
+              type="email"
+              label={gettext("Email")}
+              autocomplete="username"
+              spellcheck="false"
+              required
+            />
+            <.input
+              field={@form[:password]}
+              type="password"
+              label={gettext("Password (optional)")}
+              autocomplete="new-password"
+            />
 
-          <.button phx-disable-with={gettext("Creating clinic...")} class="btn btn-primary w-full">
-            {gettext("Create clinic")}
-          </.button>
+            <.button phx-disable-with={gettext("Creating clinic...")} class="w-full">
+              {gettext("Create clinic")}
+            </.button>
+          </div>
         </.form>
       </div>
-    </Layouts.app>
+    </Layouts.auth>
     """
   end
 

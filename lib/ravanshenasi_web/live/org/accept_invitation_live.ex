@@ -6,32 +6,32 @@ defmodule RavanshenasiWeb.Org.AcceptInvitationLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <div class="mx-auto max-w-sm">
-        <div class="text-center">
-          <.header>
-            {gettext("Accept invitation")}
-            <:subtitle>
-              {gettext("Fill in your details to join the team.")}
-            </:subtitle>
-          </.header>
-        </div>
+    <Layouts.auth flash={@flash} current_scope={@current_scope}>
+      <div class="space-y-6">
+        <.header>
+          {gettext("Accept invitation")}
+          <:subtitle>
+            {gettext("Fill in your details to join the team.")}
+          </:subtitle>
+        </.header>
 
         <.form for={@form} id="accept-invitation-form" phx-submit="accept">
-          <.input field={@form[:name]} type="text" label={gettext("Your name")} required />
-          <.input
-            field={@form[:password]}
-            type="password"
-            label={gettext("Password (optional)")}
-            autocomplete="new-password"
-          />
+          <div class="space-y-4">
+            <.input field={@form[:name]} type="text" label={gettext("Your name")} required />
+            <.input
+              field={@form[:password]}
+              type="password"
+              label={gettext("Password (optional)")}
+              autocomplete="new-password"
+            />
 
-          <.button phx-disable-with={gettext("Joining...")} class="btn btn-primary w-full">
-            {gettext("Join the team")}
-          </.button>
+            <.button phx-disable-with={gettext("Joining...")} class="w-full">
+              {gettext("Join the team")}
+            </.button>
+          </div>
         </.form>
       </div>
-    </Layouts.app>
+    </Layouts.auth>
     """
   end
 

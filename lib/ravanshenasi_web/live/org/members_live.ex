@@ -13,22 +13,13 @@ defmodule RavanshenasiWeb.Org.MembersLive do
           <:subtitle>{gettext("Clinic members")}</:subtitle>
         </.header>
 
-        <table class="w-full mt-4">
-          <thead>
-            <tr>
-              <th class="text-left">{gettext("Name")}</th>
-              <th class="text-left">{gettext("Email")}</th>
-              <th class="text-left">{gettext("Role")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr :for={member <- @members}>
-              <td>{member.name}</td>
-              <td>{member.email}</td>
-              <td>{member.role}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="mt-4">
+          <.table id="members-table" rows={@members}>
+            <:col :let={member} label={gettext("Name")}>{member.name}</:col>
+            <:col :let={member} label={gettext("Email")}>{member.email}</:col>
+            <:col :let={member} label={gettext("Role")}>{member.role}</:col>
+          </.table>
+        </div>
 
         <div class="mt-8">
           <.header>
@@ -43,7 +34,7 @@ defmodule RavanshenasiWeb.Org.MembersLive do
               required
             />
 
-            <.button phx-disable-with={gettext("Inviting...")} class="btn btn-primary w-full">
+            <.button phx-disable-with={gettext("Inviting...")} class="w-full mt-2">
               {gettext("Invite therapist")}
             </.button>
           </.form>
