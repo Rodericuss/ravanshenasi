@@ -48,4 +48,36 @@ defmodule Ravanshenasi.AI.PromptsTest do
     assert user =~ "ansiedade"
     assert user =~ "JSON"
   end
+
+  test "whatsapp_reply_messages varia o system por tom e inclui a transcrição" do
+    base = %{
+      patient: %{name: "Ana", chief_complaint: "ansiedade"},
+      last_record: %{content: "S: ...\nP: ..."},
+      transcription: "não tô conseguindo dormir",
+      tone: :empathetic
+    }
+
+    assert [%{role: "system", content: sys}, %{role: "user", content: user}] =
+             Prompts.whatsapp_reply_messages(base)
+
+    assert sys =~ "empático"
+    assert user =~ "não tô conseguindo dormir"
+    assert user =~ "ansiedade"
+
+    [%{content: enc_sys} | _] = Prompts.whatsapp_reply_messages(%{base | tone: :encouraging})
+    assert enc_sys =~ "encorajador"
+  end
+
+  test "whatsapp_reply_messages tolera last_record nil" do
+    msgs =
+      Prompts.whatsapp_reply_messages(%{
+        patient: %{name: "Ana", chief_complaint: "x"},
+        last_record: nil,
+        transcription: "oi",
+        tone: :informative
+      })
+
+    [_sys, %{content: user}] = msgs
+    assert user =~ "nenhuma registrada"
+  end
 end

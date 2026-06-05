@@ -144,5 +144,31 @@ if config_env() == :prod do
         api_key: System.get_env("NIM_API_KEY"),
         model: System.get_env("NIM_MODEL")
       }
+    },
+    transcription: %{
+      order:
+        System.get_env("AI_TRANSCRIPTION_ORDER", "openai")
+        |> String.split(",", trim: true)
+        |> Enum.flat_map(fn name ->
+          case String.trim(name) do
+            "openai" -> [:openai]
+            "nim" -> [:nim]
+            _ -> []
+          end
+        end),
+      providers: %{
+        openai: %{
+          client: Ravanshenasi.AI.Transcriber.OpenAI,
+          base_url: System.get_env("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+          api_key: System.get_env("OPENAI_API_KEY"),
+          model: System.get_env("OPENAI_TRANSCRIBE_MODEL", "whisper-1")
+        },
+        nim: %{
+          client: Ravanshenasi.AI.Transcriber.OpenAI,
+          base_url: System.get_env("NIM_ASR_BASE_URL"),
+          api_key: System.get_env("NIM_API_KEY"),
+          model: System.get_env("NIM_ASR_MODEL")
+        }
+      }
     }
 end

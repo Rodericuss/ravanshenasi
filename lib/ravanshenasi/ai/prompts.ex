@@ -89,4 +89,41 @@ defmodule Ravanshenasi.AI.Prompts do
 
   defp previous_block(prev),
     do: Enum.map_join(prev, "\n", &"- #{DateTime.to_date(&1.date)}: #{&1.notes}")
+
+  @reply_system_base """
+  Você é um assistente de comunicação para psicólogos. Sua função é analisar a mensagem \
+  de um paciente (transcrita de áudio) e sugerir uma resposta que o terapeuta pode enviar. \
+  A resposta deve: ser escrita em primeira pessoa (como se fosse o terapeuta); NÃO fazer \
+  promessas nem afirmações clínicas definitivas; ter tom conversacional (é uma mensagem de \
+  WhatsApp); ter entre 3 e 6 linhas. Responda apenas com o texto da mensagem sugerida, sem introdução.
+  """
+
+  @spec whatsapp_reply_messages(map()) :: [map()]
+  def whatsapp_reply_messages(%{patient: p, last_record: last, transcription: t, tone: tone}) do
+    [
+      %{role: "system", content: String.trim(@reply_system_base) <> "\n" <> tone_line(tone)},
+      %{role: "user", content: reply_user(p, last, t)}
+    ]
+  end
+
+  defp tone_line(:empathetic), do: "Tom: empático e acolhedor."
+  defp tone_line(:informative), do: "Tom: informativo e objetivo, mantendo cordialidade."
+  defp tone_line(:encouraging), do: "Tom: encorajador e motivador."
+
+  defp reply_user(p, last, transcription) do
+    """
+    Contexto do paciente:
+    - Nome: #{p.name}
+    - Queixa principal: #{p.chief_complaint}
+    - Última sessão: #{last_summary(last)}
+
+    Mensagem do paciente (transcrita do áudio):
+    "#{transcription}"
+
+    Sugira uma resposta para o terapeuta enviar via WhatsApp.
+    """
+  end
+
+  defp last_summary(nil), do: "(nenhuma registrada)"
+  defp last_summary(%{content: c}) when is_binary(c), do: c
 end

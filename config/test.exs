@@ -49,7 +49,12 @@ config :ravanshenasi, Oban, testing: :manual
 # AI: deterministic stub provider (no network).
 config :ravanshenasi, Ravanshenasi.AI,
   order: [:stub],
-  providers: %{stub: %{client: Ravanshenasi.AI.Client.Stub, behavior: :ok, model: "stub-model"}}
+  providers: %{stub: %{client: Ravanshenasi.AI.Client.Stub, behavior: :ok, model: "stub-model"}},
+  transcription: %{
+    order: [:stub],
+    providers: %{stub: %{client: Ravanshenasi.AI.Transcriber.Stub, text: "olá, tudo bem?"}}
+  }
 
 # Req.Test plug for the OpenAI client (used in Task 7).
 config :ravanshenasi, :ai_req_plug, {Req.Test, Ravanshenasi.AI.Client.OpenAI}
+config :ravanshenasi, :transcriber_req_plug, {Req.Test, Ravanshenasi.AI.Transcriber.OpenAI}

@@ -14,6 +14,11 @@ defmodule Ravanshenasi.AI do
   @spec generate_soap(map()) :: {:ok, chat_ok()} | {:error, {:all_providers_failed, list()}}
   def generate_soap(input), do: chat(Prompts.soap_messages(input))
 
+  @spec generate_reply(map()) ::
+          {:ok, %{content: String.t(), provider: atom(), model: String.t()}}
+          | {:error, {:all_providers_failed, list()}}
+  def generate_reply(input), do: chat(Prompts.whatsapp_reply_messages(input))
+
   @spec generate_suggestions(map()) ::
           {:ok, %{suggestions: [map()], provider: atom(), model: String.t()}}
           | {:error, {:all_providers_failed, list()} | :invalid_json}
@@ -57,4 +62,43 @@ defmodule Ravanshenasi.AI do
 
   defp configured?(_), do: false
   defp present?(v), do: v not in [nil, ""]
+
+  @spec transcribe(String.t()) ::
+          {:ok, %{text: String.t(), provider: atom(), model: String.t()}}
+          | {:error, {:all_providers_failed, list()}}
+  def transcribe(audio_path) do
+    cfg = Application.fetch_env!(:ravanshenasi, __MODULE__)[:transcription]
+    try_transcribers(cfg[:order], cfg[:providers], audio_path, [])
+  end
+
+  defp try_transcribers([], _providers, _path, errors),
+    do: {:error, {:all_providers_failed, Enum.reverse(errors)}}
+
+  defp try_transcribers([name | rest], providers, path, errors) do
+    case Map.get(providers, name) do
+      nil -> try_transcribers(rest, providers, path, [{name, :unknown_provider} | errors])
+      pcfg -> try_one_transcriber(name, pcfg, rest, providers, path, errors)
+    end
+  end
+
+  defp try_one_transcriber(name, pcfg, rest, providers, path, errors) do
+    if transcriber_configured?(pcfg) do
+      case pcfg.client.transcribe(pcfg, path, []) do
+        {:ok, text} when is_binary(text) and text != "" ->
+          {:ok, %{text: text, provider: name, model: pcfg[:model]}}
+
+        other ->
+          try_transcribers(rest, providers, path, [{name, other} | errors])
+      end
+    else
+      try_transcribers(rest, providers, path, [{name, :missing_config} | errors])
+    end
+  end
+
+  defp transcriber_configured?(%{client: Ravanshenasi.AI.Transcriber.Stub}), do: true
+
+  defp transcriber_configured?(%{base_url: b, api_key: k, model: m}),
+    do: present?(b) and present?(k) and present?(m)
+
+  defp transcriber_configured?(_), do: false
 end

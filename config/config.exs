@@ -75,6 +75,12 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Audio MIME types for upload accept filters (.ogg/.m4a are unknown to :mime by default)
+config :mime, :types, %{
+  "audio/ogg" => ["ogg"],
+  "audio/mp4" => ["m4a"]
+}
+
 config :ravanshenasi, Oban,
   repo: Ravanshenasi.Repo,
   queues: [ai: 5]
@@ -83,6 +89,17 @@ config :ravanshenasi, Ravanshenasi.AI,
   order: [:openai],
   providers: %{
     openai: %{client: Ravanshenasi.AI.Client.OpenAI, base_url: nil, api_key: nil, model: nil}
+  },
+  transcription: %{
+    order: [:openai],
+    providers: %{
+      openai: %{
+        client: Ravanshenasi.AI.Transcriber.OpenAI,
+        base_url: nil,
+        api_key: nil,
+        model: nil
+      }
+    }
   }
 
 # Import environment specific config. This must remain at the bottom

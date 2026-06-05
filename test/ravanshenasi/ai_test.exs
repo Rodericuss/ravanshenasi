@@ -124,4 +124,70 @@ defmodule Ravanshenasi.AITest do
 
     assert {:error, :invalid_json} = Ravanshenasi.AI.generate_suggestions(input)
   end
+
+  test "transcribe/1 tenta os providers em ordem e devolve %{text, provider, model}" do
+    prev = Application.get_env(:ravanshenasi, Ravanshenasi.AI)
+    on_exit(fn -> Application.put_env(:ravanshenasi, Ravanshenasi.AI, prev) end)
+
+    Application.put_env(:ravanshenasi, Ravanshenasi.AI,
+      transcription: %{
+        order: [:bad, :good],
+        providers: %{
+          bad: %{client: Ravanshenasi.AI.Transcriber.Stub, behavior: :error, model: "bad"},
+          good: %{
+            client: Ravanshenasi.AI.Transcriber.Stub,
+            behavior: :ok,
+            text: "TX",
+            model: "whisper-1"
+          }
+        }
+      }
+    )
+
+    assert {:ok, %{text: "TX", provider: :good, model: "whisper-1"}} =
+             Ravanshenasi.AI.transcribe("/qualquer.ogg")
+  end
+
+  test "transcribe/1 — todos falham → {:error, {:all_providers_failed, _}}" do
+    prev = Application.get_env(:ravanshenasi, Ravanshenasi.AI)
+    on_exit(fn -> Application.put_env(:ravanshenasi, Ravanshenasi.AI, prev) end)
+
+    Application.put_env(:ravanshenasi, Ravanshenasi.AI,
+      transcription: %{
+        order: [:bad],
+        providers: %{
+          bad: %{client: Ravanshenasi.AI.Transcriber.Stub, behavior: :error, model: "bad"}
+        }
+      }
+    )
+
+    assert {:error, {:all_providers_failed, _}} = Ravanshenasi.AI.transcribe("/qualquer.ogg")
+  end
+
+  test "generate_reply/1 monta as mensagens e chama o chat" do
+    prev = Application.get_env(:ravanshenasi, Ravanshenasi.AI)
+    on_exit(fn -> Application.put_env(:ravanshenasi, Ravanshenasi.AI, prev) end)
+
+    Application.put_env(:ravanshenasi, Ravanshenasi.AI,
+      order: [:good],
+      providers: %{
+        good: %{
+          client: Ravanshenasi.AI.Client.Stub,
+          behavior: :ok,
+          content: "Oi! Estou aqui.",
+          model: "good"
+        }
+      }
+    )
+
+    input = %{
+      patient: %{name: "Ana", chief_complaint: "x"},
+      last_record: nil,
+      transcription: "oi",
+      tone: :empathetic
+    }
+
+    assert {:ok, %{content: "Oi! Estou aqui.", provider: :good, model: "good"}} =
+             Ravanshenasi.AI.generate_reply(input)
+  end
 end
