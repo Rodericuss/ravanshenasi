@@ -198,6 +198,40 @@ defmodule RavanshenasiWeb.CoreComponents do
   end
 
   @doc """
+  Renders a localized, color-coded badge for a domain status atom.
+
+  ## Examples
+
+      <.status_badge value={:done} />
+  """
+  attr :value, :any, required: true
+  attr :class, :any, default: nil
+
+  def status_badge(assigns) do
+    assigns = assign(assigns, :meta, status_meta(assigns.value))
+
+    ~H"""
+    <.badge variant={elem(@meta, 1)} class={@class}>{elem(@meta, 0)}</.badge>
+    """
+  end
+
+  defp status_meta(:done), do: {gettext("Done"), "success"}
+  defp status_meta(:error), do: {gettext("Error"), "destructive"}
+  defp status_meta(:pending), do: {gettext("Pending"), "secondary"}
+  defp status_meta(:generating), do: {gettext("Generating"), "info"}
+  defp status_meta(:transcribing), do: {gettext("Transcribing"), "info"}
+  defp status_meta(:suggesting), do: {gettext("Suggesting"), "info"}
+  defp status_meta(:draft), do: {gettext("Draft"), "secondary"}
+  defp status_meta(:finalized), do: {gettext("Finalized"), "success"}
+  defp status_meta(:active), do: {gettext("Active"), "success"}
+  defp status_meta(:inactive), do: {gettext("Inactive"), "secondary"}
+  defp status_meta(:waitlist), do: {gettext("Waitlist"), "warning"}
+  defp status_meta(:suggested), do: {gettext("Suggested"), "info"}
+  defp status_meta(:saved), do: {gettext("Saved"), "success"}
+  defp status_meta(:discarded), do: {gettext("Discarded"), "secondary"}
+  defp status_meta(other), do: {to_string(other), "outline"}
+
+  @doc """
   Renders a metric/stat card for dashboards.
 
   ## Examples

@@ -1,102 +1,106 @@
-/* PsiCare — design tokens inspired by Metronic 9 (shadcn-style semantic tokens),
-   built on Tailwind v4. daisyUI was retired in favor of these tokens. */
+/* PsiCare — design system. Tailwind v4 + shadcn-style semantic tokens.
+   Palette grounded in color psychology for mental health:
+   indigo (trust, calm, premium) · teal (calm↔health bridge) · sage/emerald
+   (balance, growth) · soft coral (hope) · cool slate neutrals + generous whitespace. */
 
 @import "tailwindcss" source(none);
 @source "../css";
 @source "../js";
 @source "../../lib/ravanshenasi_web";
 
-/* heroicons plugin (managed by mix.exs) */
 @plugin "../vendor/heroicons";
 
-/* LiveView state variants */
 @custom-variant phx-click-loading (.phx-click-loading&, .phx-click-loading &);
 @custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
 @custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
-
-/* dark mode via data-theme="dark" (set in root.html.heex before paint) */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-/* Make LiveView wrapper divs transparent for layout */
 [data-phx-session], [data-phx-teleported-src] { display: contents }
 
-/* ---- Semantic theme tokens (light) ---- */
+/* ---- Light ---- */
 :root {
-  --background: var(--color-white);
-  --foreground: var(--color-zinc-950);
+  --background: oklch(98.5% 0.002 247);     /* slate-50, a touch warm-cool */
+  --foreground: oklch(22% 0.03 265);        /* slate-900 */
   --card: var(--color-white);
-  --card-foreground: var(--color-zinc-950);
+  --card-foreground: oklch(22% 0.03 265);
   --popover: var(--color-white);
-  --popover-foreground: var(--color-zinc-950);
+  --popover-foreground: oklch(22% 0.03 265);
 
-  --primary: oklch(54% 0.22 277.2);          /* violeta/índigo — identidade PsiCare */
-  --primary-foreground: var(--color-white);
+  --primary: oklch(51% 0.20 274);           /* refined indigo */
+  --primary-foreground: oklch(99% 0 0);
 
-  --secondary: var(--color-zinc-100);
-  --secondary-foreground: var(--color-zinc-900);
-  --muted: var(--color-zinc-100);
-  --muted-foreground: var(--color-zinc-500);
-  --accent: var(--color-zinc-100);
-  --accent-foreground: var(--color-zinc-900);
+  --secondary: oklch(96.5% 0.005 247);      /* slate-100 */
+  --secondary-foreground: oklch(30% 0.03 266);
+  --muted: oklch(96.8% 0.004 247);
+  --muted-foreground: oklch(55% 0.02 257);  /* slate-500 */
+  --accent: oklch(96% 0.01 269);            /* faint indigo tint */
+  --accent-foreground: oklch(35% 0.06 272);
 
-  --destructive: var(--color-red-600);
-  --destructive-foreground: var(--color-white);
-  --success: var(--color-emerald-600);
-  --success-foreground: var(--color-white);
-  --warning: var(--color-amber-500);
-  --warning-foreground: var(--color-zinc-950);
-  --info: var(--color-blue-600);
-  --info-foreground: var(--color-white);
+  --destructive: oklch(58% 0.20 18);        /* rose, softer than red */
+  --destructive-foreground: oklch(99% 0 0);
+  --success: oklch(58% 0.12 162);           /* sage/emerald */
+  --success-foreground: oklch(99% 0 0);
+  --warning: oklch(72% 0.16 70);            /* warm amber */
+  --warning-foreground: oklch(25% 0.05 70);
+  --info: oklch(60% 0.10 215);              /* teal */
+  --info-foreground: oklch(99% 0 0);
 
-  --border: var(--color-zinc-200);
-  --input: var(--color-zinc-200);
-  --ring: oklch(54% 0.22 277.2);
-  --radius: 0.5rem;
+  --border: oklch(92.5% 0.006 255);         /* slate-200 */
+  --input: oklch(92% 0.007 255);
+  --ring: oklch(51% 0.20 274);
+  --radius: 0.625rem;
 
-  --sidebar: var(--color-zinc-50);
-  --sidebar-foreground: var(--color-zinc-700);
-  --sidebar-border: var(--color-zinc-200);
+  --sidebar: oklch(99% 0.002 247);
+  --sidebar-foreground: oklch(40% 0.02 260);
+  --sidebar-border: oklch(93% 0.006 255);
+
+  --shadow-color: 240 30% 20%;
 }
 
-/* ---- Semantic theme tokens (dark) ---- */
+/* ---- Dark ---- */
 [data-theme="dark"] {
-  --background: var(--color-zinc-950);
-  --foreground: var(--color-zinc-50);
-  --card: var(--color-zinc-900);
-  --card-foreground: var(--color-zinc-50);
-  --popover: var(--color-zinc-900);
-  --popover-foreground: var(--color-zinc-50);
+  --background: oklch(18% 0.02 265);         /* slate-950, slightly lifted */
+  --foreground: oklch(96% 0.005 247);
+  --card: oklch(21.5% 0.022 266);            /* slate-900 */
+  --card-foreground: oklch(96% 0.005 247);
+  --popover: oklch(21.5% 0.022 266);
+  --popover-foreground: oklch(96% 0.005 247);
 
-  --primary: oklch(62% 0.21 277.2);
-  --primary-foreground: var(--color-white);
+  --primary: oklch(66% 0.17 274);            /* brighter indigo for dark */
+  --primary-foreground: oklch(18% 0.02 265);
 
-  --secondary: var(--color-zinc-800);
-  --secondary-foreground: var(--color-zinc-50);
-  --muted: var(--color-zinc-800);
-  --muted-foreground: var(--color-zinc-400);
-  --accent: var(--color-zinc-800);
-  --accent-foreground: var(--color-zinc-50);
+  --secondary: oklch(27% 0.02 266);
+  --secondary-foreground: oklch(96% 0.005 247);
+  --muted: oklch(26% 0.02 266);
+  --muted-foreground: oklch(68% 0.02 257);
+  --accent: oklch(30% 0.04 272);
+  --accent-foreground: oklch(92% 0.02 270);
 
-  --destructive: var(--color-red-500);
-  --destructive-foreground: var(--color-white);
-  --success: var(--color-emerald-500);
-  --success-foreground: var(--color-zinc-950);
-  --warning: var(--color-amber-400);
-  --warning-foreground: var(--color-zinc-950);
-  --info: var(--color-blue-500);
-  --info-foreground: var(--color-white);
+  --destructive: oklch(64% 0.18 18);
+  --destructive-foreground: oklch(99% 0 0);
+  --success: oklch(66% 0.13 162);
+  --success-foreground: oklch(18% 0.02 265);
+  --warning: oklch(78% 0.15 72);
+  --warning-foreground: oklch(20% 0.04 70);
+  --info: oklch(68% 0.10 215);
+  --info-foreground: oklch(18% 0.02 265);
 
-  --border: var(--color-zinc-800);
-  --input: var(--color-zinc-800);
-  --ring: oklch(62% 0.21 277.2);
+  --border: oklch(30% 0.02 266);
+  --input: oklch(32% 0.02 266);
+  --ring: oklch(66% 0.17 274);
 
-  --sidebar: var(--color-zinc-900);
-  --sidebar-foreground: var(--color-zinc-300);
-  --sidebar-border: var(--color-zinc-800);
+  --sidebar: oklch(20% 0.022 266);
+  --sidebar-foreground: oklch(78% 0.015 255);
+  --sidebar-border: oklch(28% 0.02 266);
+
+  --shadow-color: 240 60% 3%;
 }
 
-/* ---- Expose tokens as Tailwind utilities (bg-card, text-foreground, border-border, …) ---- */
+/* ---- Tokens → Tailwind utilities ---- */
 @theme inline {
+  --font-sans: "Inter var", "Inter", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -129,16 +133,34 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  /* Golden-ratio-ish soft shadows for depth without harshness */
+  --shadow-xs: 0 1px 2px 0 hsl(var(--shadow-color) / 0.04);
+  --shadow-sm: 0 1px 3px 0 hsl(var(--shadow-color) / 0.06), 0 1px 2px -1px hsl(var(--shadow-color) / 0.05);
+  --shadow-md: 0 4px 12px -2px hsl(var(--shadow-color) / 0.08), 0 2px 6px -2px hsl(var(--shadow-color) / 0.05);
+  --shadow-lg: 0 12px 28px -6px hsl(var(--shadow-color) / 0.12), 0 6px 12px -6px hsl(var(--shadow-color) / 0.08);
+
+  /* Fibonacci spacing steps (≈ golden ratio rhythm) */
+  --spacing-13: 3.25rem;
+  --spacing-21: 5.25rem;
+  --spacing-34: 8.5rem;
 }
 
-/* ---- Base element defaults ---- */
 @layer base {
   * {
     border-color: var(--border);
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     background-color: var(--background);
     color: var(--foreground);
+    font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 }
