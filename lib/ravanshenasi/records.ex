@@ -7,6 +7,7 @@ defmodule Ravanshenasi.Records do
   alias Ravanshenasi.Records.GenerateSoapWorker
   alias Ravanshenasi.Records.Record
   alias Ravanshenasi.Repo
+  alias Ravanshenasi.Sessions.Session
 
   @pubsub Ravanshenasi.PubSub
 
@@ -27,6 +28,24 @@ defmodule Ravanshenasi.Records do
       |> scoped(scope)
       |> where([r], r.patient_id == ^patient_id)
       |> order_by([r], desc: r.inserted_at)
+      |> Repo.all()
+    end)
+  end
+
+  @doc """
+  Últimos `limit` prontuários :done do paciente (do dono), ordenados pela DATA CLÍNICA
+  da sessão (desc) — não por inserted_at, pra uma sessão antiga finalizada depois não
+  furar a ordem. Filtro/ordenação no banco.
+  """
+  def recent_done_records(%Scope{} = scope, %{id: patient_id}, limit \\ 3) do
+    transact_tenant(scope, fn ->
+      Record
+      |> scoped(scope)
+      |> join(:inner, [r], se in Session, on: se.id == r.session_id)
+      |> where([r, se], r.patient_id == ^patient_id and r.generation_status == :done)
+      |> order_by([r, se], desc: se.date)
+      |> limit(^limit)
+      |> select([r, se], r)
       |> Repo.all()
     end)
   end
