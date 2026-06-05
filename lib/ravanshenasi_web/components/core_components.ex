@@ -44,7 +44,7 @@ defmodule RavanshenasiWeb.CoreComponents do
       id={@id}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
-      class="fixed top-4 right-4 z-50 w-80 sm:w-96"
+      class="fixed top-20 right-4 z-50 w-80 sm:w-96"
       {@rest}
     >
       <div class={[
@@ -207,6 +207,7 @@ defmodule RavanshenasiWeb.CoreComponents do
   attr :label, :string, required: true
   attr :value, :any, required: true
   attr :icon, :string, default: nil
+  attr :tone, :string, default: "bg-primary/10 text-primary"
   attr :class, :any, default: nil
   attr :rest, :global
 
@@ -214,14 +215,14 @@ defmodule RavanshenasiWeb.CoreComponents do
     ~H"""
     <div
       class={[
-        "flex items-center gap-4 rounded-lg border bg-card p-5 text-card-foreground shadow-sm",
+        "flex items-center gap-4 rounded-lg border bg-card p-5 text-card-foreground shadow-sm transition hover:shadow-md",
         @class
       ]}
       {@rest}
     >
       <div
         :if={@icon}
-        class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+        class={["flex size-11 shrink-0 items-center justify-center rounded-lg", @tone]}
       >
         <.icon name={@icon} class="size-6" />
       </div>
@@ -255,6 +256,52 @@ defmodule RavanshenasiWeb.CoreComponents do
       </p>
     </div>
     """
+  end
+
+  @doc """
+  Renders a colored initials avatar derived from a name.
+
+  ## Examples
+
+      <.avatar name="Ana Beatriz" />
+  """
+  attr :name, :string, required: true
+  attr :class, :any, default: "size-9"
+
+  @avatar_tones [
+    "bg-primary/15 text-primary",
+    "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+    "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+    "bg-sky-500/15 text-sky-600 dark:text-sky-400",
+    "bg-rose-500/15 text-rose-600 dark:text-rose-400",
+    "bg-fuchsia-500/15 text-fuchsia-600 dark:text-fuchsia-400"
+  ]
+
+  def avatar(assigns) do
+    assigns =
+      assigns
+      |> assign(:initials, avatar_initials(assigns.name))
+      |> assign(
+        :tone,
+        Enum.at(@avatar_tones, :erlang.phash2(assigns.name, length(@avatar_tones)))
+      )
+
+    ~H"""
+    <span class={[
+      "inline-flex shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+      @tone,
+      @class
+    ]}>
+      {@initials}
+    </span>
+    """
+  end
+
+  defp avatar_initials(name) do
+    name
+    |> String.split(~r/\s+/, trim: true)
+    |> Enum.take(2)
+    |> Enum.map_join(&String.upcase(String.first(&1) || ""))
   end
 
   @doc """
