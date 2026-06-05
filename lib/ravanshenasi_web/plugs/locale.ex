@@ -3,7 +3,11 @@ defmodule RavanshenasiWeb.Plugs.Locale do
   import Plug.Conn
 
   @supported ~w(en pt)
-  @default Application.compile_env(:ravanshenasi, [RavanshenasiWeb.Gettext, :default_locale], "en")
+  @default Application.compile_env(
+             :ravanshenasi,
+             [RavanshenasiWeb.Gettext, :default_locale],
+             "en"
+           )
 
   # --- Plug (HTTP requests) ---
   def init(opts), do: opts
