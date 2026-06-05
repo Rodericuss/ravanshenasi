@@ -1137,9 +1137,9 @@ msgid "December"
 msgstr "dezembro"
 
 #: lib/ravanshenasi_web/components/core_components.ex:231
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Discarded"
-msgstr "Descartar"
+msgstr "Descartada"
 
 #: lib/ravanshenasi_web/components/core_components.ex:224
 #, elixir-autogen, elixir-format
@@ -1152,14 +1152,14 @@ msgid "February"
 msgstr "fevereiro"
 
 #: lib/ravanshenasi_web/components/core_components.ex:225
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Finalized"
-msgstr "Finalizar"
+msgstr "Finalizada"
 
 #: lib/ravanshenasi_web/components/core_components.ex:221
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Generating"
-msgstr "Gerando resposta…"
+msgstr "Gerando"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:163
 #, elixir-autogen, elixir-format
@@ -1197,9 +1197,9 @@ msgid "October"
 msgstr "outubro"
 
 #: lib/ravanshenasi_web/components/core_components.ex:220
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Pending"
-msgstr "Pendente de revisão"
+msgstr "Pendente"
 
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:171
 #, elixir-autogen, elixir-format
@@ -1207,9 +1207,9 @@ msgid "September"
 msgstr "setembro"
 
 #: lib/ravanshenasi_web/components/core_components.ex:229
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Suggested"
-msgstr "Resposta sugerida"
+msgstr "Sugerida"
 
 #: lib/ravanshenasi_web/components/core_components.ex:223
 #, elixir-autogen, elixir-format
@@ -1217,6 +1217,6 @@ msgid "Suggesting"
 msgstr "Gerando resposta"
 
 #: lib/ravanshenasi_web/components/core_components.ex:222
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgid "Transcribing"
-msgstr "Transcrevendo…"
+msgstr "Transcrevendo"
