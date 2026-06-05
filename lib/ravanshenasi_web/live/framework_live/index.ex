@@ -113,10 +113,11 @@ defmodule RavanshenasiWeb.FrameworkLive.Index do
             >
               {gettext("Add a therapeutic framework to get started.")}
             </.empty_state>
-            <ul id="frameworks" class="divide-y divide-border">
-              <li :for={f <- @frameworks} class="py-4">
+            <ul id="frameworks" class="-my-1 divide-y divide-border">
+              <li :for={f <- @frameworks} class="py-3">
                 <div class="flex items-center justify-between gap-4">
                   <div class="flex items-center gap-2">
+                    <.icon name="hero-academic-cap" class="size-4 shrink-0 text-muted-foreground" />
                     <span class="font-medium text-foreground">{f.name}</span>
                     <.badge :if={f.is_predefined} variant="info">{gettext("Standard")}</.badge>
                   </div>
