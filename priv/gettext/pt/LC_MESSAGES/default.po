@@ -16,7 +16,7 @@ msgstr ""
 msgid "A link to confirm your email change has been sent to the new address."
 msgstr "Um link para confirmar a troca de email foi enviado para o novo endereço."
 
-#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:13
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:12
 #, elixir-autogen, elixir-format
 msgid "Accept invitation"
 msgstr "Aceitar convite"
@@ -26,23 +26,23 @@ msgstr "Aceitar convite"
 msgid "Account Settings"
 msgstr "Configurações da conta"
 
-#: lib/ravanshenasi_web/components/core_components.ex:377
+#: lib/ravanshenasi_web/components/core_components.ex:489
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr "Ações"
 
-#: lib/ravanshenasi_web/user_auth.ex:263
-#: lib/ravanshenasi_web/user_auth.ex:313
+#: lib/ravanshenasi_web/user_auth.ex:265
+#: lib/ravanshenasi_web/user_auth.ex:335
 #, elixir-autogen, elixir-format
 msgid "Admin access only."
 msgstr "Acesso restrito ao administrador."
 
-#: lib/ravanshenasi_web/live/org/registration_live.ex:15
+#: lib/ravanshenasi_web/live/org/registration_live.ex:14
 #, elixir-autogen, elixir-format
 msgid "Already have an account?"
 msgstr "Já tem conta?"
 
-#: lib/ravanshenasi_web/live/user_live/registration.ex:16
+#: lib/ravanshenasi_web/live/user_live/registration.ex:15
 #, elixir-autogen, elixir-format
 msgid "Already registered?"
 msgstr "Já tem uma conta?"
@@ -52,8 +52,8 @@ msgstr "Já tem uma conta?"
 msgid "An email was sent to %{email}, please access it to confirm your account."
 msgstr "Um email foi enviado para %{email}, acesse-o para confirmar sua conta."
 
-#: lib/ravanshenasi_web/components/layouts.ex:99
-#: lib/ravanshenasi_web/components/layouts.ex:111
+#: lib/ravanshenasi_web/components/layouts.ex:188
+#: lib/ravanshenasi_web/components/layouts.ex:200
 #, elixir-autogen, elixir-format
 msgid "Attempting to reconnect"
 msgstr "Tentando reconectar"
@@ -78,17 +78,17 @@ msgstr "Clínica criada. Confira seu email para confirmar."
 msgid "Clinic members"
 msgstr "Membros da clínica"
 
-#: lib/ravanshenasi_web/live/org/registration_live.ex:24
+#: lib/ravanshenasi_web/live/org/registration_live.ex:23
 #, elixir-autogen, elixir-format
 msgid "Clinic name"
 msgstr "Nome da clínica"
 
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:37
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:39
 #, elixir-autogen, elixir-format
 msgid "Confirm and log in only this time"
 msgstr "Confirmar e entrar apenas desta vez"
 
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:31
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:32
 #, elixir-autogen, elixir-format
 msgid "Confirm and stay logged in"
 msgstr "Confirmar e permanecer conectado"
@@ -98,8 +98,8 @@ msgstr "Confirmar e permanecer conectado"
 msgid "Confirm new password"
 msgstr "Confirmar nova senha"
 
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:28
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:34
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:29
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:35
 #, elixir-autogen, elixir-format
 msgid "Confirming..."
 msgstr "Confirmando..."
@@ -114,41 +114,42 @@ msgstr "Não foi possível aceitar o convite."
 msgid "Could not create the clinic. Check the details."
 msgstr "Não foi possível criar a clínica. Verifique os dados."
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:80
+#: lib/ravanshenasi_web/live/org/members_live.ex:71
 #, elixir-autogen, elixir-format
 msgid "Could not send the invitation."
 msgstr "Não foi possível enviar o convite."
 
-#: lib/ravanshenasi_web/live/user_live/registration.ex:45
+#: lib/ravanshenasi_web/live/user_live/registration.ex:44
 #, elixir-autogen, elixir-format
 msgid "Create an account"
 msgstr "Criar conta"
 
-#: lib/ravanshenasi_web/live/org/registration_live.ex:42
+#: lib/ravanshenasi_web/live/org/registration_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Create clinic"
 msgstr "Criar clínica"
 
-#: lib/ravanshenasi_web/live/user_live/registration.ex:44
+#: lib/ravanshenasi_web/live/user_live/registration.ex:43
 #, elixir-autogen, elixir-format
 msgid "Creating account..."
 msgstr "Criando conta..."
 
-#: lib/ravanshenasi_web/live/org/registration_live.ex:41
+#: lib/ravanshenasi_web/live/org/registration_live.ex:40
 #, elixir-autogen, elixir-format
 msgid "Creating clinic..."
 msgstr "Criando clínica..."
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:18
+#: lib/ravanshenasi_web/live/user_live/login.ex:17
 #, elixir-autogen, elixir-format
 msgid "Don't have an account?"
 msgstr "Não tem uma conta?"
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:20
-#: lib/ravanshenasi_web/live/org/registration_live.ex:29
-#: lib/ravanshenasi_web/live/user_live/login.ex:49
-#: lib/ravanshenasi_web/live/user_live/login.ex:74
-#: lib/ravanshenasi_web/live/user_live/registration.ex:29
+#: lib/ravanshenasi_web/live/org/members_live.ex:19
+#: lib/ravanshenasi_web/live/org/registration_live.ex:28
+#: lib/ravanshenasi_web/live/patient_live/form.ex:100
+#: lib/ravanshenasi_web/live/user_live/login.ex:50
+#: lib/ravanshenasi_web/live/user_live/login.ex:81
+#: lib/ravanshenasi_web/live/user_live/registration.ex:28
 #: lib/ravanshenasi_web/live/user_live/settings.ex:23
 #, elixir-autogen, elixir-format
 msgid "Email"
@@ -164,12 +165,12 @@ msgstr "O link de alteração de email é inválido ou expirou."
 msgid "Email changed successfully."
 msgstr "Email alterado com sucesso."
 
-#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:15
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:14
 #, elixir-autogen, elixir-format
 msgid "Fill in your details to join the team."
 msgstr "Preencha seus dados para entrar na equipe."
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:123
+#: lib/ravanshenasi_web/live/user_live/login.ex:131
 #, elixir-autogen, elixir-format
 msgid "If your email is in our system, you will receive instructions for logging in shortly."
 msgstr "Se o seu email estiver no nosso sistema, você receberá as instruções de login em breve."
@@ -189,70 +190,71 @@ msgstr "Convite já utilizado."
 msgid "Invitation expired."
 msgstr "Convite expirado."
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:74
+#: lib/ravanshenasi_web/live/org/members_live.ex:65
 #, elixir-autogen, elixir-format
 msgid "Invitation sent to %{email}."
 msgstr "Convite enviado para %{email}."
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:35
+#: lib/ravanshenasi_web/live/org/members_live.ex:26
 #, elixir-autogen, elixir-format
 msgid "Invite member"
 msgstr "Convidar membro"
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:47
+#: lib/ravanshenasi_web/live/org/members_live.ex:38
 #, elixir-autogen, elixir-format
 msgid "Invite therapist"
 msgstr "Convidar therapist"
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:42
+#: lib/ravanshenasi_web/live/org/members_live.ex:33
 #, elixir-autogen, elixir-format
 msgid "Invitee email"
 msgstr "Email do convidado"
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:46
+#: lib/ravanshenasi_web/live/org/members_live.ex:37
 #, elixir-autogen, elixir-format
 msgid "Inviting..."
 msgstr "Convidando..."
 
-#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:30
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:29
 #, elixir-autogen, elixir-format
 msgid "Join the team"
 msgstr "Entrar na equipe"
 
-#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:29
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:28
 #, elixir-autogen, elixir-format
 msgid "Joining..."
 msgstr "Entrando..."
 
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:62
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:66
 #, elixir-autogen, elixir-format
 msgid "Keep me logged in on this device"
 msgstr "Manter conectado neste dispositivo"
 
-#: lib/ravanshenasi_web/live/org/registration_live.ex:17
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:53
-#: lib/ravanshenasi_web/live/user_live/login.ex:13
-#: lib/ravanshenasi_web/live/user_live/registration.ex:18
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:20
+#: lib/ravanshenasi_web/live/org/registration_live.ex:16
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:57
+#: lib/ravanshenasi_web/live/user_live/login.ex:12
+#: lib/ravanshenasi_web/live/user_live/registration.ex:17
 #, elixir-autogen, elixir-format
 msgid "Log in"
 msgstr "Entrar"
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:87
+#: lib/ravanshenasi_web/live/user_live/login.ex:94
 #, elixir-autogen, elixir-format
 msgid "Log in and stay logged in"
 msgstr "Entrar e permanecer conectado"
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:90
+#: lib/ravanshenasi_web/live/user_live/login.ex:97
 #, elixir-autogen, elixir-format
 msgid "Log in only this time"
 msgstr "Entrar apenas desta vez"
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:56
+#: lib/ravanshenasi_web/live/user_live/login.ex:57
 #, elixir-autogen, elixir-format
 msgid "Log in with email"
 msgstr "Entrar com email"
 
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:68
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:73
 #, elixir-autogen, elixir-format
 msgid "Log me in only this time"
 msgstr "Entrar apenas desta vez"
@@ -262,14 +264,14 @@ msgstr "Entrar apenas desta vez"
 msgid "Log out to accept an invitation for another account."
 msgstr "Saia da sua conta para aceitar um convite em outra."
 
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:52
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:59
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:65
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:56
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:63
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:69
 #, elixir-autogen, elixir-format
 msgid "Logging in..."
 msgstr "Entrando..."
 
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:91
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:100
 #, elixir-autogen, elixir-format
 msgid "Magic link is invalid or it has expired."
 msgstr "O link mágico é inválido ou expirou."
@@ -279,7 +281,10 @@ msgstr "O link mágico é inválido ou expirou."
 msgid "Manage your account email address and password settings"
 msgstr "Gerencie o email e a senha da sua conta"
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:19
+#: lib/ravanshenasi_web/live/framework_live/index.ex:95
+#: lib/ravanshenasi_web/live/framework_live/index.ex:149
+#: lib/ravanshenasi_web/live/org/members_live.ex:18
+#: lib/ravanshenasi_web/live/patient_live/form.ex:95
 #, elixir-autogen, elixir-format
 msgid "Name"
 msgstr "Nome"
@@ -289,34 +294,34 @@ msgstr "Nome"
 msgid "New password"
 msgstr "Nova senha"
 
-#: lib/ravanshenasi_web/live/user_live/registration.ex:36
+#: lib/ravanshenasi_web/live/user_live/registration.ex:35
 #, elixir-autogen, elixir-format
 msgid "Office name"
 msgstr "Nome do consultório"
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:82
+#: lib/ravanshenasi_web/live/user_live/login.ex:89
 #, elixir-autogen, elixir-format
 msgid "Password"
 msgstr "Senha"
 
-#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:25
-#: lib/ravanshenasi_web/live/org/registration_live.ex:37
-#: lib/ravanshenasi_web/live/user_live/registration.ex:40
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:24
+#: lib/ravanshenasi_web/live/org/registration_live.ex:36
+#: lib/ravanshenasi_web/live/user_live/registration.ex:39
 #, elixir-autogen, elixir-format
 msgid "Password (optional)"
 msgstr "Senha (opcional)"
 
-#: lib/ravanshenasi_web/live/org/registration_live.ex:13
+#: lib/ravanshenasi_web/live/org/registration_live.ex:12
 #, elixir-autogen, elixir-format
 msgid "Register clinic"
 msgstr "Cadastrar clínica"
 
-#: lib/ravanshenasi_web/live/user_live/registration.ex:14
+#: lib/ravanshenasi_web/live/user_live/registration.ex:13
 #, elixir-autogen, elixir-format
 msgid "Register for an account"
 msgstr "Criar uma conta"
 
-#: lib/ravanshenasi_web/live/org/members_live.ex:21
+#: lib/ravanshenasi_web/live/org/members_live.ex:20
 #, elixir-autogen, elixir-format
 msgid "Role"
 msgstr "Papel"
@@ -326,17 +331,19 @@ msgstr "Papel"
 msgid "Save Password"
 msgstr "Salvar senha"
 
+#: lib/ravanshenasi_web/live/patient_live/form.ex:118
+#: lib/ravanshenasi_web/live/session_live/form.ex:80
 #: lib/ravanshenasi_web/live/user_live/settings.ex:66
 #, elixir-autogen, elixir-format
 msgid "Saving..."
 msgstr "Salvando..."
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:22
+#: lib/ravanshenasi_web/live/user_live/login.ex:21
 #, elixir-autogen, elixir-format
 msgid "Sign up"
 msgstr "Cadastre-se"
 
-#: lib/ravanshenasi_web/components/layouts.ex:106
+#: lib/ravanshenasi_web/components/layouts.ex:195
 #, elixir-autogen, elixir-format
 msgid "Something went wrong!"
 msgstr "Algo deu errado!"
@@ -346,17 +353,17 @@ msgstr "Algo deu errado!"
 msgid "Team"
 msgstr "Equipe"
 
-#: lib/ravanshenasi_web/live/user_live/confirmation.ex:74
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:83
 #, elixir-autogen, elixir-format
 msgid "Tip: If you prefer passwords, you can enable them in the user settings."
 msgstr "Dica: se você preferir senha, pode habilitá-la nas configurações da conta."
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:33
+#: lib/ravanshenasi_web/live/user_live/login.ex:32
 #, elixir-autogen, elixir-format
 msgid "To see sent emails, visit"
 msgstr "Para ver os emails enviados, acesse"
 
-#: lib/ravanshenasi_web/components/layouts.ex:94
+#: lib/ravanshenasi_web/components/layouts.ex:183
 #, elixir-autogen, elixir-format
 msgid "We can't find the internet"
 msgstr "Sem conexão com a internet"
@@ -366,60 +373,635 @@ msgstr "Sem conexão com a internet"
 msgid "Welcome to the team!"
 msgstr "Bem-vindo(a) à equipe!"
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:31
+#: lib/ravanshenasi_web/live/user_live/login.ex:30
 #, elixir-autogen, elixir-format
 msgid "You are running the local mail adapter."
 msgstr "Você está usando o adaptador de email local."
 
-#: lib/ravanshenasi_web/user_auth.ex:232
-#: lib/ravanshenasi_web/user_auth.ex:327
+#: lib/ravanshenasi_web/user_auth.ex:234
+#: lib/ravanshenasi_web/user_auth.ex:349
 #, elixir-autogen, elixir-format
 msgid "You must log in to access this page."
 msgstr "Você precisa fazer login para acessar esta página."
 
-#: lib/ravanshenasi_web/user_auth.ex:249
+#: lib/ravanshenasi_web/user_auth.ex:251
 #, elixir-autogen, elixir-format
 msgid "You must re-authenticate to access this page."
 msgstr "Você precisa se autenticar novamente para acessar esta página."
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:16
+#: lib/ravanshenasi_web/live/user_live/login.ex:15
 #, elixir-autogen, elixir-format
 msgid "You need to reauthenticate to perform sensitive actions on your account."
 msgstr "Você precisa se autenticar novamente para realizar ações sensíveis na sua conta."
 
-#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:21
-#: lib/ravanshenasi_web/live/org/registration_live.ex:25
-#: lib/ravanshenasi_web/live/user_live/registration.ex:35
+#: lib/ravanshenasi_web/live/org/accept_invitation_live.ex:20
+#: lib/ravanshenasi_web/live/org/registration_live.ex:24
+#: lib/ravanshenasi_web/live/user_live/registration.ex:34
 #, elixir-autogen, elixir-format
 msgid "Your name"
 msgstr "Seu nome"
 
-#: lib/ravanshenasi_web/components/core_components.ex:83
+#: lib/ravanshenasi_web/components/core_components.ex:69
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr "fechar"
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:22
+#: lib/ravanshenasi_web/live/user_live/login.ex:21
 #, elixir-autogen, elixir-format
 msgid "for an account now."
 msgstr "agora."
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:60
+#: lib/ravanshenasi_web/live/user_live/login.ex:64
 #, elixir-autogen, elixir-format
 msgid "or"
 msgstr "ou"
 
-#: lib/ravanshenasi_web/live/user_live/login.ex:33
+#: lib/ravanshenasi_web/live/user_live/login.ex:32
 #, elixir-autogen, elixir-format
 msgid "the mailbox page"
 msgstr "a página da caixa de entrada"
 
-#: lib/ravanshenasi_web/live/user_live/registration.ex:20
+#: lib/ravanshenasi_web/live/user_live/registration.ex:19
 #, elixir-autogen, elixir-format
 msgid "to your account now."
 msgstr "agora."
 
-#: lib/ravanshenasi_web/user_auth.ex:274
+#: lib/ravanshenasi_web/user_auth.ex:276
 #, elixir-autogen, elixir-format
 msgid "Clinic admin access only."
 msgstr "Acesso restrito ao administrador da clínica."
+
+#: lib/ravanshenasi_web/user_auth.ex:287
+#, elixir-autogen, elixir-format
+msgid "Access restricted to practitioners."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:112
+#: lib/ravanshenasi_web/live/patient_live/index.ex:59
+#, elixir-autogen, elixir-format
+msgid "Active"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:31
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:106
+#, elixir-autogen, elixir-format
+msgid "Active patients"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:114
+#, elixir-autogen, elixir-format
+msgid "Add a therapeutic framework to get started."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:101
+#, elixir-autogen, elixir-format
+msgid "Add line"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:93
+#, elixir-autogen, elixir-format
+msgid "Add new line"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/index.ex:58
+#, elixir-autogen, elixir-format
+msgid "All"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/index.ex:20
+#, elixir-autogen, elixir-format
+msgid "All sessions for this patient"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:33
+#, elixir-autogen, elixir-format
+msgid "Already finalized"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:216
+#, elixir-autogen, elixir-format
+msgid "Analysis failed."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:190
+#, elixir-autogen, elixir-format
+msgid "Analyze patient"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:208
+#, elixir-autogen, elixir-format
+msgid "Analyzing…"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:187
+#, elixir-autogen, elixir-format
+msgid "Approach suggestions"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:104
+#, elixir-autogen, elixir-format
+msgid "Audio file"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:97
+#, elixir-autogen, elixir-format
+msgid "Birth date"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:161
+#: lib/ravanshenasi_web/live/patient_live/form.ex:119
+#: lib/ravanshenasi_web/live/session_live/form.ex:65
+#, elixir-autogen, elixir-format
+msgid "Cancel"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:101
+#, elixir-autogen, elixir-format
+msgid "Chief complaint"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:199
+#, elixir-autogen, elixir-format
+msgid "Configure lines of thought for this patient before analyzing."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:186
+#, elixir-autogen, elixir-format
+msgid "Copy"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/form.ex:51
+#, elixir-autogen, elixir-format
+msgid "Could not create session"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:36
+#, elixir-autogen, elixir-format
+msgid "Could not finalize"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:38
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Could not inactivate patient"
+msgstr "Não foi possível aceitar o convite."
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:254
+#, elixir-autogen, elixir-format
+msgid "Could not process the audio"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:81
+#, elixir-autogen, elixir-format
+msgid "Could not retry"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:43
+#, elixir-autogen, elixir-format
+msgid "Could not retry generation"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:69
+#, elixir-autogen, elixir-format
+msgid "Could not save"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:79
+#, elixir-autogen, elixir-format
+msgid "Could not start the analysis"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:87
+#: lib/ravanshenasi_web/live/patient_live/show.ex:95
+#, elixir-autogen, elixir-format
+msgid "Could not update suggestion"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/index.ex:32
+#, elixir-autogen, elixir-format
+msgid "Create the first session for this patient."
+msgstr ""
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:6
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:26
+#, elixir-autogen, elixir-format
+msgid "Dashboard"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:136
+#, elixir-autogen, elixir-format
+msgid "Delete"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:134
+#, elixir-autogen, elixir-format
+msgid "Delete this line?"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:259
+#, elixir-autogen, elixir-format
+msgid "Discard"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:261
+#, elixir-autogen, elixir-format
+msgid "Done"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/form.ex:77
+#, elixir-autogen, elixir-format
+msgid "Duration (minutes)"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:128
+#: lib/ravanshenasi_web/live/patient_live/show.ex:145
+#, elixir-autogen, elixir-format
+msgid "Edit"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:24
+#, elixir-autogen, elixir-format
+msgid "Edit patient"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:262
+#, elixir-autogen, elixir-format
+msgid "Error"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:199
+#, elixir-autogen, elixir-format
+msgid "Failed."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/form.ex:62
+#, elixir-autogen, elixir-format
+msgid "Fill in the session details below"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:65
+#, elixir-autogen, elixir-format
+msgid "Finalize"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:85
+#, elixir-autogen, elixir-format
+msgid "Frameworks and therapeutic approaches used in your practice"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:87
+#, elixir-autogen, elixir-format
+msgid "Generating record..."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:260
+#, elixir-autogen, elixir-format
+msgid "Generating reply…"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:100
+#, elixir-autogen, elixir-format
+msgid "Generation failed"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:99
+#: lib/ravanshenasi_web/live/framework_live/index.ex:156
+#, elixir-autogen, elixir-format
+msgid "Guiding principles"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:153
+#, elixir-autogen, elixir-format
+msgid "Inactivate patient"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:151
+#, elixir-autogen, elixir-format
+msgid "Inactivate this patient?"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:113
+#: lib/ravanshenasi_web/live/patient_live/index.ex:60
+#, elixir-autogen, elixir-format
+msgid "Inactive"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:83
+#: lib/ravanshenasi_web/live/patient_live/show.ex:161
+#, elixir-autogen, elixir-format
+msgid "Lines of thought"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/layouts.ex:82
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:16
+#, elixir-autogen, elixir-format
+msgid "Log out"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:100
+#, elixir-autogen, elixir-format
+msgid "New audio"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:14
+#: lib/ravanshenasi_web/live/patient_live/index.ex:44
+#, elixir-autogen, elixir-format
+msgid "New patient"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/form.ex:17
+#: lib/ravanshenasi_web/live/session_live/index.ex:24
+#, elixir-autogen, elixir-format
+msgid "New session"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:107
+#, elixir-autogen, elixir-format
+msgid "No active patients."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:125
+#, elixir-autogen, elixir-format
+msgid "No audios yet."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:165
+#, elixir-autogen, elixir-format
+msgid "No lines configured."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:112
+#, elixir-autogen, elixir-format
+msgid "No lines yet"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:74
+#, elixir-autogen, elixir-format
+msgid "No notes."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/index.ex:67
+#, elixir-autogen, elixir-format
+msgid "No patients found."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:70
+#, elixir-autogen, elixir-format
+msgid "No recent audios."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:89
+#, elixir-autogen, elixir-format
+msgid "No recent sessions."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:52
+#, elixir-autogen, elixir-format
+msgid "No records pending review."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/index.ex:31
+#, elixir-autogen, elixir-format
+msgid "No sessions yet."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:250
+#: lib/ravanshenasi_web/live/patient_live/show.ex:75
+#, elixir-autogen, elixir-format
+msgid "Not allowed"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:26
+#: lib/ravanshenasi_web/live/framework_live/index.ex:54
+#: lib/ravanshenasi_web/live/framework_live/index.ex:68
+#: lib/ravanshenasi_web/live/patient_live/form.ex:58
+#: lib/ravanshenasi_web/live/patient_live/form.ex:77
+#, elixir-autogen, elixir-format
+msgid "Not authorized"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/form.ex:73
+#: lib/ravanshenasi_web/live/session_live/show.ex:72
+#, elixir-autogen, elixir-format
+msgid "Notes"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:27
+#, elixir-autogen, elixir-format
+msgid "Overview of your clinical work"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:49
+#, elixir-autogen, elixir-format
+msgid "Patient created"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:35
+#, elixir-autogen, elixir-format
+msgid "Patient inactivated"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/show.ex:16
+#, elixir-autogen, elixir-format
+msgid "Patient not found"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:68
+#, elixir-autogen, elixir-format
+msgid "Patient updated"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/index.ex:42
+#, elixir-autogen, elixir-format
+msgid "Patients"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:33
+#, elixir-autogen, elixir-format
+msgid "Pending review"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:98
+#, elixir-autogen, elixir-format
+msgid "Phone"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:213
+#, elixir-autogen, elixir-format
+msgid "Please upload the audio again."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:258
+#, elixir-autogen, elixir-format
+msgid "Queued…"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:38
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:69
+#, elixir-autogen, elixir-format
+msgid "Recent audios"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:43
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:88
+#, elixir-autogen, elixir-format
+msgid "Recent sessions"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:51
+#, elixir-autogen, elixir-format
+msgid "Records pending review"
+msgstr ""
+
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:23
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Register"
+msgstr "Cadastrar clínica"
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:105
+#, elixir-autogen, elixir-format
+msgid "Relevant history"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:79
+#, elixir-autogen, elixir-format
+msgid "SOAP Record"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:190
+#: lib/ravanshenasi_web/live/framework_live/index.ex:159
+#: lib/ravanshenasi_web/live/patient_live/form.ex:118
+#: lib/ravanshenasi_web/live/patient_live/show.ex:251
+#: lib/ravanshenasi_web/live/session_live/form.ex:80
+#, elixir-autogen, elixir-format
+msgid "Save"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:66
+#, elixir-autogen, elixir-format
+msgid "Saved"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/index.ex:50
+#, elixir-autogen, elixir-format
+msgid "Search by name"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:57
+#, elixir-autogen, elixir-format
+msgid "Select an audio file"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:55
+#, elixir-autogen, elixir-format
+msgid "Session"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/form.ex:42
+#, elixir-autogen, elixir-format
+msgid "Session created"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/form.ex:71
+#, elixir-autogen, elixir-format
+msgid "Session data"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/show.ex:15
+#, elixir-autogen, elixir-format
+msgid "Session not found"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/session_live/index.ex:19
+#: lib/ravanshenasi_web/live/session_live/index.ex:30
+#, elixir-autogen, elixir-format
+msgid "Sessions"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/layouts.ex:74
+#: lib/ravanshenasi_web/controllers/page_html/home.html.heex:9
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:121
+#, elixir-autogen, elixir-format
+msgid "Standard"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:110
+#, elixir-autogen, elixir-format
+msgid "Status"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:168
+#, elixir-autogen, elixir-format
+msgid "Suggested response"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/layouts.ex:100
+#, elixir-autogen, elixir-format
+msgid "Toggle menu"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:110
+#, elixir-autogen, elixir-format
+msgid "Tone"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:120
+#, elixir-autogen, elixir-format
+msgid "Transcribe and suggest"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:259
+#, elixir-autogen, elixir-format
+msgid "Transcribing…"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:158
+#, elixir-autogen, elixir-format
+msgid "Transcription"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:209
+#: lib/ravanshenasi_web/live/patient_live/show.ex:218
+#: lib/ravanshenasi_web/live/session_live/show.ex:109
+#, elixir-autogen, elixir-format
+msgid "Try again"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:89
+#, elixir-autogen, elixir-format
+msgid "Update patient information"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:126
+#, elixir-autogen, elixir-format
+msgid "Upload an audio above to get started."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:96
+#, elixir-autogen, elixir-format
+msgid "Upload and transcribe audio messages from patients"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/patient_live/form.ex:114
+#: lib/ravanshenasi_web/live/patient_live/index.ex:61
+#, elixir-autogen, elixir-format
+msgid "Waitlist"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/user_live/confirmation.ex:12
+#, elixir-autogen, elixir-format
+msgid "Welcome"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/audio_live/index.ex:95
+#, elixir-autogen, elixir-format
+msgid "WhatsApp audios"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/framework_live/index.ex:108
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Your lines"
+msgstr "Seu nome"
