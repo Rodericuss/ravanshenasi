@@ -9,7 +9,7 @@ defmodule RavanshenasiWeb.UserLive.LoginTest do
       {:ok, _lv, html} = live(conn, ~p"/users/log-in")
 
       assert html =~ "Log in"
-      assert html =~ "Register"
+      assert html =~ ~p"/users/register"
       assert html =~ "Log in with email"
     end
   end

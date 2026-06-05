@@ -83,26 +83,43 @@ defmodule RavanshenasiWeb.PatientLive.Form do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <.header>{@page_title}</.header>
-      <.form for={@form} id="patient-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} label={gettext("Name")} required />
-        <.input field={@form[:birth_date]} type="date" label={gettext("Birth date")} />
-        <.input field={@form[:phone]} label={gettext("Phone")} />
-        <.input field={@form[:email]} type="email" label={gettext("Email")} />
-        <.input field={@form[:chief_complaint]} type="textarea" label={gettext("Chief complaint")} />
-        <.input field={@form[:relevant_history]} type="textarea" label={gettext("Relevant history")} />
-        <.input
-          field={@form[:status]}
-          type="select"
-          label={gettext("Status")}
-          options={[
-            {gettext("Active"), :active},
-            {gettext("Inactive"), :inactive},
-            {gettext("Waitlist"), :waitlist}
-          ]}
-        />
-        <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
-      </.form>
+      <.header>
+        {@page_title}
+        <:subtitle :if={@live_action == :edit}>
+          {gettext("Update patient information")}
+        </:subtitle>
+      </.header>
+
+      <.card class="max-w-2xl">
+        <.form for={@form} id="patient-form" phx-change="validate" phx-submit="save" class="space-y-4">
+          <.input field={@form[:name]} label={gettext("Name")} required />
+          <div class="grid gap-4 sm:grid-cols-2">
+            <.input field={@form[:birth_date]} type="date" label={gettext("Birth date")} />
+            <.input field={@form[:phone]} label={gettext("Phone")} />
+          </div>
+          <.input field={@form[:email]} type="email" label={gettext("Email")} />
+          <.input field={@form[:chief_complaint]} type="textarea" label={gettext("Chief complaint")} />
+          <.input
+            field={@form[:relevant_history]}
+            type="textarea"
+            label={gettext("Relevant history")}
+          />
+          <.input
+            field={@form[:status]}
+            type="select"
+            label={gettext("Status")}
+            options={[
+              {gettext("Active"), :active},
+              {gettext("Inactive"), :inactive},
+              {gettext("Waitlist"), :waitlist}
+            ]}
+          />
+          <div class="flex gap-3 pt-2">
+            <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
+            <.button variant="outline" navigate={~p"/pacientes"}>{gettext("Cancel")}</.button>
+          </div>
+        </.form>
+      </.card>
     </Layouts.app>
     """
   end

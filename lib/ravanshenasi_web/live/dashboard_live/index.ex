@@ -22,57 +22,110 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <.header>{gettext("Dashboard")}</.header>
+      <.header>
+        {gettext("Dashboard")}
+        <:subtitle>{gettext("Overview of your clinical work")}</:subtitle>
+      </.header>
 
-      <section id="card-pending-review">
-        <h3>{gettext("Records pending review")} ({@pending_review_count})</h3>
-        <p :if={@pending_review == []}>{gettext("No records pending review.")}</p>
-        <ul>
-          <li :for={r <- @pending_review} id={"pending-review-#{r.id}"}>
-            <.link navigate={~p"/pacientes/#{r.patient_id}/sessoes/#{r.session_id}"}>
-              {r.patient.name} — {Calendar.strftime(r.inserted_at, "%d/%m/%Y")}
-            </.link>
-          </li>
-        </ul>
-      </section>
+      <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <.stat_card label={gettext("Active patients")} value={@active_count} icon="hero-users" />
+        <.stat_card
+          label={gettext("Pending review")}
+          value={@pending_review_count}
+          icon="hero-document-text"
+        />
+        <.stat_card
+          label={gettext("Recent audios")}
+          value={length(@recent_audios)}
+          icon="hero-microphone"
+        />
+        <.stat_card
+          label={gettext("Recent sessions")}
+          value={length(@recent_sessions)}
+          icon="hero-calendar-days"
+        />
+      </div>
 
-      <section id="card-recent-audios">
-        <h3>{gettext("Recent audios")}</h3>
-        <p :if={@recent_audios == []}>{gettext("No recent audios.")}</p>
-        <ul>
-          <li :for={a <- @recent_audios} id={"recent-audio-#{a.id}"}>
-            <.link navigate={~p"/pacientes/#{a.patient_id}/audios"}>
-              {a.patient.name} — {a.original_filename} ({a.status})
-            </.link>
-          </li>
-        </ul>
-      </section>
+      <div class="grid gap-4 lg:grid-cols-2">
+        <.card id="card-pending-review">
+          <:title>{gettext("Records pending review")} ({@pending_review_count})</:title>
+          <.empty_state :if={@pending_review == []} title={gettext("No records pending review.")} />
+          <ul :if={@pending_review != []} class="-my-1 divide-y divide-border">
+            <li :for={r <- @pending_review} id={"pending-review-#{r.id}"}>
+              <.link
+                navigate={~p"/pacientes/#{r.patient_id}/sessoes/#{r.session_id}"}
+                class="flex items-center justify-between gap-3 py-2.5 hover:text-primary"
+              >
+                <span class="font-medium">{r.patient.name}</span>
+                <span class="text-sm text-muted-foreground">
+                  {Calendar.strftime(r.inserted_at, "%d/%m/%Y")}
+                </span>
+              </.link>
+            </li>
+          </ul>
+        </.card>
 
-      <section id="card-recent-sessions">
-        <h3>{gettext("Recent sessions")}</h3>
-        <p :if={@recent_sessions == []}>{gettext("No recent sessions.")}</p>
-        <ul>
-          <li :for={se <- @recent_sessions} id={"recent-session-#{se.id}"}>
-            <.link navigate={~p"/pacientes/#{se.patient_id}/sessoes/#{se.id}"}>
-              {se.patient.name} — {session_date(se.date)} ({se.status})
-            </.link>
-          </li>
-        </ul>
-      </section>
+        <.card id="card-recent-audios">
+          <:title>{gettext("Recent audios")}</:title>
+          <.empty_state :if={@recent_audios == []} title={gettext("No recent audios.")} />
+          <ul :if={@recent_audios != []} class="-my-1 divide-y divide-border">
+            <li :for={a <- @recent_audios} id={"recent-audio-#{a.id}"}>
+              <.link
+                navigate={~p"/pacientes/#{a.patient_id}/audios"}
+                class="flex items-center justify-between gap-3 py-2.5 hover:text-primary"
+              >
+                <span class="min-w-0 truncate">
+                  <span class="font-medium">{a.patient.name}</span>
+                  <span class="text-muted-foreground">— {a.original_filename}</span>
+                </span>
+                <.badge variant={audio_variant(a.status)}>{a.status}</.badge>
+              </.link>
+            </li>
+          </ul>
+        </.card>
 
-      <section id="card-active-patients">
-        <h3>{gettext("Active patients")} ({@active_count})</h3>
-        <p :if={@recent_patients == []}>{gettext("No active patients.")}</p>
-        <ul>
-          <li :for={p <- @recent_patients} id={"active-patient-#{p.id}"}>
-            <.link navigate={~p"/pacientes/#{p.id}"}>{p.name} ({p.status})</.link>
-          </li>
-        </ul>
-      </section>
+        <.card id="card-recent-sessions">
+          <:title>{gettext("Recent sessions")}</:title>
+          <.empty_state :if={@recent_sessions == []} title={gettext("No recent sessions.")} />
+          <ul :if={@recent_sessions != []} class="-my-1 divide-y divide-border">
+            <li :for={se <- @recent_sessions} id={"recent-session-#{se.id}"}>
+              <.link
+                navigate={~p"/pacientes/#{se.patient_id}/sessoes/#{se.id}"}
+                class="flex items-center justify-between gap-3 py-2.5 hover:text-primary"
+              >
+                <span class="font-medium">{se.patient.name}</span>
+                <span class="text-sm text-muted-foreground">
+                  {session_date(se.date)} · {se.status}
+                </span>
+              </.link>
+            </li>
+          </ul>
+        </.card>
+
+        <.card id="card-active-patients">
+          <:title>{gettext("Active patients")} ({@active_count})</:title>
+          <.empty_state :if={@recent_patients == []} title={gettext("No active patients.")} />
+          <ul :if={@recent_patients != []} class="-my-1 divide-y divide-border">
+            <li :for={p <- @recent_patients} id={"active-patient-#{p.id}"}>
+              <.link
+                navigate={~p"/pacientes/#{p.id}"}
+                class="flex items-center justify-between gap-3 py-2.5 hover:text-primary"
+              >
+                <span class="font-medium">{p.name}</span>
+                <.badge variant="outline">{p.status}</.badge>
+              </.link>
+            </li>
+          </ul>
+        </.card>
+      </div>
     </Layouts.app>
     """
   end
 
   defp session_date(nil), do: "—"
   defp session_date(%DateTime{} = d), do: Calendar.strftime(d, "%d/%m/%Y")
+
+  defp audio_variant(:done), do: "success"
+  defp audio_variant(:error), do: "destructive"
+  defp audio_variant(_), do: "secondary"
 end

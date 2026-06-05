@@ -57,12 +57,30 @@ defmodule RavanshenasiWeb.SessionLive.Form do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <.header>{@page_title}</.header>
-      <.form for={@form} id="session-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:notes]} type="textarea" label={gettext("Notes")} />
-        <.input field={@form[:duration_minutes]} type="number" label={gettext("Duration (minutes)")} />
-        <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
-      </.form>
+      <.header>
+        {@page_title}
+        <:subtitle>{gettext("Fill in the session details below")}</:subtitle>
+        <:actions>
+          <.button variant="outline" navigate={~p"/pacientes/#{@patient.id}/sessoes"}>
+            {gettext("Cancel")}
+          </.button>
+        </:actions>
+      </.header>
+
+      <.card class="max-w-xl">
+        <:title>{gettext("Session data")}</:title>
+        <.form for={@form} id="session-form" phx-change="validate" phx-submit="save" class="space-y-4">
+          <.input field={@form[:notes]} type="textarea" label={gettext("Notes")} />
+          <.input
+            field={@form[:duration_minutes]}
+            type="number"
+            label={gettext("Duration (minutes)")}
+          />
+          <div class="flex justify-end pt-2">
+            <.button phx-disable-with={gettext("Saving...")}>{gettext("Save")}</.button>
+          </div>
+        </.form>
+      </.card>
     </Layouts.app>
     """
   end
