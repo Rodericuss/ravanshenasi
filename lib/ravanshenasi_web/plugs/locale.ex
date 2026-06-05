@@ -3,11 +3,11 @@ defmodule RavanshenasiWeb.Plugs.Locale do
   import Plug.Conn
 
   @supported ~w(en pt)
-  @default Application.compile_env(
-             :ravanshenasi,
-             [RavanshenasiWeb.Gettext, :default_locale],
-             "en"
-           )
+
+  # Read at runtime (not compile_env): default_locale differs between dev/prod ("pt")
+  # and test ("en"), and a compile_env would lock the test value into the dev build.
+  defp default_locale,
+    do: Application.get_env(:ravanshenasi, RavanshenasiWeb.Gettext)[:default_locale] || "en"
 
   # --- Plug (HTTP requests) ---
   def init(opts), do: opts
@@ -17,7 +17,7 @@ defmodule RavanshenasiWeb.Plugs.Locale do
       locale_from_params(conn) ||
         get_session(conn, :locale) ||
         locale_from_header(conn) ||
-        @default
+        default_locale()
 
     Gettext.put_locale(RavanshenasiWeb.Gettext, locale)
     put_session(conn, :locale, locale)
@@ -25,7 +25,7 @@ defmodule RavanshenasiWeb.Plugs.Locale do
 
   # --- on_mount (LiveView) ---
   def on_mount(:set_locale, _params, session, socket) do
-    Gettext.put_locale(RavanshenasiWeb.Gettext, session["locale"] || @default)
+    Gettext.put_locale(RavanshenasiWeb.Gettext, session["locale"] || default_locale())
     {:cont, socket}
   end
 
