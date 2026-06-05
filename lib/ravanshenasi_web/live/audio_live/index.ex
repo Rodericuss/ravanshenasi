@@ -92,7 +92,10 @@ defmodule RavanshenasiWeb.AudioLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        {gettext("WhatsApp audios")} — {@patient.name}
+        <span class="flex items-center gap-3">
+          <.avatar name={@patient.name} class="size-8" />
+          {gettext("WhatsApp audios")} — {@patient.name}
+        </span>
         <:subtitle>{gettext("Upload and transcribe audio messages from patients")}</:subtitle>
       </.header>
 
@@ -132,15 +135,16 @@ defmodule RavanshenasiWeb.AudioLive.Index do
             <:title>
               <div class="flex items-center justify-between gap-3">
                 <span class="min-w-0 truncate font-medium">{a.original_filename}</span>
-                <span
-                  id={"audio-status-#{a.id}"}
-                  data-status={a.status}
-                  class={[
-                    "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
-                    audio_status_class(a.status)
-                  ]}
-                >
-                  {status_label(a.status)}
+                <span class="flex items-center gap-1.5">
+                  <%!-- data-status preserved for tests --%>
+                  <span
+                    id={"audio-status-#{a.id}"}
+                    data-status={a.status}
+                    class="sr-only"
+                  >
+                    {status_label(a.status)}
+                  </span>
+                  <.status_badge value={a.status} />
                 </span>
               </div>
             </:title>
@@ -260,8 +264,4 @@ defmodule RavanshenasiWeb.AudioLive.Index do
   defp status_label(:suggesting), do: gettext("Generating reply…")
   defp status_label(:done), do: gettext("Done")
   defp status_label(:error), do: gettext("Error")
-
-  defp audio_status_class(:done), do: "bg-success/10 text-success"
-  defp audio_status_class(:error), do: "bg-destructive/10 text-destructive"
-  defp audio_status_class(_), do: "bg-secondary text-secondary-foreground"
 end

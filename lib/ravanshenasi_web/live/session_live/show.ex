@@ -55,7 +55,7 @@ defmodule RavanshenasiWeb.SessionLive.Show do
         {gettext("Session")} — {@patient.name}
         <:subtitle>{session_date(@session.date)}</:subtitle>
         <:actions>
-          <.badge variant={session_variant(@session.status)}>{@session.status}</.badge>
+          <.status_badge value={@session.status} />
           <.button
             :if={@session.status == :draft}
             id="finalize-session-button"
@@ -120,8 +120,4 @@ defmodule RavanshenasiWeb.SessionLive.Show do
   defp session_date(%DateTime{} = d), do: Calendar.strftime(d, "%d/%m/%Y")
   defp session_date(%Date{} = d), do: Calendar.strftime(d, "%d/%m/%Y")
   defp session_date(d), do: to_string(d)
-
-  defp session_variant(:draft), do: "secondary"
-  defp session_variant(:finalized), do: "success"
-  defp session_variant(_), do: "outline"
 end

@@ -32,13 +32,13 @@ defmodule RavanshenasiWeb.SessionLive.Index do
           {gettext("Create the first session for this patient.")}
         </.empty_state>
         <ul :if={@sessions != []} id="sessions" class="-my-1 divide-y divide-border">
-          <li :for={s <- @sessions} class="flex items-center justify-between gap-3 py-2.5">
+          <li :for={s <- @sessions}>
             <.link
               navigate={~p"/pacientes/#{@patient.id}/sessoes/#{s.id}"}
-              class="flex-1 flex items-center justify-between gap-3 hover:text-primary"
+              class="-mx-2 flex items-center justify-between gap-3 rounded-md px-2 py-2 transition hover:bg-muted/50"
             >
               <span class="font-medium">{session_date(s.date)}</span>
-              <.badge variant={session_variant(s.status)}>{s.status}</.badge>
+              <.status_badge value={s.status} />
             </.link>
           </li>
         </ul>
@@ -51,8 +51,4 @@ defmodule RavanshenasiWeb.SessionLive.Index do
   defp session_date(%DateTime{} = d), do: Calendar.strftime(d, "%d/%m/%Y")
   defp session_date(%Date{} = d), do: Calendar.strftime(d, "%d/%m/%Y")
   defp session_date(d), do: to_string(d)
-
-  defp session_variant(:draft), do: "secondary"
-  defp session_variant(:finalized), do: "success"
-  defp session_variant(_), do: "outline"
 end

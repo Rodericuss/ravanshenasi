@@ -138,7 +138,13 @@ defmodule RavanshenasiWeb.PatientLive.Show do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        {@patient.name}
+        <span class="flex items-center gap-3">
+          <.avatar name={@patient.name} class="size-10" />
+          <span class="flex items-center gap-2">
+            {@patient.name}
+            <.status_badge value={@patient.status} />
+          </span>
+        </span>
         <:subtitle :if={@patient.chief_complaint}>{@patient.chief_complaint}</:subtitle>
         <:actions>
           <.button variant="outline" navigate={~p"/pacientes/#{@patient.id}/editar"}>
@@ -232,7 +238,7 @@ defmodule RavanshenasiWeb.PatientLive.Show do
                 <div class="mb-2 flex items-center justify-between gap-2">
                   <h4 class="font-semibold">{s.framework_name}</h4>
                   <span id={"suggestion-status-#{s.id}"}>
-                    <.badge variant={suggestion_status_variant(s.status)}>{s.status}</.badge>
+                    <.status_badge value={s.status} />
                   </span>
                 </div>
                 <p class="mb-2 text-sm text-muted-foreground">{s.justification}</p>
@@ -267,8 +273,4 @@ defmodule RavanshenasiWeb.PatientLive.Show do
     </Layouts.app>
     """
   end
-
-  defp suggestion_status_variant(:saved), do: "success"
-  defp suggestion_status_variant(:discarded), do: "secondary"
-  defp suggestion_status_variant(_), do: "outline"
 end

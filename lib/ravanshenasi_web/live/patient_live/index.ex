@@ -66,23 +66,19 @@ defmodule RavanshenasiWeb.PatientLive.Index do
       <.card>
         <.empty_state :if={@patients == []} icon="hero-users" title={gettext("No patients found.")} />
         <ul :if={@patients != []} id="patients" class="-my-1 divide-y divide-border">
-          <li :for={p <- @patients} class="flex items-center justify-between gap-3 py-3">
+          <li :for={p <- @patients}>
             <.link
               navigate={~p"/pacientes/#{p.id}"}
-              class="font-medium hover:text-primary"
+              class="-mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition hover:bg-muted/50"
             >
-              {p.name}
+              <.avatar name={p.name} class="size-8" />
+              <span class="flex-1 font-medium">{p.name}</span>
+              <.status_badge value={p.status} />
             </.link>
-            <.badge variant={patient_status_variant(p.status)}>{p.status}</.badge>
           </li>
         </ul>
       </.card>
     </Layouts.app>
     """
   end
-
-  defp patient_status_variant(:active), do: "success"
-  defp patient_status_variant(:inactive), do: "secondary"
-  defp patient_status_variant(:waitlist), do: "warning"
-  defp patient_status_variant(_), do: "outline"
 end
