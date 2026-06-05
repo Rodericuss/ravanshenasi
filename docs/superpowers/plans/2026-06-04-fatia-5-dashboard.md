@@ -25,6 +25,7 @@
 | `lib/ravanshenasi_web/user_auth.ex` | **Modificar:** `signed_in_path` (Conn + Socket) via helper `signed_in_path_for_scope/1`. |
 | `lib/ravanshenasi_web/live/dashboard_live/index.ex` | **Criar:** mount agrega + render dos 4 cards. |
 | `lib/ravanshenasi_web/router.ex` | **Modificar:** `live "/painel"` no `live_session :require_clinical`. |
+| `lib/ravanshenasi_web/components/layouts.ex` | **Modificar:** link "Dashboard" no header (visível pra `clinical_access?`). |
 
 **Ordem:** T1–T4 (queries nos contexts) → T5 (signed_in_path) → T6 (rota + LiveView). Cada task é TDD.
 
@@ -127,11 +128,19 @@ Expected: PASS (incl. os testes antigos de records).
 Acrescentar a `test/ravanshenasi/audio_messages_test.exs` (setup provê `scope: s`, `patient: p`; `attrs/0` já existe no arquivo):
 ```elixir
   test "list_recent traz os áudios do dono, recentes primeiro, com :patient", %{scope: s, patient: p} do
-    {:ok, m1} = AudioMessages.create_audio_message(s, p, attrs())
-    {:ok, m2} = AudioMessages.create_audio_message(s, p, attrs())
+    {:ok, m_old} = AudioMessages.create_audio_message(s, p, attrs())
+    {:ok, m_new} = AudioMessages.create_audio_message(s, p, attrs())
+    # utc_datetime tem precisão de segundo e os 2 inserts podem empatar → ordem instável.
+    # Força m_old no passado pra a ordenação por inserted_at ser determinística.
+    Ravanshenasi.Repo.transact_tenant(s, fn ->
+      Ravanshenasi.Repo.update_all(
+        Ecto.Query.from(a in Ravanshenasi.AudioMessages.AudioMessage, where: a.id == ^m_old.id),
+        set: [inserted_at: ~U[2020-01-01 00:00:00Z]]
+      )
+    end)
 
     recents = AudioMessages.list_recent(s)
-    assert Enum.map(recents, & &1.id) == [m2.id, m1.id]
+    assert Enum.map(recents, & &1.id) == [m_new.id, m_old.id]
     assert hd(recents).patient.name == "Maria"
   end
 
@@ -252,10 +261,17 @@ Acrescentar a `test/ravanshenasi/patients_test.exs` (já usa `import Ravanshenas
 ```elixir
   test "count_active + list_recent: só ativos do dono, recentes primeiro" do
     s = user_scope_fixture()
-    {:ok, _p1} = Patients.create_patient(s, %{name: "Ana"})
+    {:ok, p1} = Patients.create_patient(s, %{name: "Ana"})
     {:ok, p2} = Patients.create_patient(s, %{name: "Bia"})
     {:ok, inativo} = Patients.create_patient(s, %{name: "Cida"})
     {:ok, _} = Patients.inactivate_patient(s, inativo)
+    # força p1 no passado (utc_datetime pode empatar entre os inserts) pra Bia vir primeiro
+    Ravanshenasi.Repo.transact_tenant(s, fn ->
+      Ravanshenasi.Repo.update_all(
+        Ecto.Query.from(x in Ravanshenasi.Patients.Patient, where: x.id == ^p1.id),
+        set: [inserted_at: ~U[2020-01-01 00:00:00Z]]
+      )
+    end)
 
     assert Patients.count_active(s) == 2
     recents = Patients.list_recent(s)
@@ -312,18 +328,23 @@ Expected: PASS.
 
 ---
 
-## Task 5: `signed_in_path` por `clinical_access?` (Conn + Socket)
+## Task 5: `signed_in_path` por `clinical_access?` (Conn + Socket) + `log_in_user` leva o clínico pro `/painel`
 
 **Files:**
 - Modify: `lib/ravanshenasi_web/user_auth.ex`
 - Modify: `test/ravanshenasi_web/user_auth_test.exs`
 - Modify: `test/ravanshenasi_web/live/user_live/registration_test.exs`
+- Modify: `test/ravanshenasi_web/controllers/user_session_controller_test.exs`
 
-Hoje `signed_in_path/1` só casa `%Plug.Conn{}`; chamadas `signed_in_path(socket)` (3 LiveViews de registro/convite) caem no fallback `~p"/"`. Extrai a helper por scope. **Único teste que muda de destino:** `registration_test.exs:20` (`/` → `/painel`, porque `user_fixture` é solo-admin clínico e `mount_current_scope` carrega tenant).
+Dois ajustes em `user_auth.ex`:
+1. `signed_in_path/1` passa a casar `%Plug.Conn{}` **e** `%Phoenix.LiveView.Socket{}` (hoje os 3 LiveViews de registro/convite chamam `signed_in_path(socket)` e caem no fallback `~p"/"`), via a helper `signed_in_path_for_scope/1`.
+2. `log_in_user/3` calcula o destino **a partir do `user` recém-autenticado** (não do `conn.assigns.current_scope`, que no login via controller ainda tem `user: nil` → daria `/`). Sem isso o goal "clínico pós-login → /painel" não acontece no login normal (password/magic-link).
 
-- [ ] **Step 1: Escrever o teste que falha**
+**Blast radius (verificado no código):** com (2), os logins bem-sucedidos do `user_fixture` (solo-admin = clínico) que hoje vão pra `~p"/"` passam a ir pra `~p"/painel"`. Testes a ajustar: `user_auth_test.exs` "already logged in" (`/users/settings`→`/painel`), `user_session_controller_test.exs` linhas dos 4 logins OK (`/`→`/painel`), `registration_test.exs` "already logged in" (`/`→`/painel`). Logout e login-inválido continuam em `/`/`/users/log-in`; login com `user_return_to` continua honrando o return_to.
 
-Acrescentar a `test/ravanshenasi_web/user_auth_test.exs` (já tem `use RavanshenasiWeb.ConnCase`, `alias Ravanshenasi.Accounts`; e `import Ravanshenasi.AccountsFixtures` — confirme no topo, senão acrescente):
+- [ ] **Step 1: Escrever os testes da helper que falham**
+
+Acrescentar a `test/ravanshenasi_web/user_auth_test.exs` (já tem `use RavanshenasiWeb.ConnCase`, `alias Ravanshenasi.Accounts`, `import Ravanshenasi.AccountsFixtures`):
 ```elixir
   describe "signed_in_path/1" do
     test "manda profissional (clínico) pra /painel via Conn" do
@@ -350,16 +371,18 @@ Acrescentar a `test/ravanshenasi_web/user_auth_test.exs` (já tem `use Ravanshen
     end
   end
 ```
-> `Accounts.Scope` é o módulo `Ravanshenasi.Accounts.Scope` (via o `alias Ravanshenasi.Accounts` já presente). Se o arquivo não tiver `import Ravanshenasi.AccountsFixtures`, acrescente no topo (ele já é usado nos demais testes do arquivo via `%{user: user}` — confirme).
+> `Accounts.Scope` resolve via o `alias Ravanshenasi.Accounts` já presente no arquivo.
 
 - [ ] **Step 2: Rodar e ver falhar**
 
 Run: `mix test test/ravanshenasi_web/user_auth_test.exs --trace`
-Expected: FAIL — o `signed_in_path(conn)` de um scope clínico devolve `~p"/users/settings"` (comportamento antigo), não `~p"/painel"`; e o caso Socket cai em `~p"/"`.
+Expected: FAIL — `signed_in_path(conn)` de scope clínico devolve `~p"/users/settings"` (antigo), não `~p"/painel"`; o caso Socket cai em `~p"/"`.
 
-- [ ] **Step 3: Implementar**
+- [ ] **Step 3: Implementar (signed_in_path + log_in_user)**
 
-Em `lib/ravanshenasi_web/user_auth.ex`, **substituir** as duas cláusulas atuais de `signed_in_path/1` (a `%Plug.Conn{...} -> ~p"/users/settings"` e a `signed_in_path(_) -> ~p"/"`) por:
+Em `lib/ravanshenasi_web/user_auth.ex`:
+
+(a) **Substituir** as duas cláusulas atuais de `signed_in_path/1` (a `%Plug.Conn{...} -> ~p"/users/settings"` e a `signed_in_path(_) -> ~p"/"`) por:
 ```elixir
   @doc "Returns the path to redirect to after log in (works with a Conn or a LiveView Socket)."
   def signed_in_path(%Plug.Conn{assigns: %{current_scope: scope}}), do: signed_in_path_for_scope(scope)
@@ -378,18 +401,28 @@ Em `lib/ravanshenasi_web/user_auth.ex`, **substituir** as duas cláusulas atuais
   defp signed_in_path_for_scope(_), do: ~p"/"
 ```
 
-- [ ] **Step 4: Ajustar o teste de registro que mudou de destino**
-
-Em `test/ravanshenasi_web/live/user_live/registration_test.exs`, no teste "redirects if already logged in", trocar o destino esperado:
+(b) Em `log_in_user/3`, trocar o destino do fallback pra computar a partir do `user` autenticado (preserva `user_return_to`). De:
 ```elixir
-        |> follow_redirect(conn, ~p"/painel")
+    |> redirect(to: user_return_to || signed_in_path(conn))
 ```
-(era `~p"/"`. O `user_fixture()` é solo-admin clínico; já logado, ao acessar `/users/register` o `on_mount` redireciona via `signed_in_path(socket)` → `/painel`.)
+para:
+```elixir
+    |> redirect(to: user_return_to || signed_in_path_for_scope(Scope.for_user(user) |> with_tenant()))
+```
+> `with_tenant/1` é a helper privada já existente no módulo (carrega o tenant do `user.tenant_id`); `Scope` e `Accounts` já estão aliased no topo.
+
+- [ ] **Step 4: Ajustar os testes que mudaram de destino**
+
+Todos os logins bem-sucedidos do `user_fixture` (solo-admin clínico) passam a ir pra `/painel`:
+
+1. `test/ravanshenasi_web/user_auth_test.exs` — no teste "redirects to settings when user is already logged in", trocar `assert redirected_to(conn) == ~p"/users/settings"` por `assert redirected_to(conn) == ~p"/painel"`. (Renomear o teste pra "redirects clinical user to dashboard" é opcional.)
+2. `test/ravanshenasi_web/controllers/user_session_controller_test.exs` — nos **4 logins bem-sucedidos** (password `~21`, password+remember_me `~44`, magic-link `~85`, magic-link confirma `~106`), trocar `assert redirected_to(conn) == ~p"/"` por `assert redirected_to(conn) == ~p"/painel"`. **NÃO** mexer: o login com return_to (`~60` → `/foo/bar`), os inválidos (`~71`,`~128` → `/users/log-in`), nem os logouts (`~135`,`~142` → `/`).
+3. `test/ravanshenasi_web/live/user_live/registration_test.exs` — no teste "redirects if already logged in", trocar `follow_redirect(conn, ~p"/")` por `follow_redirect(conn, ~p"/painel")`.
 
 - [ ] **Step 5: Rodar e ver passar**
 
-Run: `mix test test/ravanshenasi_web/user_auth_test.exs test/ravanshenasi_web/live/user_live/registration_test.exs --trace`
-Expected: PASS. Rodar também `mix test test/ravanshenasi_web/controllers/user_session_controller_test.exs --trace` pra confirmar que o login via controller (scope com user nil no create) continua em `~p"/"` — **não deve quebrar**.
+Run: `mix test test/ravanshenasi_web/user_auth_test.exs test/ravanshenasi_web/controllers/user_session_controller_test.exs test/ravanshenasi_web/live/user_live/registration_test.exs --trace`
+Expected: PASS. Se algum login OK ainda esperar `~p"/"` e falhar apontando pra `/painel`, ajuste-o pra `/painel` (era login bem-sucedido de user clínico). Se algum apontar pra `/users/settings`, é porque aquele fixture não é clínico — aí o destino correto é `/users/settings` (mantenha).
 
 ---
 
@@ -398,6 +431,7 @@ Expected: PASS. Rodar também `mix test test/ravanshenasi_web/controllers/user_s
 **Files:**
 - Modify: `lib/ravanshenasi_web/router.ex`
 - Create: `lib/ravanshenasi_web/live/dashboard_live/index.ex`
+- Modify: `lib/ravanshenasi_web/components/layouts.ex` (link "Dashboard" no header)
 - Test: `test/ravanshenasi_web/live/dashboard_live_test.exs`
 
 - [ ] **Step 1: Escrever o teste que falha**
@@ -461,6 +495,11 @@ defmodule RavanshenasiWeb.DashboardLiveTest do
     admin = clinic_admin_scope_fixture()
     conn = log_in_user(conn, admin.user)
     assert {:error, {:redirect, _}} = live(conn, ~p"/painel")
+  end
+
+  test "header mostra o link pro painel pro clínico", %{conn: conn} do
+    {:ok, lv, _} = live(conn, ~p"/painel")
+    assert has_element?(lv, ~s{a[href="/painel"]})
   end
 end
 ```
@@ -561,10 +600,21 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
 end
 ```
 
-- [ ] **Step 5: Rodar e ver passar**
+- [ ] **Step 5: Adicionar o link "Dashboard" no header**
+
+Em `lib/ravanshenasi_web/components/layouts.ex`, no `<ul>` do header, **antes** do `<li>` que aponta pra `~p"/pacientes"` (ambos com o mesmo guard `clinical_access?`), acrescentar:
+```elixir
+          <li :if={Ravanshenasi.Accounts.Scope.clinical_access?(@current_scope)}>
+            <.link navigate={~p"/painel"} class="btn btn-ghost">
+              {gettext("Dashboard")}
+            </.link>
+          </li>
+```
+
+- [ ] **Step 6: Rodar e ver passar**
 
 Run: `mix test test/ravanshenasi_web/live/dashboard_live_test.exs --trace`
-Expected: PASS (5 testes).
+Expected: PASS (6 testes, incl. o link do header).
 
 ---
 
@@ -591,8 +641,8 @@ Expected: verde. (Não há hook de `mix format` automático pra Elixir — se o 
 **Spec coverage:**
 - §3 widgets / funções de agregação: T1 (Records pending review + count), T2 (AudioMessages.list_recent), T3 (Sessions.list_recent desc_nulls_last), T4 (Patients count_active + list_recent). Todas com preload `:patient` onde a spec pede. ✅
 - §4 DashboardLive: T6 — mount agrega, render 4 cards com contagem/lista/empty/IDs. ✅
-- §5 signed_in_path: T5 — helper Conn+Socket, `clinical_access?`, ajuste do teste de registro. ✅
-- §6 autorização: rota no `live_session :require_clinical` (T6 Step 3) + teste de gate (clinic admin → redirect). Isolamento entre profissionais em cada função (T1–T4) e na LiveView (T6). ✅
+- §5 signed_in_path: T5 — helper Conn+Socket, `clinical_access?`, **`log_in_user` computa o destino do user autenticado** (clínico pós-login → /painel), ajuste dos testes de auth afetados. ✅
+- §6 autorização: rota no `live_session :require_clinical` (T6 Step 3) + teste de gate (clinic admin → redirect). Isolamento entre profissionais em cada função (T1–T4) e na LiveView (T6). Link "Dashboard" no header só pra `clinical_access?` (T6 Step 5 + teste). ✅
 - §7 edge cases: empty states (T6 teste "vazio"), admin barrado, isolamento. ✅
 - §8 testes: contexts (escopo/isolamento), LiveView (cards + **href** + empty + gate), signed_in_path (Conn/Socket/clínico/admin/nil). ✅
 - §11 DoD: cada item mapeia a uma task. ✅
@@ -601,4 +651,6 @@ Expected: verde. (Não há hook de `mix format` automático pra Elixir — se o 
 
 **Type consistency:** `list_pending_review/2`+`count_pending_review/1`, `AudioMessages.list_recent/2`, `Sessions.list_recent/2`, `Patients.count_active/1`+`list_recent/2` — assinaturas idênticas entre tasks e LiveView (T6 mount). Assigns: `pending_review`/`pending_review_count`/`recent_audios`/`recent_sessions`/`active_count`/`recent_patients` consistentes entre mount e render. IDs estáveis: `#card-*`, `#pending-review-<id>`, `#recent-audio-<id>`, `#recent-session-<id>`, `#active-patient-<id>`. ✅
 
-**Blast radius do signed_in_path (verificado no código):** o ÚNICO teste que muda de destino é `registration_test.exs:20` (`/` → `/painel`), porque `user_fixture` é solo-admin clínico e `mount_current_scope` carrega tenant. `user_auth_test.exs` "redirects to settings" monta `Scope.for_user(user)` sem tenant → clinical_access? false → `/users/settings` (não quebra). `user_session_controller_test.exs` login → `/` porque o `current_scope` no `create` tem user nil (não quebra). Não há testes nos fluxos org/registration nem org/accept_invitation.
+**Blast radius do login (verificado no código):** com o `log_in_user` computando o destino a partir do `user` autenticado (solo-admin = clínico), os logins bem-sucedidos sem `user_return_to` passam de `/` pra `/painel`. Testes ajustados na T5 Step 4: `user_auth_test.exs` "already logged in" (`/users/settings`→`/painel`), `user_session_controller_test.exs` os 4 logins OK (`~21`,`~44`,`~85`,`~106`: `/`→`/painel`), `registration_test.exs` "already logged in" (`/`→`/painel`). **Não mudam:** login com return_to (`/foo/bar`, `/hello`), inválidos (`/users/log-in`), logouts (`/`). Não há testes nos fluxos org/registration nem org/accept_invitation. A T5 Step 5 cobre o ajuste fino caso algum fixture não seja clínico.
+
+**Timestamps (Finding aplicado):** os testes de "recentes primeiro" de áudio (T2) e paciente (T4) forçam `inserted_at` distinto via `Repo.update_all` (utc_datetime tem precisão de segundo e empataria). Sessões (T3) ordenam por `date` distinto → determinístico sem ajuste.
