@@ -1,36 +1,15 @@
 defmodule RavanshenasiWeb.CoreComponents do
   @moduledoc """
-  Provides core UI components.
+  Core UI components for PsiCare.
 
-  At first glance, this module may seem daunting, but its goal is to provide
-  core building blocks for your application, such as tables, forms, and
-  inputs. The components consist mostly of markup and are well-documented
-  with doc strings and declarative assigns. You may customize and style
-  them in any way you want, based on your application growth and needs.
-
-  The foundation for styling is Tailwind CSS, a utility-first CSS framework,
-  augmented with daisyUI, a Tailwind CSS plugin that provides UI components
-  and themes. Here are useful references:
-
-    * [daisyUI](https://daisyui.com/docs/intro/) - a good place to get
-      started and see the available components.
-
-    * [Tailwind CSS](https://tailwindcss.com) - the foundational framework
-      we build on. You will use it for layout, sizing, flexbox, grid, and
-      spacing.
-
-    * [Heroicons](https://heroicons.com) - see `icon/1` for usage.
-
-    * [Phoenix.Component](https://hexdocs.pm/phoenix_live_view/Phoenix.Component.html) -
-      the component system used by Phoenix. Some components, such as `<.link>`
-      and `<.form>`, are defined there.
-
+  Styling foundation: Tailwind CSS v4 with semantic design tokens
+  (`bg-card`, `text-foreground`, `border-border`, `bg-primary`, …) inspired by
+  Metronic 9. Icons come from Heroicons (see `icon/1`).
   """
   use Phoenix.Component
   use Gettext, backend: RavanshenasiWeb.Gettext
 
   alias Phoenix.HTML.Form
-
   alias Phoenix.LiveView.JS
 
   @doc """
@@ -65,23 +44,30 @@ defmodule RavanshenasiWeb.CoreComponents do
       id={@id}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
-      class="toast toast-top toast-end z-50"
+      class="fixed top-4 right-4 z-50 w-80 sm:w-96"
       {@rest}
     >
       <div class={[
-        "alert w-80 sm:w-96 max-w-80 sm:max-w-96 text-wrap",
-        @kind == :info && "alert-info",
-        @kind == :error && "alert-error"
+        "flex items-start gap-3 rounded-lg border bg-card p-4 text-card-foreground shadow-lg cursor-pointer",
+        @kind == :info && "border-l-4 border-l-info",
+        @kind == :error && "border-l-4 border-l-destructive"
       ]}>
-        <.icon :if={@kind == :info} name="hero-information-circle" class="size-5 shrink-0" />
-        <.icon :if={@kind == :error} name="hero-exclamation-circle" class="size-5 shrink-0" />
-        <div>
-          <p :if={@title} class="font-semibold">{@title}</p>
-          <p>{msg}</p>
+        <.icon
+          :if={@kind == :info}
+          name="hero-information-circle"
+          class="size-5 shrink-0 text-info"
+        />
+        <.icon
+          :if={@kind == :error}
+          name="hero-exclamation-circle"
+          class="size-5 shrink-0 text-destructive"
+        />
+        <div class="min-w-0 flex-1">
+          <p :if={@title} class="text-sm font-semibold">{@title}</p>
+          <p class="text-sm text-muted-foreground break-words">{msg}</p>
         </div>
-        <div class="flex-1" />
-        <button type="button" class="group self-start cursor-pointer" aria-label={gettext("close")}>
-          <.icon name="hero-x-mark" class="size-5 opacity-40 group-hover:opacity-70" />
+        <button type="button" class="group shrink-0 cursor-pointer" aria-label={gettext("close")}>
+          <.icon name="hero-x-mark" class="size-4 opacity-40 group-hover:opacity-70" />
         </button>
       </div>
     </div>
@@ -89,40 +75,186 @@ defmodule RavanshenasiWeb.CoreComponents do
   end
 
   @doc """
-  Renders a button with navigation support.
+  Renders a button (or link styled as a button).
 
   ## Examples
 
       <.button>Send!</.button>
-      <.button phx-click="go" variant="primary">Send!</.button>
+      <.button variant="outline" phx-click="go">Cancel</.button>
       <.button navigate={~p"/"}>Home</.button>
   """
-  attr :rest, :global, include: ~w(href navigate patch method download name value disabled)
-  attr :class, :any
-  attr :variant, :string, values: ~w(primary)
+  attr :rest, :global, include: ~w(href navigate patch method download name value disabled type)
+  attr :class, :any, default: nil
+
+  attr :variant, :string,
+    default: nil,
+    values: [nil | ~w(primary secondary outline ghost destructive)]
+
   slot :inner_block, required: true
 
+  @button_base "inline-flex items-center justify-center gap-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none h-9 px-4 py-2 cursor-pointer"
+
   def button(%{rest: rest} = assigns) do
-    variants = %{"primary" => "btn-primary", nil => "btn-primary btn-soft"}
+    variants = %{
+      nil => "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+      "primary" => "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+      "secondary" => "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+      "outline" =>
+        "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+      "ghost" => "hover:bg-accent hover:text-accent-foreground",
+      "destructive" =>
+        "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90"
+    }
 
     assigns =
-      assign_new(assigns, :class, fn ->
-        ["btn", Map.fetch!(variants, assigns[:variant])]
-      end)
+      assign(assigns, :computed_class, [
+        @button_base,
+        Map.fetch!(variants, assigns.variant),
+        assigns.class
+      ])
 
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
-      <.link class={@class} {@rest}>
+      <.link class={@computed_class} {@rest}>
         {render_slot(@inner_block)}
       </.link>
       """
     else
       ~H"""
-      <button class={@class} {@rest}>
+      <button class={@computed_class} {@rest}>
         {render_slot(@inner_block)}
       </button>
       """
     end
+  end
+
+  @doc """
+  Renders a card container.
+
+  ## Examples
+
+      <.card>
+        <:title>Patients</:title>
+        content
+      </.card>
+  """
+  attr :class, :any, default: nil
+  attr :rest, :global
+  slot :title
+  slot :actions
+  slot :inner_block, required: true
+
+  def card(assigns) do
+    ~H"""
+    <div class={["rounded-lg border bg-card text-card-foreground shadow-sm", @class]} {@rest}>
+      <div
+        :if={@title != [] or @actions != []}
+        class="flex items-center justify-between gap-4 border-b px-5 py-4"
+      >
+        <h3 class="text-sm font-semibold">{render_slot(@title)}</h3>
+        <div :if={@actions != []} class="flex items-center gap-2">{render_slot(@actions)}</div>
+      </div>
+      <div class="p-5">{render_slot(@inner_block)}</div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a small status badge.
+
+  ## Examples
+
+      <.badge variant="success">done</.badge>
+  """
+  attr :variant, :string,
+    default: "secondary",
+    values: ~w(primary secondary success warning destructive info outline)
+
+  attr :class, :any, default: nil
+  slot :inner_block, required: true
+
+  def badge(assigns) do
+    variants = %{
+      "primary" => "bg-primary/10 text-primary",
+      "secondary" => "bg-secondary text-secondary-foreground",
+      "success" => "bg-success/10 text-success",
+      "warning" => "bg-warning/15 text-warning-foreground",
+      "destructive" => "bg-destructive/10 text-destructive",
+      "info" => "bg-info/10 text-info",
+      "outline" => "border border-border text-foreground"
+    }
+
+    assigns = assign(assigns, :variant_class, Map.fetch!(variants, assigns.variant))
+
+    ~H"""
+    <span class={[
+      "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
+      @variant_class,
+      @class
+    ]}>
+      {render_slot(@inner_block)}
+    </span>
+    """
+  end
+
+  @doc """
+  Renders a metric/stat card for dashboards.
+
+  ## Examples
+
+      <.stat_card label="Active patients" value={12} icon="hero-users" />
+  """
+  attr :label, :string, required: true
+  attr :value, :any, required: true
+  attr :icon, :string, default: nil
+  attr :class, :any, default: nil
+  attr :rest, :global
+
+  def stat_card(assigns) do
+    ~H"""
+    <div
+      class={[
+        "flex items-center gap-4 rounded-lg border bg-card p-5 text-card-foreground shadow-sm",
+        @class
+      ]}
+      {@rest}
+    >
+      <div
+        :if={@icon}
+        class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
+      >
+        <.icon name={@icon} class="size-6" />
+      </div>
+      <div class="min-w-0">
+        <p class="text-2xl font-semibold leading-tight">{@value}</p>
+        <p class="text-sm text-muted-foreground">{@label}</p>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders an empty state placeholder.
+
+  ## Examples
+
+      <.empty_state icon="hero-inbox" title="Nothing here yet" />
+  """
+  attr :icon, :string, default: "hero-inbox"
+  attr :title, :string, required: true
+  attr :class, :any, default: nil
+  slot :inner_block
+
+  def empty_state(assigns) do
+    ~H"""
+    <div class={["flex flex-col items-center justify-center gap-2 px-4 py-10 text-center", @class]}>
+      <.icon name={@icon} class="size-8 text-muted-foreground/60" />
+      <p class="text-sm font-medium text-foreground">{@title}</p>
+      <p :if={@inner_block != []} class="text-sm text-muted-foreground">
+        {render_slot(@inner_block)}
+      </p>
+    </div>
+    """
   end
 
   @doc """
@@ -132,38 +264,13 @@ defmodule RavanshenasiWeb.CoreComponents do
   which is used to retrieve the input name, id, and values.
   Otherwise all attributes may be passed explicitly.
 
-  ## Types
-
-  This function accepts all HTML input types, considering that:
-
-    * You may also set `type="select"` to render a `<select>` tag
-
-    * `type="checkbox"` is used exclusively to render boolean values
-
-    * For live file uploads, see `Phoenix.Component.live_file_input/1`
-
-  See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
-  for more information. Unsupported types, such as radio, are best
-  written directly in your templates.
-
   ## Examples
 
   ```heex
   <.input field={@form[:email]} type="email" />
   <.input name="my-input" errors={["oh no!"]} />
-  ```
-
-  ## Select type
-
-  When using `type="select"`, you must pass the `options` and optionally
-  a `value` to mark which option should be preselected.
-
-  ```heex
   <.input field={@form[:user_type]} type="select" options={["Admin": "admin", "User": "user"]} />
   ```
-
-  For more information on what kind of data can be passed to `options` see
-  [`options_for_select`](https://hexdocs.pm/phoenix_html/Phoenix.HTML.Form.html#options_for_select/2).
   """
   attr :id, :any, default: nil
   attr :name, :any
@@ -190,6 +297,10 @@ defmodule RavanshenasiWeb.CoreComponents do
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
 
+  @input_base "flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+  @input_error "border-destructive focus-visible:ring-destructive"
+  @label_class "mb-1.5 block text-sm font-medium text-foreground"
+
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
 
@@ -214,8 +325,8 @@ defmodule RavanshenasiWeb.CoreComponents do
       end)
 
     ~H"""
-    <div class="fieldset mb-2">
-      <label for={@id}>
+    <div class="mb-3">
+      <label for={@id} class="flex items-center gap-2 text-sm">
         <input
           type="hidden"
           name={@name}
@@ -223,17 +334,16 @@ defmodule RavanshenasiWeb.CoreComponents do
           disabled={@rest[:disabled]}
           form={@rest[:form]}
         />
-        <span class="label">
-          <input
-            type="checkbox"
-            id={@id}
-            name={@name}
-            value="true"
-            checked={@checked}
-            class={@class || "checkbox checkbox-sm"}
-            {@rest}
-          />{@label}
-        </span>
+        <input
+          type="checkbox"
+          id={@id}
+          name={@name}
+          value="true"
+          checked={@checked}
+          class={@class || "size-4 rounded border-input text-primary focus:ring-2 focus:ring-ring"}
+          {@rest}
+        />
+        <span>{@label}</span>
       </label>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
@@ -242,20 +352,18 @@ defmodule RavanshenasiWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div class="fieldset mb-2">
-      <label for={@id}>
-        <span :if={@label} class="label mb-1">{@label}</span>
-        <select
-          id={@id}
-          name={@name}
-          class={[@class || "w-full select", @errors != [] && (@error_class || "select-error")]}
-          multiple={@multiple}
-          {@rest}
-        >
-          <option :if={@prompt} value="">{@prompt}</option>
-          {Form.options_for_select(@options, @value)}
-        </select>
-      </label>
+    <div class="mb-3">
+      <label :if={@label} for={@id} class={label_class()}>{@label}</label>
+      <select
+        id={@id}
+        name={@name}
+        class={[@class || input_base(), @errors != [] && (@error_class || input_error())]}
+        multiple={@multiple}
+        {@rest}
+      >
+        <option :if={@prompt} value="">{@prompt}</option>
+        {Form.options_for_select(@options, @value)}
+      </select>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -263,52 +371,50 @@ defmodule RavanshenasiWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div class="fieldset mb-2">
-      <label for={@id}>
-        <span :if={@label} class="label mb-1">{@label}</span>
-        <textarea
-          id={@id}
-          name={@name}
-          class={[
-            @class || "w-full textarea",
-            @errors != [] && (@error_class || "textarea-error")
-          ]}
-          {@rest}
-        >{Form.normalize_value("textarea", @value)}</textarea>
-      </label>
+    <div class="mb-3">
+      <label :if={@label} for={@id} class={label_class()}>{@label}</label>
+      <textarea
+        id={@id}
+        name={@name}
+        class={[
+          "min-h-[80px] py-2",
+          @class || input_base(),
+          @errors != [] && (@error_class || input_error())
+        ]}
+        {@rest}
+      >{Form.normalize_value("textarea", @value)}</textarea>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
 
-  # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div class="fieldset mb-2">
-      <label for={@id}>
-        <span :if={@label} class="label mb-1">{@label}</span>
-        <input
-          type={@type}
-          name={@name}
-          id={@id}
-          value={Form.normalize_value(@type, @value)}
-          class={[
-            @class || "w-full input",
-            @errors != [] && (@error_class || "input-error")
-          ]}
-          {@rest}
-        />
-      </label>
+    <div class="mb-3">
+      <label :if={@label} for={@id} class={label_class()}>{@label}</label>
+      <input
+        type={@type}
+        name={@name}
+        id={@id}
+        value={Form.normalize_value(@type, @value)}
+        class={[@class || input_base(), @errors != [] && (@error_class || input_error())]}
+        {@rest}
+      />
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
+
+  # token helpers usable inside ~H class lists
+  defp input_base, do: @input_base
+  defp input_error, do: @input_error
+  defp label_class, do: @label_class
 
   # Helper used by inputs to generate form errors
   defp error(assigns) do
     ~H"""
-    <p class="mt-1.5 flex gap-2 items-center text-sm text-error">
-      <.icon name="hero-exclamation-circle" class="size-5" />
+    <p class="mt-1.5 flex items-center gap-1.5 text-sm text-destructive">
+      <.icon name="hero-exclamation-circle" class="size-4" />
       {render_slot(@inner_block)}
     </p>
     """
@@ -317,22 +423,27 @@ defmodule RavanshenasiWeb.CoreComponents do
   @doc """
   Renders a header with title.
   """
+  attr :class, :any, default: nil
   slot :inner_block, required: true
   slot :subtitle
   slot :actions
 
   def header(assigns) do
     ~H"""
-    <header class={[@actions != [] && "flex items-center justify-between gap-6", "pb-4"]}>
+    <header class={[
+      @actions != [] && "flex flex-wrap items-center justify-between gap-4",
+      "pb-5",
+      @class
+    ]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8">
+        <h1 class="text-xl font-semibold leading-tight tracking-tight">
           {render_slot(@inner_block)}
         </h1>
-        <p :if={@subtitle != []} class="text-sm text-base-content/70">
+        <p :if={@subtitle != []} class="mt-1 text-sm text-muted-foreground">
           {render_slot(@subtitle)}
         </p>
       </div>
-      <div class="flex-none">{render_slot(@actions)}</div>
+      <div :if={@actions != []} class="flex-none">{render_slot(@actions)}</div>
     </header>
     """
   end
@@ -369,34 +480,40 @@ defmodule RavanshenasiWeb.CoreComponents do
       end
 
     ~H"""
-    <table class="table table-zebra">
-      <thead>
-        <tr>
-          <th :for={col <- @col}>{col[:label]}</th>
-          <th :if={@action != []}>
-            <span class="sr-only">{gettext("Actions")}</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody id={@id} phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}>
-        <tr :for={row <- @rows} id={@row_id && @row_id.(row)}>
-          <td
-            :for={col <- @col}
-            phx-click={@row_click && @row_click.(row)}
-            class={@row_click && "hover:cursor-pointer"}
+    <div class="overflow-x-auto rounded-lg border bg-card">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b bg-muted/40 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <th :for={col <- @col} class="px-4 py-3">{col[:label]}</th>
+            <th :if={@action != []} class="px-4 py-3">
+              <span class="sr-only">{gettext("Actions")}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody id={@id} phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}>
+          <tr
+            :for={row <- @rows}
+            id={@row_id && @row_id.(row)}
+            class="border-b last:border-0 hover:bg-muted/30"
           >
-            {render_slot(col, @row_item.(row))}
-          </td>
-          <td :if={@action != []} class="w-0 font-semibold">
-            <div class="flex gap-4">
-              <%= for action <- @action do %>
-                {render_slot(action, @row_item.(row))}
-              <% end %>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <td
+              :for={col <- @col}
+              phx-click={@row_click && @row_click.(row)}
+              class={["px-4 py-3", @row_click && "cursor-pointer"]}
+            >
+              {render_slot(col, @row_item.(row))}
+            </td>
+            <td :if={@action != []} class="w-0 px-4 py-3 font-medium">
+              <div class="flex gap-3">
+                <%= for action <- @action do %>
+                  {render_slot(action, @row_item.(row))}
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     """
   end
 
@@ -416,12 +533,10 @@ defmodule RavanshenasiWeb.CoreComponents do
 
   def list(assigns) do
     ~H"""
-    <ul class="list">
-      <li :for={item <- @item} class="list-row">
-        <div class="list-col-grow">
-          <div class="font-bold">{item.title}</div>
-          <div>{render_slot(item)}</div>
-        </div>
+    <ul class="divide-y divide-border">
+      <li :for={item <- @item} class="flex items-baseline justify-between gap-4 py-3">
+        <span class="text-sm text-muted-foreground">{item.title}</span>
+        <span class="text-sm font-medium">{render_slot(item)}</span>
       </li>
     </ul>
     """
@@ -429,16 +544,6 @@ defmodule RavanshenasiWeb.CoreComponents do
 
   @doc """
   Renders a [Heroicon](https://heroicons.com).
-
-  Heroicons come in three styles – outline, solid, and mini.
-  By default, the outline style is used, but solid and mini may
-  be applied by using the `-solid` and `-mini` suffix.
-
-  You can customize the size and colors of the icons by setting
-  width, height, and background color classes.
-
-  Icons are extracted from the `deps/heroicons` directory and bundled within
-  your compiled app.css by the plugin in `assets/vendor/heroicons.js`.
 
   ## Examples
 
@@ -481,16 +586,6 @@ defmodule RavanshenasiWeb.CoreComponents do
   Translates an error message using gettext.
   """
   def translate_error({msg, opts}) do
-    # When using gettext, we typically pass the strings we want
-    # to translate as a static argument:
-    #
-    #     # Translate the number of files with plural rules
-    #     dngettext("errors", "1 file", "%{count} files", count)
-    #
-    # However the error messages in our forms and APIs are generated
-    # dynamically, so we need to translate them by calling Gettext
-    # with our gettext backend as first argument. Translations are
-    # available in the errors.po file (as we use the "errors" domain).
     if count = opts[:count] do
       Gettext.dngettext(RavanshenasiWeb.Gettext, "errors", msg, msg, count, opts)
     else
