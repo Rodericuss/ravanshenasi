@@ -283,7 +283,7 @@ msgid "Manage your account email address and password settings"
 msgstr ""
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:95
-#: lib/ravanshenasi_web/live/framework_live/index.ex:149
+#: lib/ravanshenasi_web/live/framework_live/index.ex:150
 #: lib/ravanshenasi_web/live/org/members_live.ex:18
 #: lib/ravanshenasi_web/live/patient_live/form.ex:95
 #, elixir-autogen, elixir-format
@@ -480,28 +480,28 @@ msgstr ""
 msgid "Already finalized"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/patient_live/show.ex:216
+#: lib/ravanshenasi_web/live/patient_live/show.ex:222
 #, elixir-autogen, elixir-format
 msgid "Analysis failed."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/patient_live/show.ex:190
+#: lib/ravanshenasi_web/live/patient_live/show.ex:196
 #, elixir-autogen, elixir-format
 msgid "Analyze patient"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/patient_live/show.ex:208
+#: lib/ravanshenasi_web/live/patient_live/show.ex:214
 #, elixir-autogen, elixir-format
 msgid "Analyzing…"
 msgstr ""
 
 #: lib/ravanshenasi_web/controllers/page_html/home.html.heex:88
-#: lib/ravanshenasi_web/live/patient_live/show.ex:187
+#: lib/ravanshenasi_web/live/patient_live/show.ex:193
 #, elixir-autogen, elixir-format
 msgid "Approach suggestions"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:104
+#: lib/ravanshenasi_web/live/audio_live/index.ex:107
 #, elixir-autogen, elixir-format
 msgid "Audio file"
 msgstr ""
@@ -511,7 +511,7 @@ msgstr ""
 msgid "Birth date"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/framework_live/index.ex:161
+#: lib/ravanshenasi_web/live/framework_live/index.ex:162
 #: lib/ravanshenasi_web/live/patient_live/form.ex:119
 #: lib/ravanshenasi_web/live/session_live/form.ex:65
 #, elixir-autogen, elixir-format
@@ -523,12 +523,12 @@ msgstr ""
 msgid "Chief complaint"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/patient_live/show.ex:199
+#: lib/ravanshenasi_web/live/patient_live/show.ex:205
 #, elixir-autogen, elixir-format
 msgid "Configure lines of thought for this patient before analyzing."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:186
+#: lib/ravanshenasi_web/live/audio_live/index.ex:190
 #, elixir-autogen, elixir-format
 msgid "Copy"
 msgstr ""
@@ -548,7 +548,7 @@ msgstr ""
 msgid "Could not inactivate patient"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:254
+#: lib/ravanshenasi_web/live/audio_live/index.ex:258
 #, elixir-autogen, elixir-format
 msgid "Could not process the audio"
 msgstr ""
@@ -584,23 +584,23 @@ msgstr ""
 msgid "Create the first session for this patient."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/framework_live/index.ex:136
+#: lib/ravanshenasi_web/live/framework_live/index.ex:137
 #, elixir-autogen, elixir-format
 msgid "Delete"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/framework_live/index.ex:134
+#: lib/ravanshenasi_web/live/framework_live/index.ex:135
 #, elixir-autogen, elixir-format
 msgid "Delete this line?"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/patient_live/show.ex:259
+#: lib/ravanshenasi_web/live/patient_live/show.ex:265
 #, elixir-autogen, elixir-format
 msgid "Discard"
 msgstr ""
 
 #: lib/ravanshenasi_web/components/core_components.ex:218
-#: lib/ravanshenasi_web/live/audio_live/index.ex:261
+#: lib/ravanshenasi_web/live/audio_live/index.ex:265
 #, elixir-autogen, elixir-format
 msgid "Done"
 msgstr ""
@@ -610,8 +610,8 @@ msgstr ""
 msgid "Duration (minutes)"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/framework_live/index.ex:128
-#: lib/ravanshenasi_web/live/patient_live/show.ex:145
+#: lib/ravanshenasi_web/live/framework_live/index.ex:129
+#: lib/ravanshenasi_web/live/patient_live/show.ex:151
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr ""
@@ -622,12 +622,12 @@ msgid "Edit patient"
 msgstr ""
 
 #: lib/ravanshenasi_web/components/core_components.ex:219
-#: lib/ravanshenasi_web/live/audio_live/index.ex:262
+#: lib/ravanshenasi_web/live/audio_live/index.ex:266
 #, elixir-autogen, elixir-format
 msgid "Error"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:199
+#: lib/ravanshenasi_web/live/audio_live/index.ex:203
 #, elixir-autogen, elixir-format
 msgid "Failed."
 msgstr ""
@@ -652,7 +652,7 @@ msgstr ""
 msgid "Generating record..."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:260
+#: lib/ravanshenasi_web/live/audio_live/index.ex:264
 #, elixir-autogen, elixir-format
 msgid "Generating reply…"
 msgstr ""
@@ -663,17 +663,17 @@ msgid "Generation failed"
 msgstr ""
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:99
-#: lib/ravanshenasi_web/live/framework_live/index.ex:156
+#: lib/ravanshenasi_web/live/framework_live/index.ex:157
 #, elixir-autogen, elixir-format
 msgid "Guiding principles"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/patient_live/show.ex:153
+#: lib/ravanshenasi_web/live/patient_live/show.ex:159
 #, elixir-autogen, elixir-format
 msgid "Inactivate patient"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/patient_live/show.ex:151
+#: lib/ravanshenasi_web/live/patient_live/show.ex:157
 #, elixir-autogen, elixir-format
 msgid "Inactivate this patient?"
 msgstr ""
@@ -686,7 +686,7 @@ msgid "Inactive"
 msgstr ""
 
 #: lib/ravanshenasi_web/live/framework_live/index.ex:83
-#: lib/ravanshenasi_web/live/patient_live/show.ex:161
+#: lib/ravanshenasi_web/live/patient_live/show.ex:167
 #, elixir-autogen, elixir-format
 msgid "Lines of thought"
 msgstr ""
@@ -696,7 +696,7 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:100
+#: lib/ravanshenasi_web/live/audio_live/index.ex:103
 #, elixir-autogen, elixir-format
 msgid "New audio"
 msgstr ""
@@ -718,12 +718,12 @@ msgstr ""
 msgid "No active patients."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:125
+#: lib/ravanshenasi_web/live/audio_live/index.ex:128
 #, elixir-autogen, elixir-format
 msgid "No audios yet."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/patient_live/show.ex:165
+#: lib/ravanshenasi_web/live/patient_live/show.ex:171
 #, elixir-autogen, elixir-format
 msgid "No lines configured."
 msgstr ""
@@ -763,7 +763,7 @@ msgstr ""
 msgid "No sessions yet."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:250
+#: lib/ravanshenasi_web/live/audio_live/index.ex:254
 #: lib/ravanshenasi_web/live/patient_live/show.ex:75
 #, elixir-autogen, elixir-format
 msgid "Not allowed"
@@ -819,12 +819,12 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:213
+#: lib/ravanshenasi_web/live/audio_live/index.ex:217
 #, elixir-autogen, elixir-format
 msgid "Please upload the audio again."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:258
+#: lib/ravanshenasi_web/live/audio_live/index.ex:262
 #, elixir-autogen, elixir-format
 msgid "Queued…"
 msgstr ""
@@ -856,10 +856,10 @@ msgstr ""
 msgid "SOAP Record"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:190
-#: lib/ravanshenasi_web/live/framework_live/index.ex:159
+#: lib/ravanshenasi_web/live/audio_live/index.ex:194
+#: lib/ravanshenasi_web/live/framework_live/index.ex:160
 #: lib/ravanshenasi_web/live/patient_live/form.ex:118
-#: lib/ravanshenasi_web/live/patient_live/show.ex:251
+#: lib/ravanshenasi_web/live/patient_live/show.ex:257
 #: lib/ravanshenasi_web/live/session_live/form.ex:80
 #, elixir-autogen, elixir-format
 msgid "Save"
@@ -912,7 +912,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/framework_live/index.ex:121
+#: lib/ravanshenasi_web/live/framework_live/index.ex:122
 #, elixir-autogen, elixir-format
 msgid "Standard"
 msgstr ""
@@ -922,7 +922,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:168
+#: lib/ravanshenasi_web/live/audio_live/index.ex:172
 #, elixir-autogen, elixir-format
 msgid "Suggested response"
 msgstr ""
@@ -932,28 +932,28 @@ msgstr ""
 msgid "Toggle menu"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:110
+#: lib/ravanshenasi_web/live/audio_live/index.ex:113
 #, elixir-autogen, elixir-format
 msgid "Tone"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:120
+#: lib/ravanshenasi_web/live/audio_live/index.ex:123
 #, elixir-autogen, elixir-format
 msgid "Transcribe and suggest"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:259
+#: lib/ravanshenasi_web/live/audio_live/index.ex:263
 #, elixir-autogen, elixir-format
 msgid "Transcribing…"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:158
+#: lib/ravanshenasi_web/live/audio_live/index.ex:162
 #, elixir-autogen, elixir-format
 msgid "Transcription"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:209
-#: lib/ravanshenasi_web/live/patient_live/show.ex:218
+#: lib/ravanshenasi_web/live/audio_live/index.ex:213
+#: lib/ravanshenasi_web/live/patient_live/show.ex:224
 #: lib/ravanshenasi_web/live/session_live/show.ex:109
 #, elixir-autogen, elixir-format
 msgid "Try again"
@@ -964,12 +964,12 @@ msgstr ""
 msgid "Update patient information"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:126
+#: lib/ravanshenasi_web/live/audio_live/index.ex:129
 #, elixir-autogen, elixir-format
 msgid "Upload an audio above to get started."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:96
+#: lib/ravanshenasi_web/live/audio_live/index.ex:99
 #, elixir-autogen, elixir-format
 msgid "Upload and transcribe audio messages from patients"
 msgstr ""
@@ -986,7 +986,7 @@ msgstr ""
 msgid "Welcome"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/audio_live/index.ex:95
+#: lib/ravanshenasi_web/live/audio_live/index.ex:97
 #, elixir-autogen, elixir-format
 msgid "WhatsApp audios"
 msgstr ""
