@@ -56,6 +56,7 @@ defmodule RavanshenasiWeb.Layouts do
           <.link
             :for={item <- @nav}
             navigate={item.path}
+            data-active-nav="true"
             class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-sidebar-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             <.icon name={item.icon} class="size-5 shrink-0 opacity-70" />

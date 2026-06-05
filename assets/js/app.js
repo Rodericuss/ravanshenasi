@@ -81,3 +81,17 @@ if (process.env.NODE_ENV === "development") {
   })
 }
 
+
+// Highlight the active sidebar link based on the current path (re-applied after each LiveView navigation)
+const markActiveNav = () => {
+  const path = window.location.pathname
+  document.querySelectorAll("[data-active-nav]").forEach((el) => {
+    const href = el.getAttribute("href")
+    const active = href === path || (href && href !== "/" && path.startsWith(href))
+    el.classList.toggle("bg-accent", active)
+    el.classList.toggle("text-accent-foreground", active)
+    el.classList.toggle("text-sidebar-foreground", !active)
+  })
+}
+window.addEventListener("phx:page-loading-stop", markActiveNav)
+document.addEventListener("DOMContentLoaded", markActiveNav)
