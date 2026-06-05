@@ -56,4 +56,72 @@ defmodule Ravanshenasi.AITest do
 
     assert {:ok, %{provider: :good}} = AI.generate_soap(input())
   end
+
+  test "chat/1 tenta providers na ordem e devolve o primeiro ok" do
+    prev = Application.get_env(:ravanshenasi, Ravanshenasi.AI)
+    on_exit(fn -> Application.put_env(:ravanshenasi, Ravanshenasi.AI, prev) end)
+
+    Application.put_env(:ravanshenasi, Ravanshenasi.AI,
+      order: [:bad, :good],
+      providers: %{
+        bad: %{client: Ravanshenasi.AI.Client.Stub, behavior: :error, model: "bad"},
+        good: %{client: Ravanshenasi.AI.Client.Stub, behavior: :ok, content: "OI", model: "good"}
+      }
+    )
+
+    assert {:ok, %{content: "OI", provider: :good, model: "good"}} =
+             Ravanshenasi.AI.chat([%{role: "user", content: "x"}])
+  end
+
+  test "generate_suggestions/1 com JSON válido do provider → {:ok, %{suggestions}}" do
+    prev = Application.get_env(:ravanshenasi, Ravanshenasi.AI)
+    on_exit(fn -> Application.put_env(:ravanshenasi, Ravanshenasi.AI, prev) end)
+
+    json =
+      ~s([{"framework":"TCC","justification":"j","techniques":["t"],"watch_out":"w"},
+          {"framework":"ACT","justification":"j2","techniques":["t2"],"watch_out":"w2"}])
+
+    Application.put_env(:ravanshenasi, Ravanshenasi.AI,
+      order: [:good],
+      providers: %{
+        good: %{client: Ravanshenasi.AI.Client.Stub, behavior: :ok, content: json, model: "good"}
+      }
+    )
+
+    input = %{
+      patient: %{name: "Ana", birth_date: nil, chief_complaint: "x", relevant_history: "y"},
+      frameworks: [%{name: "TCC", description: "d"}],
+      recent_records: []
+    }
+
+    assert {:ok, %{suggestions: [s1, _s2], provider: :good, model: "good"}} =
+             Ravanshenasi.AI.generate_suggestions(input)
+
+    assert s1.framework == "TCC"
+  end
+
+  test "generate_suggestions/1 com JSON inválido → {:error, :invalid_json}" do
+    prev = Application.get_env(:ravanshenasi, Ravanshenasi.AI)
+    on_exit(fn -> Application.put_env(:ravanshenasi, Ravanshenasi.AI, prev) end)
+
+    Application.put_env(:ravanshenasi, Ravanshenasi.AI,
+      order: [:good],
+      providers: %{
+        good: %{
+          client: Ravanshenasi.AI.Client.Stub,
+          behavior: :ok,
+          content: "sem json",
+          model: "good"
+        }
+      }
+    )
+
+    input = %{
+      patient: %{name: "Ana", birth_date: nil, chief_complaint: "x", relevant_history: "y"},
+      frameworks: [],
+      recent_records: []
+    }
+
+    assert {:error, :invalid_json} = Ravanshenasi.AI.generate_suggestions(input)
+  end
 end

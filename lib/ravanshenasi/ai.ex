@@ -1,15 +1,28 @@
 defmodule Ravanshenasi.AI do
-  @moduledoc "Domain facade: builds SOAP messages and tries providers in order (fallback)."
+  @moduledoc "Domain facade: builds chat messages and tries providers in order (fallback)."
 
-  alias Ravanshenasi.AI.Prompts
+  alias Ravanshenasi.AI.{Prompts, Suggestions}
 
-  @spec generate_soap(map()) ::
-          {:ok, %{content: String.t(), provider: atom(), model: String.t()}}
-          | {:error, {:all_providers_failed, list()}}
-  def generate_soap(input) do
-    messages = Prompts.soap_messages(input)
+  @type chat_ok :: %{content: String.t(), provider: atom(), model: String.t()}
+
+  @spec chat([map()]) :: {:ok, chat_ok()} | {:error, {:all_providers_failed, list()}}
+  def chat(messages) do
     cfg = Application.fetch_env!(:ravanshenasi, __MODULE__)
     try_providers(cfg[:order], cfg[:providers], messages, [])
+  end
+
+  @spec generate_soap(map()) :: {:ok, chat_ok()} | {:error, {:all_providers_failed, list()}}
+  def generate_soap(input), do: chat(Prompts.soap_messages(input))
+
+  @spec generate_suggestions(map()) ::
+          {:ok, %{suggestions: [map()], provider: atom(), model: String.t()}}
+          | {:error, {:all_providers_failed, list()} | :invalid_json}
+  def generate_suggestions(input) do
+    with {:ok, %{content: content, provider: provider, model: model}} <-
+           chat(Prompts.suggestions_messages(input)),
+         {:ok, suggestions} <- Suggestions.parse(content) do
+      {:ok, %{suggestions: suggestions, provider: provider, model: model}}
+    end
   end
 
   defp try_providers([], _providers, _messages, errors),

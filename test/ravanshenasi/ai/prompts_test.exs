@@ -25,4 +25,27 @@ defmodule Ravanshenasi.AI.PromptsTest do
     assert user =~ "sessão anterior X"
     assert user =~ "sessão de hoje Y"
   end
+
+  test "suggestions_messages monta system+user com frameworks e pede JSON" do
+    input = %{
+      patient: %{
+        name: "Ana",
+        birth_date: ~D[1990-01-01],
+        chief_complaint: "ansiedade",
+        relevant_history: "—"
+      },
+      frameworks: [%{name: "TCC", description: "cognitivo-comportamental"}],
+      recent_records: [
+        %{content: "S:..\nO:..\nA:..\nP:..", inserted_at: ~U[2026-06-01 10:00:00Z]}
+      ]
+    }
+
+    assert [%{role: "system", content: sys}, %{role: "user", content: user}] =
+             Prompts.suggestions_messages(input)
+
+    assert sys =~ "abordagens terapêuticas listadas"
+    assert user =~ "TCC"
+    assert user =~ "ansiedade"
+    assert user =~ "JSON"
+  end
 end
