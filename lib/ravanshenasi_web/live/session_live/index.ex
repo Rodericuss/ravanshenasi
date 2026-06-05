@@ -28,11 +28,9 @@ defmodule RavanshenasiWeb.SessionLive.Index do
 
       <.card>
         <:title>{gettext("Sessions")}</:title>
-        <.empty_state
-          :if={@sessions == []}
-          title={gettext("No sessions yet.")}
-          description={gettext("Create the first session for this patient.")}
-        />
+        <.empty_state :if={@sessions == []} title={gettext("No sessions yet.")}>
+          {gettext("Create the first session for this patient.")}
+        </.empty_state>
         <ul :if={@sessions != []} id="sessions" class="-my-1 divide-y divide-border">
           <li :for={s <- @sessions} class="flex items-center justify-between gap-3 py-2.5">
             <.link

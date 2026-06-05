@@ -191,7 +191,11 @@ defmodule RavanshenasiWeb.PatientLive.Show do
               </.button>
             </:actions>
 
-            <p :if={@no_frameworks_warning} id="no-frameworks-warning" class="text-sm text-muted-foreground">
+            <p
+              :if={@no_frameworks_warning}
+              id="no-frameworks-warning"
+              class="text-sm text-muted-foreground"
+            >
               {gettext("Configure lines of thought for this patient before analyzing.")}
             </p>
 
@@ -204,15 +208,27 @@ defmodule RavanshenasiWeb.PatientLive.Show do
               {gettext("Analyzing…")}
             </div>
 
-            <div :if={@analysis && @analysis.generation_status == :error} id="analysis-error" class="rounded-md bg-destructive/10 p-4 text-destructive">
+            <div
+              :if={@analysis && @analysis.generation_status == :error}
+              id="analysis-error"
+              class="rounded-md bg-destructive/10 p-4 text-destructive"
+            >
               <p class="text-sm font-medium">{gettext("Analysis failed.")}</p>
               <.button id="retry-analysis-button" variant="outline" phx-click="analyze" class="mt-2">
                 {gettext("Try again")}
               </.button>
             </div>
 
-            <div :if={@analysis && @analysis.generation_status == :done} id="suggestions" class="space-y-4">
-              <div :for={s <- @suggestions} id={"suggestion-#{s.id}"} class="rounded-lg border border-border bg-muted/40 p-4">
+            <div
+              :if={@analysis && @analysis.generation_status == :done}
+              id="suggestions"
+              class="space-y-4"
+            >
+              <div
+                :for={s <- @suggestions}
+                id={"suggestion-#{s.id}"}
+                class="rounded-lg border border-border bg-muted/40 p-4"
+              >
                 <div class="mb-2 flex items-center justify-between gap-2">
                   <h4 class="font-semibold">{s.framework_name}</h4>
                   <span id={"suggestion-status-#{s.id}"}>
@@ -223,7 +239,9 @@ defmodule RavanshenasiWeb.PatientLive.Show do
                 <ul :if={s.techniques != []} class="mb-2 ml-4 list-disc space-y-1 text-sm">
                   <li :for={t <- s.techniques}>{t}</li>
                 </ul>
-                <p :if={s.watch_out} class="mb-3 text-sm italic text-muted-foreground">{s.watch_out}</p>
+                <p :if={s.watch_out} class="mb-3 text-sm italic text-muted-foreground">
+                  {s.watch_out}
+                </p>
                 <div class="flex gap-2">
                   <.button
                     id={"save-suggestion-#{s.id}"}
