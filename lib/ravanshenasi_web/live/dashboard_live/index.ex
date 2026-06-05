@@ -25,6 +25,11 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
       <.header>
         {gettext("Hello, %{name} 👋", name: first_name(@current_scope))}
         <:subtitle>{gettext("Here's what's happening in your practice today.")}</:subtitle>
+        <:actions>
+          <span class="hidden items-center gap-1.5 text-sm text-muted-foreground sm:inline-flex">
+            <.icon name="hero-calendar-days" class="size-4" /> {today_label()}
+          </span>
+        </:actions>
       </.header>
 
       <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -88,7 +93,7 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
                   <span class="font-medium">{a.patient.name}</span>
                   <span class="text-muted-foreground">— {a.original_filename}</span>
                 </span>
-                <.badge variant={audio_variant(a.status)}>{a.status}</.badge>
+                <.status_badge value={a.status} />
               </.link>
             </li>
           </ul>
@@ -105,8 +110,8 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
               >
                 <.avatar name={se.patient.name} class="size-8" />
                 <span class="flex-1 font-medium">{se.patient.name}</span>
-                <span class="text-sm text-muted-foreground">
-                  {session_date(se.date)} · {se.status}
+                <span class="flex items-center gap-2 text-sm text-muted-foreground">
+                  {session_date(se.date)} <.status_badge value={se.status} />
                 </span>
               </.link>
             </li>
@@ -124,7 +129,7 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
               >
                 <.avatar name={p.name} class="size-8" />
                 <span class="flex-1 font-medium">{p.name}</span>
-                <.badge variant="outline">{p.status}</.badge>
+                <.status_badge value={p.status} />
               </.link>
             </li>
           </ul>
@@ -137,15 +142,34 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
   defp session_date(nil), do: "—"
   defp session_date(%DateTime{} = d), do: Calendar.strftime(d, "%d/%m/%Y")
 
-  defp audio_variant(:done), do: "success"
-  defp audio_variant(:error), do: "destructive"
-  defp audio_variant(_), do: "secondary"
-
-  defp first_name(%{user: %{name: name}}) when is_binary(name) and name != "",
-    do: name |> String.split(~r/\s+/, trim: true) |> List.first()
+  defp first_name(%{user: %{name: name}}) when is_binary(name) and name != "" do
+    name
+    |> String.split(~r/\s+/, trim: true)
+    |> Enum.reject(&(&1 in ~w(Dr. Dra. Dr Dra Sr. Sra. Sr Sra)))
+    |> List.first()
+    |> Kernel.||(name)
+  end
 
   defp first_name(%{user: %{email: email}}) when is_binary(email),
     do: email |> String.split("@") |> List.first()
 
-  defp first_name(_), do: "👋"
+  defp first_name(_), do: ""
+
+  defp today_label do
+    d = Date.utc_today()
+    gettext("%{day} of %{month}, %{year}", day: d.day, month: month_name(d.month), year: d.year)
+  end
+
+  defp month_name(1), do: gettext("January")
+  defp month_name(2), do: gettext("February")
+  defp month_name(3), do: gettext("March")
+  defp month_name(4), do: gettext("April")
+  defp month_name(5), do: gettext("May")
+  defp month_name(6), do: gettext("June")
+  defp month_name(7), do: gettext("July")
+  defp month_name(8), do: gettext("August")
+  defp month_name(9), do: gettext("September")
+  defp month_name(10), do: gettext("October")
+  defp month_name(11), do: gettext("November")
+  defp month_name(12), do: gettext("December")
 end
