@@ -1,6 +1,7 @@
 defmodule RavanshenasiWeb.PatientLive.Show do
   use RavanshenasiWeb, :live_view
 
+  alias Ravanshenasi.Analyses
   alias Ravanshenasi.Frameworks
   alias Ravanshenasi.Patients
 
@@ -16,7 +17,11 @@ defmodule RavanshenasiWeb.PatientLive.Show do
          |> Phoenix.LiveView.push_navigate(to: ~p"/pacientes")}
 
       patient ->
-        {:ok, socket |> assign(patient: patient) |> load_frameworks()}
+        {:ok,
+         socket
+         |> assign(patient: patient, no_frameworks_warning: false)
+         |> load_frameworks()
+         |> load_analysis()}
     end
   end
 
@@ -27,9 +32,7 @@ defmodule RavanshenasiWeb.PatientLive.Show do
     case Patients.inactivate_patient(scope, socket.assigns.patient) do
       {:ok, patient} ->
         {:noreply,
-         socket
-         |> assign(patient: patient)
-         |> put_flash(:info, gettext("Patient inactivated"))}
+         socket |> assign(patient: patient) |> put_flash(:info, gettext("Patient inactivated"))}
 
       {:error, _} ->
         {:noreply, put_flash(socket, :error, gettext("Could not inactivate patient"))}
@@ -50,6 +53,55 @@ defmodule RavanshenasiWeb.PatientLive.Show do
     {:noreply, load_frameworks(socket)}
   end
 
+  @impl true
+  def handle_event("analyze", _, socket) do
+    scope = socket.assigns.current_scope
+
+    case Analyses.analyze_patient(scope, socket.assigns.patient) do
+      {:ok, analysis} ->
+        Analyses.subscribe(analysis.id)
+
+        {:noreply,
+         assign(socket,
+           analysis: analysis,
+           suggestions: load_suggestions(scope, analysis),
+           no_frameworks_warning: false
+         )}
+
+      {:error, :no_active_frameworks} ->
+        {:noreply, assign(socket, analysis: nil, suggestions: [], no_frameworks_warning: true)}
+
+      {:error, :unauthorized} ->
+        {:noreply, put_flash(socket, :error, gettext("Not allowed"))}
+
+      # corrida rara do índice parcial pode devolver {:error, changeset}; não quebra a UI
+      {:error, _} ->
+        {:noreply, put_flash(socket, :error, gettext("Could not start the analysis"))}
+    end
+  end
+
+  @impl true
+  def handle_event("save-suggestion", %{"id" => id}, socket) do
+    case Analyses.save_suggestion(socket.assigns.current_scope, %{id: id}) do
+      {:ok, _} -> {:noreply, reload_suggestions(socket)}
+      {:error, _} -> {:noreply, put_flash(socket, :error, gettext("Could not update suggestion"))}
+    end
+  end
+
+  @impl true
+  def handle_event("discard-suggestion", %{"id" => id}, socket) do
+    case Analyses.discard_suggestion(socket.assigns.current_scope, %{id: id}) do
+      {:ok, _} -> {:noreply, reload_suggestions(socket)}
+      {:error, _} -> {:noreply, put_flash(socket, :error, gettext("Could not update suggestion"))}
+    end
+  end
+
+  @impl true
+  def handle_info({:analysis_updated, analysis}, socket) do
+    scope = socket.assigns.current_scope
+    {:noreply, assign(socket, analysis: analysis, suggestions: load_suggestions(scope, analysis))}
+  end
+
   defp load_frameworks(socket) do
     scope = socket.assigns.current_scope
     all = Frameworks.list_frameworks(scope)
@@ -60,6 +112,26 @@ defmodule RavanshenasiWeb.PatientLive.Show do
 
     assign(socket, all_frameworks: all, active_ids: active_ids)
   end
+
+  defp load_analysis(socket) do
+    scope = socket.assigns.current_scope
+    analysis = Analyses.list_analyses(scope, %{id: socket.assigns.patient.id}) |> List.first()
+
+    if analysis && analysis.generation_status in [:pending, :generating],
+      do: Analyses.subscribe(analysis.id)
+
+    assign(socket, analysis: analysis, suggestions: load_suggestions(scope, analysis))
+  end
+
+  defp reload_suggestions(socket) do
+    scope = socket.assigns.current_scope
+    assign(socket, suggestions: load_suggestions(scope, socket.assigns.analysis))
+  end
+
+  defp load_suggestions(scope, %{generation_status: :done} = analysis),
+    do: Analyses.list_suggestions(scope, %{id: analysis.id})
+
+  defp load_suggestions(_scope, _analysis), do: []
 
   @impl true
   def render(assigns) do
@@ -83,6 +155,54 @@ defmodule RavanshenasiWeb.PatientLive.Show do
           </label>
         </li>
       </ul>
+
+      <section id="analysis-section">
+        <h3>{gettext("Approach suggestions")}</h3>
+        <.button id="analyze-patient-button" phx-click="analyze">
+          {gettext("Analyze patient")}
+        </.button>
+
+        <p :if={@no_frameworks_warning} id="no-frameworks-warning">
+          {gettext("Configure lines of thought for this patient before analyzing.")}
+        </p>
+
+        <p
+          :if={@analysis && @analysis.generation_status in [:pending, :generating]}
+          id="analysis-generating"
+        >
+          {gettext("Analyzing…")}
+        </p>
+
+        <div :if={@analysis && @analysis.generation_status == :error} id="analysis-error">
+          <p>{gettext("Analysis failed.")}</p>
+          <.button id="retry-analysis-button" phx-click="analyze">
+            {gettext("Try again")}
+          </.button>
+        </div>
+
+        <div :if={@analysis && @analysis.generation_status == :done} id="suggestions">
+          <div :for={s <- @suggestions} id={"suggestion-#{s.id}"} class="card">
+            <h4>{s.framework_name}</h4>
+            <p>{s.justification}</p>
+            <ul>
+              <li :for={t <- s.techniques}>{t}</li>
+            </ul>
+            <p>{s.watch_out}</p>
+            <span id={"suggestion-status-#{s.id}"}>{s.status}</span>
+            <.button id={"save-suggestion-#{s.id}"} phx-click="save-suggestion" phx-value-id={s.id}>
+              {gettext("Save")}
+            </.button>
+            <.button
+              id={"discard-suggestion-#{s.id}"}
+              phx-click="discard-suggestion"
+              phx-value-id={s.id}
+            >
+              {gettext("Discard")}
+            </.button>
+          </div>
+        </div>
+      </section>
+
       <.button navigate={~p"/pacientes/#{@patient.id}/editar"}>{gettext("Edit")}</.button>
       <.button
         :if={@patient.status != :inactive}
