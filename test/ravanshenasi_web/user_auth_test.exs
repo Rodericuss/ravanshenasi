@@ -20,12 +20,37 @@ defmodule RavanshenasiWeb.UserAuthTest do
     %{user: %{user_fixture() | authenticated_at: DateTime.utc_now(:second)}, conn: conn}
   end
 
+  describe "signed_in_path/1" do
+    test "manda profissional (clínico) pra /painel via Conn" do
+      scope = user_scope_fixture()
+      conn = %Plug.Conn{assigns: %{current_scope: scope}}
+      assert RavanshenasiWeb.UserAuth.signed_in_path(conn) == ~p"/painel"
+    end
+
+    test "manda profissional (clínico) pra /painel via Socket" do
+      scope = user_scope_fixture()
+      socket = %Phoenix.LiveView.Socket{assigns: %{current_scope: scope, __changed__: %{}}}
+      assert RavanshenasiWeb.UserAuth.signed_in_path(socket) == ~p"/painel"
+    end
+
+    test "manda admin de clínica pra /users/settings" do
+      admin = clinic_admin_scope_fixture()
+      conn = %Plug.Conn{assigns: %{current_scope: admin}}
+      assert RavanshenasiWeb.UserAuth.signed_in_path(conn) == ~p"/users/settings"
+    end
+
+    test "sem usuário → /" do
+      conn = %Plug.Conn{assigns: %{current_scope: Accounts.Scope.for_user(nil)}}
+      assert RavanshenasiWeb.UserAuth.signed_in_path(conn) == ~p"/"
+    end
+  end
+
   describe "log_in_user/3" do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
       assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/painel"
       assert Accounts.get_user_by_session_token(token)
     end
 
@@ -74,13 +99,13 @@ defmodule RavanshenasiWeb.UserAuthTest do
       assert max_age == @remember_me_cookie_max_age
     end
 
-    test "redirects to settings when user is already logged in", %{conn: conn, user: user} do
+    test "redirects clinical user to dashboard when already logged in", %{conn: conn, user: user} do
       conn =
         conn
         |> assign(:current_scope, Scope.for_user(user))
         |> UserAuth.log_in_user(user)
 
-      assert redirected_to(conn) == ~p"/users/settings"
+      assert redirected_to(conn) == ~p"/painel"
     end
 
     test "writes a cookie if remember_me was set in previous session", %{conn: conn, user: user} do

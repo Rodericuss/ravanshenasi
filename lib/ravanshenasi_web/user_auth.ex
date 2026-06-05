@@ -43,7 +43,9 @@ defmodule RavanshenasiWeb.UserAuth do
 
     conn
     |> create_or_extend_session(user, params)
-    |> redirect(to: user_return_to || signed_in_path(conn))
+    |> redirect(
+      to: user_return_to || signed_in_path_for_scope(Scope.for_user(user) |> with_tenant())
+    )
   end
 
   @doc """
@@ -307,13 +309,22 @@ defmodule RavanshenasiWeb.UserAuth do
 
   defp with_tenant(scope), do: scope
 
-  @doc "Returns the path to redirect to after log in."
-  # the user was already logged in, redirect to settings
-  def signed_in_path(%Plug.Conn{assigns: %{current_scope: %Scope{user: %Accounts.User{}}}}) do
-    ~p"/users/settings"
-  end
+  @doc "Returns the path to redirect to after log in (works with a Conn or a LiveView Socket)."
+  def signed_in_path(%Plug.Conn{assigns: %{current_scope: scope}}),
+    do: signed_in_path_for_scope(scope)
+
+  def signed_in_path(%Phoenix.LiveView.Socket{assigns: %{current_scope: scope}}),
+    do: signed_in_path_for_scope(scope)
 
   def signed_in_path(_), do: ~p"/"
+
+  # Clinical practitioner → dashboard; clinic admin (non-clinical) → settings; otherwise root.
+  # clinical_access?/1 has a catch-all returning false, so an incomplete scope never raises.
+  defp signed_in_path_for_scope(%Scope{user: %Accounts.User{}} = scope) do
+    if Scope.clinical_access?(scope), do: ~p"/painel", else: ~p"/users/settings"
+  end
+
+  defp signed_in_path_for_scope(_), do: ~p"/"
 
   @doc "Plug: exige role admin no current_scope."
   def require_admin(conn, _opts) do

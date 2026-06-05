@@ -45,6 +45,11 @@ defmodule RavanshenasiWeb.Layouts do
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
           <li :if={Ravanshenasi.Accounts.Scope.clinical_access?(@current_scope)}>
+            <.link navigate={~p"/painel"} class="btn btn-ghost">
+              {gettext("Dashboard")}
+            </.link>
+          </li>
+          <li :if={Ravanshenasi.Accounts.Scope.clinical_access?(@current_scope)}>
             <.link navigate={~p"/pacientes"} class="btn btn-ghost">
               {gettext("Patients")}
             </.link>
