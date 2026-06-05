@@ -100,6 +100,29 @@ defmodule Ravanshenasi.Records do
     res
   end
 
+  @doc "Prontuários do dono prontos mas não revisados (done + reviewed=false), recentes primeiro. Cross-paciente, escopado, com :patient."
+  def list_pending_review(%Scope{} = scope, limit \\ 5) do
+    transact_tenant(scope, fn ->
+      Record
+      |> scoped(scope)
+      |> where([r], r.generation_status == :done and r.reviewed == false)
+      |> order_by([r], desc: r.inserted_at)
+      |> limit(^limit)
+      |> preload(:patient)
+      |> Repo.all()
+    end)
+  end
+
+  @doc "Quantos prontuários do dono estão done e não revisados."
+  def count_pending_review(%Scope{} = scope) do
+    transact_tenant(scope, fn ->
+      Record
+      |> scoped(scope)
+      |> where([r], r.generation_status == :done and r.reviewed == false)
+      |> Repo.aggregate(:count)
+    end)
+  end
+
   # Recarrega o record por query escopada (tenant_id + user_id) e chama `fun`.
   defp with_owned(scope, id, fun) do
     transact_tenant(scope, fn ->

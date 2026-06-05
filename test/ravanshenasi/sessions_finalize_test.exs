@@ -36,4 +36,27 @@ defmodule Ravanshenasi.SessionsFinalizeTest do
     assert {:error, :unauthorized} = Sessions.finalize_session(b, sess)
     assert [] = all_enqueued(worker: GenerateSoapWorker)
   end
+
+  test "list_recent: ordena por date desc com nulls por último, com :patient" do
+    s = user_scope_fixture()
+    {:ok, p} = Patients.create_patient(s, %{name: "Lia"})
+    {:ok, dated} = Sessions.create_session(s, p, %{notes: "n", date: ~U[2026-05-01 10:00:00Z]})
+    {:ok, no_date} = Sessions.create_session(s, p, %{notes: "n"})
+
+    recents = Sessions.list_recent(s)
+    # a com data vem antes da sem data (nulls last)
+    assert Enum.map(recents, & &1.id) == [dated.id, no_date.id]
+    assert hd(recents).patient.name == "Lia"
+  end
+
+  test "list_recent não vaza pra outro profissional" do
+    admin = clinic_admin_scope_fixture()
+    a = therapist_scope_fixture(admin.tenant)
+    b = therapist_scope_fixture(admin.tenant)
+    {:ok, pa} = Patients.create_patient(a, %{name: "PA"})
+    {:ok, _} = Sessions.create_session(a, pa, %{notes: "n"})
+
+    assert length(Sessions.list_recent(a)) == 1
+    assert Sessions.list_recent(b) == []
+  end
 end

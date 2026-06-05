@@ -156,6 +156,18 @@ defmodule Ravanshenasi.Sessions do
     end)
   end
 
+  @doc "Sessões do dono mais recentes (cross-paciente, escopado), data desc (nulls por último), com :patient."
+  def list_recent(%Scope{} = scope, limit \\ 5) do
+    transact_tenant(scope, fn ->
+      Session
+      |> scoped(scope)
+      |> order_by([s], desc_nulls_last: s.date, desc: s.inserted_at)
+      |> limit(^limit)
+      |> preload(:patient)
+      |> Repo.all()
+    end)
+  end
+
   # scope por praticante: tenant_id + user_id
   defp scoped(query, scope),
     do: from(s in query, where: s.tenant_id == ^scope.tenant.id and s.user_id == ^scope.user.id)

@@ -202,6 +202,18 @@ defmodule Ravanshenasi.AudioMessages do
       audio_path: audio_path
     }
 
+  @doc "Áudios do dono mais recentes (cross-paciente, escopado), com :patient preloadado."
+  def list_recent(%Scope{} = scope, limit \\ 5) do
+    transact_tenant(scope, fn ->
+      AudioMessage
+      |> scoped(scope)
+      |> order_by([m], desc: m.inserted_at)
+      |> limit(^limit)
+      |> preload(:patient)
+      |> Repo.all()
+    end)
+  end
+
   defp scoped(query, scope),
     do: from(x in query, where: x.tenant_id == ^scope.tenant.id and x.user_id == ^scope.user.id)
 

@@ -65,6 +65,36 @@ defmodule Ravanshenasi.RecordsTest do
     assert Enum.map(result, & &1.content) == ["NEW", "OLD"]
   end
 
+  test "pending_review: só done+não-revisado do dono, com :patient preloadado", %{scope: s} do
+    {:ok, p} = Ravanshenasi.Patients.create_patient(s, %{name: "Carla"})
+    {:ok, sess} = Ravanshenasi.Sessions.create_session(s, p, %{notes: "n"})
+    {:ok, rec} = insert_record(s, sess, p)
+    {:ok, _done} = Records.complete(s, rec, "S:..\nP:..", "stub:m")
+
+    assert Records.count_pending_review(s) == 1
+    assert [r] = Records.list_pending_review(s)
+    assert r.id == rec.id
+    assert r.patient.name == "Carla"
+
+    # marcado como revisado → some
+    {:ok, _} = Records.mark_reviewed(s, r)
+    assert Records.count_pending_review(s) == 0
+  end
+
+  test "pending_review não vaza pra outro profissional do mesmo tenant" do
+    admin = clinic_admin_scope_fixture()
+    a = therapist_scope_fixture(admin.tenant)
+    b = therapist_scope_fixture(admin.tenant)
+    {:ok, pa} = Ravanshenasi.Patients.create_patient(a, %{name: "PA"})
+    {:ok, sess} = Ravanshenasi.Sessions.create_session(a, pa, %{notes: "n"})
+    {:ok, rec} = insert_record(a, sess, pa)
+    {:ok, _} = Records.complete(a, rec, "c", "m")
+
+    assert Records.count_pending_review(a) == 1
+    assert Records.count_pending_review(b) == 0
+    assert Records.list_pending_review(b) == []
+  end
+
   defp insert_record(scope, session, patient) do
     Ravanshenasi.Repo.transact_tenant(scope, fn ->
       %Ravanshenasi.Records.Record{

@@ -163,4 +163,41 @@ defmodule Ravanshenasi.AudioMessagesTest do
     {:ok, m} = AudioMessages.fail(s, m, :audio_file_missing)
     assert {:error, :not_retryable} = AudioMessages.retry_suggestion(s, m)
   end
+
+  test "list_recent traz os áudios do dono, recentes primeiro, com :patient", %{
+    scope: s,
+    patient: p
+  } do
+    {:ok, m_old} = AudioMessages.create_audio_message(s, p, attrs())
+    {:ok, m_new} = AudioMessages.create_audio_message(s, p, attrs())
+    # utc_datetime tem precisão de segundo e os 2 inserts podem empatar → ordem instável.
+    # Força m_old no passado pra a ordenação por inserted_at ser determinística.
+    Ravanshenasi.Repo.transact_tenant(s, fn ->
+      Ravanshenasi.Repo.update_all(
+        Ecto.Query.from(a in Ravanshenasi.AudioMessages.AudioMessage, where: a.id == ^m_old.id),
+        set: [inserted_at: ~U[2020-01-01 00:00:00Z]]
+      )
+    end)
+
+    recents = AudioMessages.list_recent(s)
+    assert Enum.map(recents, & &1.id) == [m_new.id, m_old.id]
+    assert hd(recents).patient.name == "Maria"
+  end
+
+  test "list_recent não vaza pra outro profissional" do
+    admin = clinic_admin_scope_fixture()
+    a = therapist_scope_fixture(admin.tenant)
+    b = therapist_scope_fixture(admin.tenant)
+    {:ok, pa} = Patients.create_patient(a, %{name: "PA"})
+
+    {:ok, _} =
+      AudioMessages.create_audio_message(a, pa, %{
+        audio_path: "/tmp/x.ogg",
+        original_filename: "a.ogg",
+        tone: :empathetic
+      })
+
+    assert length(AudioMessages.list_recent(a)) == 1
+    assert AudioMessages.list_recent(b) == []
+  end
 end
