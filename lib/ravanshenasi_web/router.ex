@@ -68,6 +68,8 @@ defmodule RavanshenasiWeb.Router do
         {RavanshenasiWeb.UserAuth, :require_authenticated},
         {RavanshenasiWeb.UserAuth, :require_clinical_access}
       ] do
+      live "/painel", DashboardLive.Index, :index
+
       live "/pacientes", PatientLive.Index, :index
       live "/pacientes/novo", PatientLive.Form, :new
       live "/pacientes/:id", PatientLive.Show, :show
