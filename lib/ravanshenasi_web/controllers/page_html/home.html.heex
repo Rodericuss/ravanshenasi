@@ -1,4 +1,29 @@
 <Layouts.flash_group flash={@flash} />
+<header class="relative z-10 flex items-center justify-end gap-4 px-4 py-4 text-sm sm:px-6 lg:px-8">
+  <%= if @current_scope do %>
+    <span class="hidden text-muted-foreground sm:inline">{@current_scope.user.email}</span>
+    <.link navigate={~p"/painel"} class="font-medium text-primary hover:underline">
+      {gettext("Dashboard")}
+    </.link>
+    <.link href={~p"/users/settings"} class="text-muted-foreground hover:text-foreground">
+      {gettext("Settings")}
+    </.link>
+    <.link
+      href={~p"/users/log-out"}
+      method="delete"
+      class="text-muted-foreground hover:text-foreground"
+    >
+      {gettext("Log out")}
+    </.link>
+  <% else %>
+    <.link href={~p"/users/log-in"} class="text-muted-foreground hover:text-foreground">
+      {gettext("Log in")}
+    </.link>
+    <.link href={~p"/users/register"} class="font-medium text-primary hover:underline">
+      {gettext("Register")}
+    </.link>
+  <% end %>
+</header>
 <div class="left-[40rem] fixed inset-y-0 right-0 z-0 hidden lg:block xl:left-[50rem]">
   <svg
     viewBox="0 0 1480 957"
