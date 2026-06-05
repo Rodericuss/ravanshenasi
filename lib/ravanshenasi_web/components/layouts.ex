@@ -137,9 +137,9 @@ defmodule RavanshenasiWeb.Layouts do
         <img src={~p"/images/logo.svg"} width="32" alt="PsiCare" />
         <span class="text-lg font-semibold">PsiCare</span>
       </div>
-      <div class="w-full max-w-md rounded-lg border bg-card p-6 text-card-foreground shadow-sm sm:p-8">
+      <main class="w-full max-w-md rounded-lg border bg-card p-6 text-card-foreground shadow-sm sm:p-8">
         {render_slot(@inner_block)}
-      </div>
+      </main>
       <.flash_group flash={@flash} />
     </div>
     """

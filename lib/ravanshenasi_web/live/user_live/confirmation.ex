@@ -6,11 +6,11 @@ defmodule RavanshenasiWeb.UserLive.Confirmation do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <div class="mx-auto max-w-sm">
-        <div class="text-center">
-          <.header>Welcome {@user.email}</.header>
-        </div>
+    <Layouts.auth flash={@flash} current_scope={@current_scope}>
+      <div class="space-y-6">
+        <.header>
+          {gettext("Welcome")} {@user.email}
+        </.header>
 
         <.form
           :if={!@user.confirmed_at}
@@ -21,21 +21,24 @@ defmodule RavanshenasiWeb.UserLive.Confirmation do
           action={~p"/users/log-in?_action=confirmed"}
           phx-trigger-action={@trigger_submit}
         >
-          <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
-          <.button
-            name={@form[:remember_me].name}
-            value="true"
-            phx-disable-with={gettext("Confirming...")}
-            class="btn btn-primary w-full"
-          >
-            {gettext("Confirm and stay logged in")}
-          </.button>
-          <.button
-            phx-disable-with={gettext("Confirming...")}
-            class="btn btn-primary btn-soft w-full mt-2"
-          >
-            {gettext("Confirm and log in only this time")}
-          </.button>
+          <div class="space-y-3">
+            <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
+            <.button
+              name={@form[:remember_me].name}
+              value="true"
+              phx-disable-with={gettext("Confirming...")}
+              class="w-full"
+            >
+              {gettext("Confirm and stay logged in")}
+            </.button>
+            <.button
+              phx-disable-with={gettext("Confirming...")}
+              variant="outline"
+              class="w-full"
+            >
+              {gettext("Confirm and log in only this time")}
+            </.button>
+          </div>
         </.form>
 
         <.form
@@ -47,34 +50,40 @@ defmodule RavanshenasiWeb.UserLive.Confirmation do
           action={~p"/users/log-in"}
           phx-trigger-action={@trigger_submit}
         >
-          <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
-          <%= if @current_scope do %>
-            <.button phx-disable-with={gettext("Logging in...")} class="btn btn-primary w-full">
-              {gettext("Log in")}
-            </.button>
-          <% else %>
-            <.button
-              name={@form[:remember_me].name}
-              value="true"
-              phx-disable-with={gettext("Logging in...")}
-              class="btn btn-primary w-full"
-            >
-              {gettext("Keep me logged in on this device")}
-            </.button>
-            <.button
-              phx-disable-with={gettext("Logging in...")}
-              class="btn btn-primary btn-soft w-full mt-2"
-            >
-              {gettext("Log me in only this time")}
-            </.button>
-          <% end %>
+          <div class="space-y-3">
+            <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
+            <%= if @current_scope do %>
+              <.button phx-disable-with={gettext("Logging in...")} class="w-full">
+                {gettext("Log in")}
+              </.button>
+            <% else %>
+              <.button
+                name={@form[:remember_me].name}
+                value="true"
+                phx-disable-with={gettext("Logging in...")}
+                class="w-full"
+              >
+                {gettext("Keep me logged in on this device")}
+              </.button>
+              <.button
+                phx-disable-with={gettext("Logging in...")}
+                variant="outline"
+                class="w-full"
+              >
+                {gettext("Log me in only this time")}
+              </.button>
+            <% end %>
+          </div>
         </.form>
 
-        <p :if={!@user.confirmed_at} class="alert alert-outline mt-8">
+        <p
+          :if={!@user.confirmed_at}
+          class="rounded-md bg-muted/40 p-3 text-sm text-muted-foreground mt-6"
+        >
           {gettext("Tip: If you prefer passwords, you can enable them in the user settings.")}
         </p>
       </div>
-    </Layouts.app>
+    </Layouts.auth>
     """
   end
 

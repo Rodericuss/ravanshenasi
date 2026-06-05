@@ -30,7 +30,7 @@ defmodule RavanshenasiWeb.UserLive.Settings do
         </.button>
       </.form>
 
-      <div class="divider" />
+      <div class="my-8 border-t border-border" />
 
       <.form
         for={@password_form}
