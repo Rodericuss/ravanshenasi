@@ -26,7 +26,7 @@ msgstr ""
 msgid "Account Settings"
 msgstr ""
 
-#: lib/ravanshenasi_web/components/core_components.ex:536
+#: lib/ravanshenasi_web/components/core_components.ex:570
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr ""
@@ -437,14 +437,15 @@ msgstr ""
 msgid "Access restricted to practitioners."
 msgstr ""
 
+#: lib/ravanshenasi_web/components/core_components.ex:226
 #: lib/ravanshenasi_web/live/patient_live/form.ex:112
 #: lib/ravanshenasi_web/live/patient_live/index.ex:59
 #, elixir-autogen, elixir-format
 msgid "Active"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:32
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:117
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:37
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:122
 #, elixir-autogen, elixir-format
 msgid "Active patients"
 msgstr ""
@@ -598,6 +599,7 @@ msgstr ""
 msgid "Discard"
 msgstr ""
 
+#: lib/ravanshenasi_web/components/core_components.ex:218
 #: lib/ravanshenasi_web/live/audio_live/index.ex:261
 #, elixir-autogen, elixir-format
 msgid "Done"
@@ -619,6 +621,7 @@ msgstr ""
 msgid "Edit patient"
 msgstr ""
 
+#: lib/ravanshenasi_web/components/core_components.ex:219
 #: lib/ravanshenasi_web/live/audio_live/index.ex:262
 #, elixir-autogen, elixir-format
 msgid "Error"
@@ -675,6 +678,7 @@ msgstr ""
 msgid "Inactivate this patient?"
 msgstr ""
 
+#: lib/ravanshenasi_web/components/core_components.ex:227
 #: lib/ravanshenasi_web/live/patient_live/form.ex:113
 #: lib/ravanshenasi_web/live/patient_live/index.ex:60
 #, elixir-autogen, elixir-format
@@ -709,7 +713,7 @@ msgstr ""
 msgid "New session"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:118
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:123
 #, elixir-autogen, elixir-format
 msgid "No active patients."
 msgstr ""
@@ -739,17 +743,17 @@ msgstr ""
 msgid "No patients found."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:79
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:84
 #, elixir-autogen, elixir-format
 msgid "No recent audios."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:99
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:104
 #, elixir-autogen, elixir-format
 msgid "No recent sessions."
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:60
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:65
 #, elixir-autogen, elixir-format
 msgid "No records pending review."
 msgstr ""
@@ -805,7 +809,7 @@ msgstr ""
 msgid "Patients"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:38
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:43
 #, elixir-autogen, elixir-format
 msgid "Pending review"
 msgstr ""
@@ -825,19 +829,19 @@ msgstr ""
 msgid "Queued…"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:44
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:78
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:49
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:83
 #, elixir-autogen, elixir-format
 msgid "Recent audios"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:50
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:98
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:55
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:103
 #, elixir-autogen, elixir-format
 msgid "Recent sessions"
 msgstr ""
 
-#: lib/ravanshenasi_web/live/dashboard_live/index.ex:59
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:64
 #, elixir-autogen, elixir-format
 msgid "Records pending review"
 msgstr ""
@@ -861,6 +865,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: lib/ravanshenasi_web/components/core_components.ex:230
 #: lib/ravanshenasi_web/live/audio_live/index.ex:66
 #, elixir-autogen, elixir-format
 msgid "Saved"
@@ -969,6 +974,7 @@ msgstr ""
 msgid "Upload and transcribe audio messages from patients"
 msgstr ""
 
+#: lib/ravanshenasi_web/components/core_components.ex:228
 #: lib/ravanshenasi_web/live/patient_live/form.ex:114
 #: lib/ravanshenasi_web/live/patient_live/index.ex:61
 #, elixir-autogen, elixir-format
@@ -1108,4 +1114,109 @@ msgstr ""
 #: lib/ravanshenasi_web/live/dashboard_live/index.ex:27
 #, elixir-autogen, elixir-format
 msgid "Here's what's happening in your practice today."
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:160
+#, elixir-autogen, elixir-format
+msgid "%{day} of %{month}, %{year}"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:166
+#, elixir-autogen, elixir-format
+msgid "April"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:170
+#, elixir-autogen, elixir-format
+msgid "August"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:174
+#, elixir-autogen, elixir-format
+msgid "December"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:231
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Discarded"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:224
+#, elixir-autogen, elixir-format
+msgid "Draft"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:164
+#, elixir-autogen, elixir-format
+msgid "February"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:225
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Finalized"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:221
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Generating"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:163
+#, elixir-autogen, elixir-format
+msgid "January"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:169
+#, elixir-autogen, elixir-format
+msgid "July"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:168
+#, elixir-autogen, elixir-format
+msgid "June"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:165
+#, elixir-autogen, elixir-format
+msgid "March"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:167
+#, elixir-autogen, elixir-format
+msgid "May"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:173
+#, elixir-autogen, elixir-format
+msgid "November"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:172
+#, elixir-autogen, elixir-format
+msgid "October"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:220
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Pending"
+msgstr ""
+
+#: lib/ravanshenasi_web/live/dashboard_live/index.ex:171
+#, elixir-autogen, elixir-format
+msgid "September"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:229
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Suggested"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:223
+#, elixir-autogen, elixir-format
+msgid "Suggesting"
+msgstr ""
+
+#: lib/ravanshenasi_web/components/core_components.ex:222
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Transcribing"
 msgstr ""
