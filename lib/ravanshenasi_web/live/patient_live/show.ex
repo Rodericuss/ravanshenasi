@@ -74,7 +74,7 @@ defmodule RavanshenasiWeb.PatientLive.Show do
       {:error, :unauthorized} ->
         {:noreply, put_flash(socket, :error, gettext("Not allowed"))}
 
-      # corrida rara do índice parcial pode devolver {:error, changeset}; não quebra a UI
+      # A rare partial-index race may return {:error, changeset}; keep the UI stable.
       {:error, _} ->
         {:noreply, put_flash(socket, :error, gettext("Could not start the analysis"))}
     end

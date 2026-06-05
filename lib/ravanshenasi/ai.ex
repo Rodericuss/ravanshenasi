@@ -54,7 +54,7 @@ defmodule Ravanshenasi.AI do
     end
   end
 
-  # Stub não precisa de credenciais; clientes HTTP precisam de base_url + api_key + model.
+  # Stub needs no credentials; HTTP clients need base_url + api_key + model.
   defp configured?(%{client: Ravanshenasi.AI.Client.Stub}), do: true
 
   defp configured?(%{base_url: b, api_key: k, model: m}),

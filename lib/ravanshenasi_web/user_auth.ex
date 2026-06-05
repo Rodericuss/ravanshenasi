@@ -326,7 +326,7 @@ defmodule RavanshenasiWeb.UserAuth do
 
   defp signed_in_path_for_scope(_), do: ~p"/"
 
-  @doc "Plug: exige role admin no current_scope."
+  @doc "Plug for routes that require the current_scope user to have the admin role."
   def require_admin(conn, _opts) do
     if Scope.admin?(conn.assigns[:current_scope]) do
       conn

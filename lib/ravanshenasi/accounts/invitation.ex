@@ -47,6 +47,6 @@ defmodule Ravanshenasi.Accounts.Invitation do
     {raw_token, changeset}
   end
 
-  @doc "Hash de um token cru, pra lookup."
+  @doc "Hashes a raw token for lookup."
   def hash_token(raw_token), do: :crypto.hash(:sha256, raw_token)
 end

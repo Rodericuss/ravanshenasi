@@ -15,7 +15,7 @@ defmodule RavanshenasiWeb.AudioLive.Index do
     patient = Patients.get_patient!(scope, pid)
     audios = AudioMessages.list_audio_messages(scope, %{id: patient.id})
 
-    # subscribe só no socket conectado (evita subscribe inútil no render desconectado)
+    # Subscribe only on the connected socket to avoid useless subscriptions during disconnected render.
     if connected?(socket) do
       for a <- audios,
           a.status in [:pending, :transcribing, :suggesting],
@@ -167,7 +167,7 @@ defmodule RavanshenasiWeb.AudioLive.Index do
         {:noreply, assign(socket, audios: [msg | socket.assigns.audios])}
 
       {:error, :unauthorized} ->
-        # create falhou: remove o binário copiado pra não deixar órfão no tmp
+        # Creation failed: remove the copied binary so tmp does not keep an orphan.
         File.rm(audio_path)
         {:noreply, put_flash(socket, :error, gettext("Not allowed"))}
 

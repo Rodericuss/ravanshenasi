@@ -11,8 +11,9 @@ defmodule Ravanshenasi.AudioMessages do
   @pubsub Ravanshenasi.PubSub
 
   @doc """
-  Cria uma audio_message. NÃO confia no struct: recarrega o paciente escopado, sanitiza o
-  filename (user input) e insere pending + enfileira. Tudo num único transact_tenant.
+  Creates an audio message. Does not trust the incoming struct: reloads the scoped
+  patient, sanitizes the user-provided filename, inserts the pending row, and enqueues
+  the worker. Runs inside a single transact_tenant call.
   """
   def create_audio_message(%Scope{} = scope, %{id: patient_id}, attrs) do
     if Scope.clinical_access?(scope),
@@ -54,8 +55,8 @@ defmodule Ravanshenasi.AudioMessages do
     end
   end
 
-  # Sanitiza o filename (user input, pode conter dado clínico): só basename, ≤255 chars,
-  # NUNCA usado como path (o path temp usa UUID).
+  # Sanitizes the user-provided filename, which may contain clinical data: basename
+  # only, up to 255 chars. It is never used as a path; the temp path uses a UUID.
   defp sanitize_filename(name) when is_binary(name),
     do: name |> Path.basename() |> String.slice(0, 255)
 
@@ -67,19 +68,19 @@ defmodule Ravanshenasi.AudioMessages do
   def get_audio_message!(%Scope{} = scope, id),
     do: transact_tenant(scope, fn -> AudioMessage |> scoped(scope) |> Repo.get!(id) end)
 
-  @doc "Marca transcribing. No-op em done/error (não regride). Broadcast."
+  @doc "Marks the message as transcribing. No-op for done/error states. Broadcasts the result."
   def mark_transcribing(%Scope{} = scope, %{id: id}) do
     update_status(scope, id, fn
       %AudioMessage{status: s} = m when s in [:pending, :transcribing] ->
         AudioMessage.status_changeset(m, %{status: :transcribing})
 
       %AudioMessage{} = m ->
-        # done/error/suggesting são terminais/avançados: não regride numa reexecução
+        # done/error/suggesting are terminal or advanced states; do not regress on re-execution.
         Ecto.Changeset.change(m)
     end)
   end
 
-  @doc "Grava a transcrição (status :suggesting) + transcription_model. No-op se já há transcrição."
+  @doc "Stores the transcription and transcription_model, moving to :suggesting. No-op if already transcribed."
   def save_transcription(%Scope{} = scope, %{id: id}, text, transcription_model) do
     update_status(scope, id, fn
       %AudioMessage{transcription: nil} = m ->
@@ -94,7 +95,7 @@ defmodule Ravanshenasi.AudioMessages do
     end)
   end
 
-  @doc "Grava a resposta (status :done) + reply_model_used. No-op se já :done."
+  @doc "Stores the suggested response and reply_model_used, moving to :done. No-op if already done."
   def complete(%Scope{} = scope, %{id: id}, suggested_response, reply_model) do
     update_status(scope, id, fn
       %AudioMessage{status: :done} = m ->
@@ -109,7 +110,7 @@ defmodule Ravanshenasi.AudioMessages do
     end)
   end
 
-  @doc "Marca error + error_reason. No-op se já :done."
+  @doc "Marks the message as error and stores error_reason. No-op if already done."
   def fail(%Scope{} = scope, %{id: id}, reason) do
     update_status(scope, id, fn
       %AudioMessage{status: :done} = m ->
@@ -120,7 +121,7 @@ defmodule Ravanshenasi.AudioMessages do
     end)
   end
 
-  @doc "Histórico de áudios do paciente (do dono), mais recentes primeiro. Read escopa por id."
+  @doc "Lists the owned patient's audio history, newest first. Reads are scoped by id."
   def list_audio_messages(%Scope{} = scope, %{id: patient_id}) do
     transact_tenant(scope, fn ->
       AudioMessage
@@ -131,7 +132,7 @@ defmodule Ravanshenasi.AudioMessages do
     end)
   end
 
-  @doc "Edição da resposta pelo profissional (só quando :done). Recarrega escopado por id."
+  @doc "Updates the practitioner's suggested response, only when done. Reloads by scoped id."
   def update_suggested_response(%Scope{} = scope, %{id: id}, text) do
     transact_tenant(scope, fn ->
       case AudioMessage |> scoped(scope) |> Repo.get(id) do
@@ -148,9 +149,10 @@ defmodule Ravanshenasi.AudioMessages do
   end
 
   @doc """
-  Re-tenta SÓ a etapa 2 (sugestão): exige :error + transcrição presente. Volta pra :suggesting
-  e re-enfileira (audio_path: nil — a etapa 1 é pulada). Erro de transcrição (sem transcription)
-  não é retryável: exige novo upload.
+  Retries only step 2, the suggestion step. Requires :error plus an existing
+  transcription, moves back to :suggesting, and re-enqueues with audio_path: nil so
+  step 1 is skipped. Transcription errors without transcription are not retryable and
+  require a new upload.
   """
   def retry_suggestion(%Scope{} = scope, %{id: id}) do
     transact_tenant(scope, fn ->
@@ -173,7 +175,7 @@ defmodule Ravanshenasi.AudioMessages do
     end)
   end
 
-  # Recarrega escopado por id, aplica a transição (fun devolve um changeset) e faz broadcast.
+  # Reloads by scoped id, applies the transition returned as a changeset, then broadcasts.
   defp update_status(scope, id, fun) do
     res =
       transact_tenant(scope, fn ->
@@ -202,7 +204,7 @@ defmodule Ravanshenasi.AudioMessages do
       audio_path: audio_path
     }
 
-  @doc "Áudios do dono mais recentes (cross-paciente, escopado), com :patient preloadado."
+  @doc "Lists the owner's most recent audios across patients, scoped and preloading :patient."
   def list_recent(%Scope{} = scope, limit \\ 5) do
     transact_tenant(scope, fn ->
       AudioMessage

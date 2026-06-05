@@ -17,7 +17,7 @@ defmodule Ravanshenasi.Sessions.Session do
     timestamps(type: :utc_datetime)
   end
 
-  @doc "Campos editáveis pelo profissional (tenant_id/user_id/patient_id setados server-side)."
+  @doc "Practitioner-editable fields. tenant_id/user_id/patient_id are set server-side."
   def changeset(session, attrs) do
     session
     |> cast(attrs, [:date, :duration_minutes, :notes, :status])

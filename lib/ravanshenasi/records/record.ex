@@ -23,12 +23,12 @@ defmodule Ravanshenasi.Records.Record do
     timestamps(type: :utc_datetime)
   end
 
-  @doc "Edição do conteúdo (revisão)."
+  @doc "Content update changeset for review edits."
   def content_changeset(record, attrs) do
     record |> cast(attrs, [:content, :reviewed]) |> validate_required([:content])
   end
 
-  @doc "Transições de status da geração."
+  @doc "Generation status transition changeset."
   def status_changeset(record, attrs) do
     record |> cast(attrs, [:generation_status, :content, :model_used, :error_reason])
   end

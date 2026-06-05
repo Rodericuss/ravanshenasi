@@ -25,14 +25,14 @@ defmodule Ravanshenasi.AudioMessages.AudioMessage do
     timestamps(type: :utc_datetime)
   end
 
-  @doc "Insert changeset (pending). tone/tenant/user/patient/filename são server-side."
+  @doc "Insert changeset for pending messages. tone/tenant/user/patient/filename are server-side."
   def insert_changeset(attrs) do
     %__MODULE__{}
     |> cast(attrs, [:tenant_id, :user_id, :patient_id, :original_filename, :tone])
     |> validate_required([:tenant_id, :user_id, :patient_id, :original_filename, :tone])
   end
 
-  @doc "Status/etapas (transcrição, sugestão, erro)."
+  @doc "Status transitions for transcription, suggestion, and error states."
   def status_changeset(audio_message, attrs) do
     cast(audio_message, attrs, [
       :status,
@@ -44,7 +44,7 @@ defmodule Ravanshenasi.AudioMessages.AudioMessage do
     ])
   end
 
-  @doc "Edição da resposta sugerida pelo profissional."
+  @doc "Updates the suggested response edited by the practitioner."
   def response_changeset(audio_message, attrs) do
     audio_message
     |> cast(attrs, [:suggested_response])

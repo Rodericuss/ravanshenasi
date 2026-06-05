@@ -22,22 +22,22 @@ defmodule Ravanshenasi.AudioMessages.TranscribeAndSuggestWorker do
     end
   end
 
-  # Terminal (done/error): job já concluído numa execução anterior (at-least-once). No-op.
+  # Terminal (done/error): the job already completed in a previous at-least-once execution.
   defp process(_scope, %AudioMessage{status: st}, _path, _a, _m) when st in [:done, :error],
     do: :ok
 
-  # Transcrição ainda não feita.
+  # Transcription has not been created yet.
   defp process(scope, %AudioMessage{transcription: nil} = msg, audio_path, attempt, max) do
     if is_binary(audio_path) and File.exists?(audio_path) do
       transcribe_step(scope, msg, audio_path, attempt, max)
     else
-      # Binário sumiu e não há transcrição: irreversível. Erro terminal, SEM retry.
+      # The binary disappeared and there is no transcription: irreversible terminal error.
       {:ok, _} = AudioMessages.fail(scope, msg, :audio_file_missing)
       :ok
     end
   end
 
-  # Transcrição já feita (retry da etapa 2): pula a etapa 1, vai direto pra sugestão.
+  # Transcription already exists (step 2 retry): skip step 1 and go straight to suggestion.
   defp process(scope, %AudioMessage{} = msg, _audio_path, attempt, max) do
     suggest_step(scope, msg, attempt, max)
   end
@@ -52,7 +52,7 @@ defmodule Ravanshenasi.AudioMessages.TranscribeAndSuggestWorker do
         suggest_step(scope, msg, attempt, max)
 
       {:error, reason} when attempt >= max ->
-        # Persiste o reason REAL (erro de API, audio_unreadable, empty_transcription…) pra diagnóstico.
+        # Persist the real reason (API error, audio_unreadable, empty_transcription, etc.) for diagnostics.
         {:ok, _} = AudioMessages.fail(scope, msg, {:transcription_failed, reason})
         File.rm(audio_path)
         :ok

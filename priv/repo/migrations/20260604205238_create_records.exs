@@ -19,7 +19,7 @@ defmodule Ravanshenasi.Repo.Migrations.CreateRecords do
       timestamps(type: :utc_datetime)
     end
 
-    # FKs compostas record↔session (integridade: record não diverge da sua sessão)
+    # Composite record↔session FKs: a record cannot diverge from its session.
     execute(
       "ALTER TABLE records ADD CONSTRAINT records_session_owner_fkey FOREIGN KEY (session_id, tenant_id, user_id) REFERENCES sessions (id, tenant_id, user_id) ON DELETE CASCADE",
       "ALTER TABLE records DROP CONSTRAINT records_session_owner_fkey"

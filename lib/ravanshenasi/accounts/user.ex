@@ -119,7 +119,7 @@ defmodule Ravanshenasi.Accounts.User do
     change(user, confirmed_at: now)
   end
 
-  @doc "Campos de tenant/perfil — usado no registro e aceite de convite."
+  @doc "Tenant/profile fields used during registration and invitation acceptance."
   def tenant_changeset(user, attrs) do
     user
     |> cast(attrs, [:tenant_id, :name, :role])

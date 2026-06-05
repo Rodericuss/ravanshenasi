@@ -20,8 +20,8 @@ defmodule Ravanshenasi.Analyses.GenerateSuggestionsWorker do
     end
   end
 
-  # Terminal (done/error): o job já foi concluído numa execução anterior (Oban é
-  # at-least-once). Não reprocessa a IA. O context também é idempotente como rede de segurança.
+  # Terminal (done/error): the job already completed in a previous at-least-once Oban
+  # execution. Do not call AI again. The context is also idempotent as a safety net.
   defp process(_scope, %Analyses.Analysis{generation_status: st}, _attempt, _max)
        when st in [:done, :error],
        do: :ok
@@ -46,7 +46,7 @@ defmodule Ravanshenasi.Analyses.GenerateSuggestionsWorker do
 
   defp build_scope(uid, tid) do
     Repo.with_auth_bypass(fn ->
-      # `%User{tenant_id: ^tid}` casa só se o user PERTENCE ao tenant do job.
+      # `%User{tenant_id: ^tid}` matches only if the user belongs to the job tenant.
       with %User{tenant_id: ^tid} = user <- Repo.get(User, uid),
            %Tenant{} = tenant <- Repo.get(Tenant, tid) do
         {:ok, Scope.for_user(user) |> Scope.put_tenant(tenant)}

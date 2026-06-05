@@ -27,7 +27,7 @@ defmodule Ravanshenasi.Sessions do
   def get_session!(%Scope{} = scope, id),
     do: transact_tenant(scope, fn -> Session |> scoped(scope) |> Repo.get!(id) end)
 
-  @doc "Sessão por id garantindo que pertence ao paciente da rota (além do scope)."
+  @doc "Fetches a session by id, ensuring it belongs to the routed patient and current scope."
   def get_session_for_patient(%Scope{} = scope, %{id: patient_id}, id) do
     transact_tenant(scope, fn ->
       Session
@@ -38,8 +38,8 @@ defmodule Ravanshenasi.Sessions do
   end
 
   @doc """
-  Cria sessão. NÃO confia no struct passado: recarrega o paciente por query
-  escopada (tenant_id + user_id) antes de inserir.
+  Creates a session. Does not trust the incoming struct: reloads the patient through
+  a scoped query (tenant_id + user_id) before inserting.
   """
   def create_session(%Scope{} = scope, %{id: patient_id}, attrs) do
     if Scope.clinical_access?(scope),
@@ -67,8 +67,8 @@ defmodule Ravanshenasi.Sessions do
   end
 
   @doc """
-  Atualiza sessão. NÃO confia no struct: recarrega por query escopada usando
-  apenas o id antes de operar.
+  Updates a session. Does not trust the incoming struct: reloads through a scoped
+  query using only the id before operating.
   """
   def update_session(%Scope{} = scope, %{id: id}, attrs) do
     transact_tenant(scope, fn ->
@@ -82,17 +82,18 @@ defmodule Ravanshenasi.Sessions do
 
   def change_session(%Session{} = session, attrs \\ %{}), do: Session.changeset(session, attrs)
 
-  @doc "Finaliza a sessão (draft→finalized), cria o record pending e enfileira o job. Atômico."
+  @doc "Finalizes the session, creates the pending record, and enqueues the job atomically."
   def finalize_session(%Scope{} = scope, %{id: id}) do
     if Scope.clinical_access?(scope), do: do_finalize(scope, id), else: {:error, :unauthorized}
   end
 
-  # Repo.transaction PRÓPRIO (não transact_tenant, que LEVANTA em rollback). O UPDATE
-  # condicional com RETURNING (`select: s`): (1) serializa finalizações concorrentes — só
-  # quem vê status=:draft vence; (2) o WHERE inclui user_id, então sessão de outro
-  # profissional do mesmo tenant não é tocada (0 linhas); (3) devolve a LINHA DO BANCO, de
-  # onde derivamos tenant/user/patient do record (nunca do struct do caller). Reseta o GUC
-  # no sucesso (como o transact_tenant); no rollback o Postgres reverte o SET LOCAL.
+  # Own Repo.transaction call (not transact_tenant, which raises on rollback). The
+  # conditional UPDATE with RETURNING (`select: s`): (1) serializes concurrent
+  # finalizations so only the caller that sees status=:draft wins; (2) includes user_id
+  # in the WHERE, so another practitioner in the same tenant is untouched (0 rows);
+  # (3) returns the database row, from which we derive tenant/user/patient for the
+  # record, never from the caller's struct. Resets the GUC on success like
+  # transact_tenant; on rollback Postgres reverts SET LOCAL.
   defp do_finalize(scope, id) do
     Repo.transaction(fn ->
       Repo.query!("SELECT set_config('app.current_tenant_id', $1, true)", [scope.tenant.id])
@@ -111,8 +112,8 @@ defmodule Ravanshenasi.Sessions do
 
       case rows do
         [] ->
-          # 0 linhas: distingue "já finalizada (do próprio dono)" de "acesso a sessão
-          # alheia". A query escopada (tenant_id + user_id) só encontra se for do dono.
+          # 0 rows: distinguishes "already finalized by the owner" from "access to a
+          # foreign session". The scoped query (tenant_id + user_id) only finds owned rows.
           Repo.rollback(finalize_failure_reason(scope, id))
 
         [session] ->
@@ -141,7 +142,7 @@ defmodule Ravanshenasi.Sessions do
     end
   end
 
-  @doc "Últimas `limit` sessões finalizadas do paciente, EXCLUINDO `exclude_session_id`."
+  @doc "Lists the patient's latest finalized sessions, excluding `exclude_session_id`."
   def recent_finalized(%Scope{} = scope, %Patient{} = patient, exclude_session_id, limit \\ 3) do
     transact_tenant(scope, fn ->
       Session
@@ -156,7 +157,7 @@ defmodule Ravanshenasi.Sessions do
     end)
   end
 
-  @doc "Sessões do dono mais recentes (cross-paciente, escopado), data desc (nulls por último), com :patient."
+  @doc "Lists the owner's most recent sessions across patients, scoped, date desc with nulls last, and preloading :patient."
   def list_recent(%Scope{} = scope, limit \\ 5) do
     transact_tenant(scope, fn ->
       Session
@@ -168,11 +169,11 @@ defmodule Ravanshenasi.Sessions do
     end)
   end
 
-  # scope por praticante: tenant_id + user_id
+  # Practitioner scope: tenant_id + user_id.
   defp scoped(query, scope),
     do: from(s in query, where: s.tenant_id == ^scope.tenant.id and s.user_id == ^scope.user.id)
 
-  # scope por paciente: recarrega o patient garantindo ownership
+  # Patient scope: reloads the patient while enforcing ownership.
   defp patient_scoped(query, scope),
     do: from(p in query, where: p.tenant_id == ^scope.tenant.id and p.user_id == ^scope.user.id)
 

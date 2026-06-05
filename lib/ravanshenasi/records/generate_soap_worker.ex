@@ -36,7 +36,7 @@ defmodule Ravanshenasi.Records.GenerateSoapWorker do
 
   defp build_scope(uid, tid) do
     Repo.with_auth_bypass(fn ->
-      # `%User{tenant_id: ^tid}` casa só se o user PERTENCE ao tenant do job.
+      # `%User{tenant_id: ^tid}` matches only if the user belongs to the job tenant.
       with %User{tenant_id: ^tid} = user <- Repo.get(User, uid),
            %Tenant{} = tenant <- Repo.get(Tenant, tid) do
         {:ok, Scope.for_user(user) |> Scope.put_tenant(tenant)}

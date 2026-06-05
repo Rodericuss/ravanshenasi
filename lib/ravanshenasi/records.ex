@@ -14,14 +14,14 @@ defmodule Ravanshenasi.Records do
   def get_record(%Scope{} = scope, id),
     do: transact_tenant(scope, fn -> Record |> scoped(scope) |> Repo.get(id) end)
 
-  @doc "Record da sessão (duck-typed por id pra não acoplar Records→Sessions)."
+  @doc "Fetches a session record by duck-typed session id to avoid coupling Records to Sessions."
   def get_record_for_session(%Scope{} = scope, %{id: session_id}),
     do:
       transact_tenant(scope, fn ->
         Record |> scoped(scope) |> Repo.get_by(session_id: session_id)
       end)
 
-  @doc "Histórico de prontuários do paciente (do dono), mais recentes primeiro."
+  @doc "Lists the owned patient's record history, newest first."
   def list_records(%Scope{} = scope, %{id: patient_id}) do
     transact_tenant(scope, fn ->
       Record
@@ -33,9 +33,9 @@ defmodule Ravanshenasi.Records do
   end
 
   @doc """
-  Últimos `limit` prontuários :done do paciente (do dono), ordenados pela DATA CLÍNICA
-  da sessão (desc) — não por inserted_at, pra uma sessão antiga finalizada depois não
-  furar a ordem. Filtro/ordenação no banco.
+  Lists the owned patient's latest `limit` done records, ordered by the session's
+  clinical date descending instead of inserted_at, so an older session finalized later
+  does not break clinical ordering. Filtering and ordering happen in the database.
   """
   def recent_done_records(%Scope{} = scope, %{id: patient_id}, limit \\ 3) do
     transact_tenant(scope, fn ->
@@ -50,7 +50,7 @@ defmodule Ravanshenasi.Records do
     end)
   end
 
-  @doc "Edita o conteúdo (só quando :done). NÃO confia no struct — recarrega escopado por id."
+  @doc "Updates content only when done. Does not trust the struct; reloads by scoped id."
   def update_record(%Scope{} = scope, %{id: id}, attrs) do
     with_owned(scope, id, fn
       %Record{generation_status: :done} = r ->
@@ -81,7 +81,7 @@ defmodule Ravanshenasi.Records do
     end)
   end
 
-  # --- internas (worker, scope reconstruído) — também recarregam, não confiam no struct ---
+  # --- internals (worker, rebuilt scope): also reload and do not trust structs ---
   def mark_generating(%Scope{} = scope, %{id: id}),
     do: set_status(scope, id, %{generation_status: :generating})
 
@@ -100,7 +100,7 @@ defmodule Ravanshenasi.Records do
     res
   end
 
-  @doc "Prontuários do dono prontos mas não revisados (done + reviewed=false), recentes primeiro. Cross-paciente, escopado, com :patient."
+  @doc "Lists the owner's done but unreviewed records across patients, newest first, scoped and preloading :patient."
   def list_pending_review(%Scope{} = scope, limit \\ 5) do
     transact_tenant(scope, fn ->
       Record
@@ -113,7 +113,7 @@ defmodule Ravanshenasi.Records do
     end)
   end
 
-  @doc "Quantos prontuários do dono estão done e não revisados."
+  @doc "Counts the owner's done but unreviewed records."
   def count_pending_review(%Scope{} = scope) do
     transact_tenant(scope, fn ->
       Record
@@ -123,7 +123,7 @@ defmodule Ravanshenasi.Records do
     end)
   end
 
-  # Recarrega o record por query escopada (tenant_id + user_id) e chama `fun`.
+  # Reloads the record through a scoped query (tenant_id + user_id), then calls `fun`.
   defp with_owned(scope, id, fun) do
     transact_tenant(scope, fn ->
       case Record |> scoped(scope) |> Repo.get(id) do

@@ -12,9 +12,9 @@ defmodule Ravanshenasi.Analyses do
   @active_statuses [:pending, :generating]
 
   @doc """
-  Dispara a análise de um paciente. NÃO confia no struct: recarrega o paciente por
-  query escopada. Idempotente (1 análise ativa por paciente). Bloqueia sem frameworks
-  ativos. Tudo num único transact_tenant (não aninhar — transact_tenant reseta o GUC).
+  Starts patient analysis. Does not trust the incoming struct: reloads the patient
+  through a scoped query. Idempotent, with one active analysis per patient. Blocks
+  when there are no active frameworks. Runs inside a single transact_tenant call.
   """
   def analyze_patient(%Scope{} = scope, %{id: patient_id}) do
     if Scope.clinical_access?(scope),
@@ -52,16 +52,17 @@ defmodule Ravanshenasi.Analyses do
     end
   end
 
-  # SÓ trata como corrida do índice parcial "1 ativa por paciente". Qualquer outro erro
-  # (FK, validação, outra constraint) é bug real e sobe como {:error, changeset} — nunca
-  # vira {:ok, nil} silencioso. O insert falho roda em savepoint (unique_constraint
-  # declarado), então a transação externa segue viva e o active_analysis abaixo funciona.
+  # Only handles the partial index race for "one active analysis per patient". Any other
+  # error (FK, validation, another constraint) is a real bug and returns
+  # {:error, changeset}; it never silently becomes {:ok, nil}. The failed insert runs
+  # in a savepoint because unique_constraint is declared, so the outer transaction stays
+  # alive and active_analysis below still works.
   defp resolve_active_race(scope, patient_id, changeset) do
     if active_constraint_error?(changeset) do
       case active_analysis(scope, patient_id) do
-        # corrida real: a outra requisição venceu — devolve a ativa (idempotente)
+        # Real race: the other request won, so return the active analysis idempotently.
         %Analysis{} = active -> {:ok, active}
-        # constraint disparou mas não há ativa agora (caso degenerado): devolve o erro real
+        # Constraint fired but there is no active analysis now: return the real error.
         nil -> {:error, changeset}
       end
     else
@@ -69,8 +70,8 @@ defmodule Ravanshenasi.Analyses do
     end
   end
 
-  # O índice parcial é :analyses_one_active_per_patient (ver migration). Quando ele dispara,
-  # o erro vem na 1ª coluna do unique_constraint com constraint_name batendo.
+  # The partial index is :analyses_one_active_per_patient. When it fires, the error
+  # appears on the first unique_constraint column with a matching constraint_name.
   defp active_constraint_error?(%Ecto.Changeset{errors: errors}) do
     Enum.any?(errors, fn {_field, {_msg, opts}} ->
       opts[:constraint] == :unique and opts[:constraint_name] == "analyses_one_active_per_patient"
@@ -98,10 +99,10 @@ defmodule Ravanshenasi.Analyses do
   def get_analysis!(%Scope{} = scope, id),
     do: transact_tenant(scope, fn -> Analysis |> scoped(scope) |> Repo.get!(id) end)
 
-  # --- internos (worker, scope reconstruído) — recarregam, não confiam no struct.
-  # Idempotentes: Oban é at-least-once, então reexecução não pode regredir nem duplicar. ---
+  # --- internals (worker, rebuilt scope): reload and do not trust structs.
+  # Idempotent: Oban is at-least-once, so re-execution must not regress or duplicate. ---
 
-  @doc "Marca generating. No-op em done/error (não regride). Broadcast quando aplicável."
+  @doc "Marks the analysis as generating. No-op for done/error states. Broadcasts when applicable."
   def mark_generating(%Scope{} = scope, %{id: id}) do
     res =
       transact_tenant(scope, fn ->
@@ -112,7 +113,7 @@ defmodule Ravanshenasi.Analyses do
           %Analysis{generation_status: st} = a when st in @active_statuses ->
             a |> Analysis.status_changeset(%{generation_status: :generating}) |> Repo.update()
 
-          # done/error são terminais: não regride numa reexecução de job
+          # done/error are terminal states; do not regress on job re-execution.
           %Analysis{} = a ->
             {:ok, a}
         end
@@ -126,8 +127,9 @@ defmodule Ravanshenasi.Analyses do
     do: set_status(scope, id, %{generation_status: :error, error_reason: inspect(reason)})
 
   @doc """
-  Marca done e insere as N suggestions (tenant/user derivados da analysis), depois broadcast.
-  Idempotente: análise já `done` é no-op (não reinsere cards numa reexecução de job).
+  Marks the analysis as done, inserts all suggestions with tenant/user derived from
+  the analysis, then broadcasts. Idempotent: an already done analysis is a no-op and
+  does not reinsert cards during job re-execution.
   """
   def complete(%Scope{} = scope, %{id: id}, suggestions, model_used) do
     res =
@@ -136,7 +138,7 @@ defmodule Ravanshenasi.Analyses do
           nil ->
             {:error, :unauthorized}
 
-          # já concluída: idempotente — não reinsere (Oban at-least-once)
+          # Already completed: idempotent, so do not reinsert on Oban at-least-once replay.
           %Analysis{generation_status: :done} = a ->
             {:ok, a}
 
@@ -155,7 +157,7 @@ defmodule Ravanshenasi.Analyses do
     res
   end
 
-  @doc "Cards de uma análise (do dono). Read escopa por id — struct alheio não retorna nada."
+  @doc "Lists cards for an owned analysis. Reads are scoped by id; foreign structs return nothing."
   def list_suggestions(%Scope{} = scope, %{id: analysis_id}) do
     transact_tenant(scope, fn ->
       Suggestion
@@ -196,7 +198,7 @@ defmodule Ravanshenasi.Analyses do
     res
   end
 
-  @doc "Histórico de análises do paciente (do dono), mais recentes primeiro. Read escopa por id."
+  @doc "Lists the owned patient's analysis history, newest first. Reads are scoped by id."
   def list_analyses(%Scope{} = scope, %{id: patient_id}) do
     transact_tenant(scope, fn ->
       Analysis
@@ -230,7 +232,7 @@ defmodule Ravanshenasi.Analyses do
   def job_args(%Analysis{} = a),
     do: %{analysis_id: a.id, user_id: a.user_id, tenant_id: a.tenant_id}
 
-  # scope por praticante: tenant_id + user_id (vale pra Analysis e Suggestion)
+  # Practitioner scope: tenant_id + user_id. Applies to both Analysis and Suggestion.
   defp scoped(query, scope),
     do: from(x in query, where: x.tenant_id == ^scope.tenant.id and x.user_id == ^scope.user.id)
 

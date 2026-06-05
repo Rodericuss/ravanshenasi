@@ -39,7 +39,7 @@ defmodule Ravanshenasi.AI.Transcriber.OpenAI do
   defp handle_transcription_response({:error, reason}),
     do: {:error, reason}
 
-  # File.read/1 (não File.read!): arquivo sumido/ilegível vira erro controlado, nunca levanta.
+  # File.read/1 (not File.read!): a missing/unreadable file becomes a controlled error.
   defp read_audio(path) do
     case File.read(path) do
       {:ok, bin} -> {:ok, bin}

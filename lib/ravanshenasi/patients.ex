@@ -138,14 +138,14 @@ defmodule Ravanshenasi.Patients do
     from p in query, where: p.tenant_id == ^scope.tenant.id and p.user_id == ^scope.user.id
   end
 
-  @doc "Quantos pacientes ativos o dono tem."
+  @doc "Counts the owner's active patients."
   def count_active(%Scope{} = scope) do
     transact_tenant(scope, fn ->
       Patient |> scoped(scope) |> where([p], p.status == :active) |> Repo.aggregate(:count)
     end)
   end
 
-  @doc "Pacientes ativos do dono, mais recentes primeiro (cross-paciente, escopado)."
+  @doc "Lists the owner's active patients, newest first, scoped across patients."
   def list_recent(%Scope{} = scope, limit \\ 5) do
     transact_tenant(scope, fn ->
       Patient
