@@ -58,3 +58,6 @@ config :ravanshenasi, Ravanshenasi.AI,
 # Req.Test plug for the OpenAI client (used in Task 7).
 config :ravanshenasi, :ai_req_plug, {Req.Test, Ravanshenasi.AI.Client.OpenAI}
 config :ravanshenasi, :transcriber_req_plug, {Req.Test, Ravanshenasi.AI.Transcriber.OpenAI}
+
+# Keep tests in English (assertions check English msgids)
+config :ravanshenasi, RavanshenasiWeb.Gettext, default_locale: "en"
