@@ -137,81 +137,120 @@ defmodule RavanshenasiWeb.PatientLive.Show do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <.header>{@patient.name}</.header>
-      <p>{@patient.chief_complaint}</p>
-
-      <h3>{gettext("Lines of thought")}</h3>
-      <ul>
-        <li :for={f <- @all_frameworks}>
-          <label>
-            <input
-              type="checkbox"
-              checked={MapSet.member?(@active_ids, f.id)}
-              phx-click="toggle-framework"
-              phx-value-id={f.id}
-              phx-value-on={to_string(not MapSet.member?(@active_ids, f.id))}
-            />
-            {f.name}
-          </label>
-        </li>
-      </ul>
-
-      <section id="analysis-section">
-        <h3>{gettext("Approach suggestions")}</h3>
-        <.button id="analyze-patient-button" phx-click="analyze">
-          {gettext("Analyze patient")}
-        </.button>
-
-        <p :if={@no_frameworks_warning} id="no-frameworks-warning">
-          {gettext("Configure lines of thought for this patient before analyzing.")}
-        </p>
-
-        <p
-          :if={@analysis && @analysis.generation_status in [:pending, :generating]}
-          id="analysis-generating"
-        >
-          {gettext("Analyzing…")}
-        </p>
-
-        <div :if={@analysis && @analysis.generation_status == :error} id="analysis-error">
-          <p>{gettext("Analysis failed.")}</p>
-          <.button id="retry-analysis-button" phx-click="analyze">
-            {gettext("Try again")}
+      <.header>
+        {@patient.name}
+        <:subtitle :if={@patient.chief_complaint}>{@patient.chief_complaint}</:subtitle>
+        <:actions>
+          <.button variant="outline" navigate={~p"/pacientes/#{@patient.id}/editar"}>
+            {gettext("Edit")}
           </.button>
-        </div>
+          <.button
+            :if={@patient.status != :inactive}
+            variant="destructive"
+            phx-click="inactivate"
+            data-confirm={gettext("Inactivate this patient?")}
+          >
+            {gettext("Inactivate patient")}
+          </.button>
+        </:actions>
+      </.header>
 
-        <div :if={@analysis && @analysis.generation_status == :done} id="suggestions">
-          <div :for={s <- @suggestions} id={"suggestion-#{s.id}"} class="card">
-            <h4>{s.framework_name}</h4>
-            <p>{s.justification}</p>
-            <ul>
-              <li :for={t <- s.techniques}>{t}</li>
-            </ul>
-            <p>{s.watch_out}</p>
-            <span id={"suggestion-status-#{s.id}"}>{s.status}</span>
-            <.button id={"save-suggestion-#{s.id}"} phx-click="save-suggestion" phx-value-id={s.id}>
-              {gettext("Save")}
-            </.button>
-            <.button
-              id={"discard-suggestion-#{s.id}"}
-              phx-click="discard-suggestion"
-              phx-value-id={s.id}
+      <div class="grid gap-4 lg:grid-cols-3">
+        <%!-- Lines of thought card --%>
+        <.card class="lg:col-span-1">
+          <:title>{gettext("Lines of thought")}</:title>
+          <.empty_state
+            :if={@all_frameworks == []}
+            icon="hero-square-3-stack-3d"
+            title={gettext("No lines configured.")}
+          />
+          <ul :if={@all_frameworks != []} class="space-y-2">
+            <li :for={f <- @all_frameworks} class="flex items-center gap-3">
+              <label class="flex cursor-pointer items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={MapSet.member?(@active_ids, f.id)}
+                  phx-click="toggle-framework"
+                  phx-value-id={f.id}
+                  phx-value-on={to_string(not MapSet.member?(@active_ids, f.id))}
+                  class="size-4 rounded border-border text-primary accent-primary"
+                />
+                <span class="text-sm font-medium">{f.name}</span>
+              </label>
+            </li>
+          </ul>
+        </.card>
+
+        <%!-- Analysis section --%>
+        <section id="analysis-section" class="lg:col-span-2">
+          <.card>
+            <:title>{gettext("Approach suggestions")}</:title>
+            <:actions>
+              <.button id="analyze-patient-button" phx-click="analyze">
+                {gettext("Analyze patient")}
+              </.button>
+            </:actions>
+
+            <p :if={@no_frameworks_warning} id="no-frameworks-warning" class="text-sm text-muted-foreground">
+              {gettext("Configure lines of thought for this patient before analyzing.")}
+            </p>
+
+            <div
+              :if={@analysis && @analysis.generation_status in [:pending, :generating]}
+              id="analysis-generating"
+              class="flex items-center gap-2 text-sm text-muted-foreground"
             >
-              {gettext("Discard")}
-            </.button>
-          </div>
-        </div>
-      </section>
+              <.icon name="hero-arrow-path" class="size-4 animate-spin" />
+              {gettext("Analyzing…")}
+            </div>
 
-      <.button navigate={~p"/pacientes/#{@patient.id}/editar"}>{gettext("Edit")}</.button>
-      <.button
-        :if={@patient.status != :inactive}
-        phx-click="inactivate"
-        data-confirm={gettext("Inactivate this patient?")}
-      >
-        {gettext("Inactivate patient")}
-      </.button>
+            <div :if={@analysis && @analysis.generation_status == :error} id="analysis-error" class="rounded-md bg-destructive/10 p-4 text-destructive">
+              <p class="text-sm font-medium">{gettext("Analysis failed.")}</p>
+              <.button id="retry-analysis-button" variant="outline" phx-click="analyze" class="mt-2">
+                {gettext("Try again")}
+              </.button>
+            </div>
+
+            <div :if={@analysis && @analysis.generation_status == :done} id="suggestions" class="space-y-4">
+              <div :for={s <- @suggestions} id={"suggestion-#{s.id}"} class="rounded-lg border border-border bg-muted/40 p-4">
+                <div class="mb-2 flex items-center justify-between gap-2">
+                  <h4 class="font-semibold">{s.framework_name}</h4>
+                  <span id={"suggestion-status-#{s.id}"}>
+                    <.badge variant={suggestion_status_variant(s.status)}>{s.status}</.badge>
+                  </span>
+                </div>
+                <p class="mb-2 text-sm text-muted-foreground">{s.justification}</p>
+                <ul :if={s.techniques != []} class="mb-2 ml-4 list-disc space-y-1 text-sm">
+                  <li :for={t <- s.techniques}>{t}</li>
+                </ul>
+                <p :if={s.watch_out} class="mb-3 text-sm italic text-muted-foreground">{s.watch_out}</p>
+                <div class="flex gap-2">
+                  <.button
+                    id={"save-suggestion-#{s.id}"}
+                    phx-click="save-suggestion"
+                    phx-value-id={s.id}
+                  >
+                    {gettext("Save")}
+                  </.button>
+                  <.button
+                    id={"discard-suggestion-#{s.id}"}
+                    variant="outline"
+                    phx-click="discard-suggestion"
+                    phx-value-id={s.id}
+                  >
+                    {gettext("Discard")}
+                  </.button>
+                </div>
+              </div>
+            </div>
+          </.card>
+        </section>
+      </div>
     </Layouts.app>
     """
   end
+
+  defp suggestion_status_variant(:saved), do: "success"
+  defp suggestion_status_variant(:discarded), do: "secondary"
+  defp suggestion_status_variant(_), do: "outline"
 end

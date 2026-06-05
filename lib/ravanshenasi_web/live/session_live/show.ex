@@ -51,26 +51,77 @@ defmodule RavanshenasiWeb.SessionLive.Show do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <.header>{gettext("Session")} — {@patient.name}</.header>
-      <p>{@session.notes}</p>
-      <.button :if={@session.status == :draft} id="finalize-session-button" phx-click="finalize">
-        {gettext("Finalize")}
-      </.button>
+      <.header>
+        {gettext("Session")} — {@patient.name}
+        <:subtitle>{session_date(@session.date)}</:subtitle>
+        <:actions>
+          <.badge variant={session_variant(@session.status)}>{@session.status}</.badge>
+          <.button
+            :if={@session.status == :draft}
+            id="finalize-session-button"
+            phx-click="finalize"
+          >
+            <.icon name="hero-check" class="size-4" />
+            {gettext("Finalize")}
+          </.button>
+        </:actions>
+      </.header>
 
-      <div :if={@record}>
-        <p :if={@record.generation_status in [:pending, :generating]} id="record-generating">
-          {gettext("Generating record...")}
-        </p>
-        <div :if={@record.generation_status == :done}>
-          <h3>{gettext("SOAP record")}</h3>
-          <pre id="soap-record-content">{@record.content}</pre>
-        </div>
-        <div :if={@record.generation_status == :error} id="record-error">
-          <p>{gettext("Generation failed")}: {@record.error_reason}</p>
-          <.button id="retry-generation-button" phx-click="retry">{gettext("Try again")}</.button>
-        </div>
+      <div class="grid gap-4 lg:grid-cols-2">
+        <.card>
+          <:title>{gettext("Notes")}</:title>
+          <p class="text-sm text-muted-foreground whitespace-pre-wrap">
+            {if @session.notes && @session.notes != "", do: @session.notes, else: gettext("No notes.")}
+          </p>
+        </.card>
+
+        <.card :if={@record}>
+          <:title>{gettext("SOAP Record")}</:title>
+
+          <div
+            :if={@record.generation_status in [:pending, :generating]}
+            id="record-generating"
+            class="flex items-center gap-2 text-sm text-muted-foreground"
+          >
+            <.icon name="hero-arrow-path" class="size-4 animate-spin" />
+            {gettext("Generating record...")}
+          </div>
+
+          <div :if={@record.generation_status == :done}>
+            <pre
+              id="soap-record-content"
+              class="whitespace-pre-wrap text-sm font-mono bg-muted rounded-md p-3 overflow-auto"
+            >{@record.content}</pre>
+          </div>
+
+          <div :if={@record.generation_status == :error} id="record-error">
+            <div class="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+              <.icon name="hero-exclamation-circle" class="size-4 mt-0.5 shrink-0" />
+              <span>{gettext("Generation failed")}: {@record.error_reason}</span>
+            </div>
+            <div class="mt-3 flex justify-end">
+              <.button
+                id="retry-generation-button"
+                variant="outline"
+                phx-click="retry"
+              >
+                <.icon name="hero-arrow-path" class="size-4" />
+                {gettext("Try again")}
+              </.button>
+            </div>
+          </div>
+        </.card>
       </div>
     </Layouts.app>
     """
   end
+
+  defp session_date(nil), do: "—"
+  defp session_date(%DateTime{} = d), do: Calendar.strftime(d, "%d/%m/%Y")
+  defp session_date(%Date{} = d), do: Calendar.strftime(d, "%d/%m/%Y")
+  defp session_date(d), do: to_string(d)
+
+  defp session_variant(:draft), do: "secondary"
+  defp session_variant(:finalized), do: "success"
+  defp session_variant(_), do: "outline"
 end

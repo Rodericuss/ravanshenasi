@@ -6,32 +6,32 @@ defmodule RavanshenasiWeb.UserLive.Login do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <div class="mx-auto max-w-sm space-y-4">
-        <div class="text-center">
-          <.header>
-            <p>{gettext("Log in")}</p>
-            <:subtitle>
-              <%= if @current_scope do %>
-                {gettext("You need to reauthenticate to perform sensitive actions on your account.")}
-              <% else %>
-                {gettext("Don't have an account?")} <.link
-                  navigate={~p"/users/register"}
-                  class="font-semibold text-brand hover:underline"
-                  phx-no-format
-                >{gettext("Sign up")}</.link> {gettext("for an account now.")}
-              <% end %>
-            </:subtitle>
-          </.header>
-        </div>
+    <Layouts.auth flash={@flash} current_scope={@current_scope}>
+      <div class="space-y-6">
+        <.header>
+          {gettext("Log in")}
+          <:subtitle>
+            <%= if @current_scope do %>
+              {gettext("You need to reauthenticate to perform sensitive actions on your account.")}
+            <% else %>
+              {gettext("Don't have an account?")} <.link
+                navigate={~p"/users/register"}
+                class="font-semibold text-primary hover:underline"
+                phx-no-format
+              >{gettext("Sign up")}</.link> {gettext("for an account now.")}
+            <% end %>
+          </:subtitle>
+        </.header>
 
-        <div :if={local_mail_adapter?()} class="alert alert-info">
-          <.icon name="hero-information-circle" class="size-6 shrink-0" />
-          <div>
-            <p>{gettext("You are running the local mail adapter.")}</p>
-            <p>
-              {gettext("To see sent emails, visit")} <.link href="/dev/mailbox" class="underline">{gettext("the mailbox page")}</.link>.
-            </p>
+        <div :if={local_mail_adapter?()} class="rounded-md bg-info/10 p-3 text-sm text-info">
+          <div class="flex items-start gap-2">
+            <.icon name="hero-information-circle" class="size-5 shrink-0 mt-0.5" />
+            <div>
+              <p>{gettext("You are running the local mail adapter.")}</p>
+              <p>
+                {gettext("To see sent emails, visit")} <.link href="/dev/mailbox" class="underline">{gettext("the mailbox page")}</.link>.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -42,22 +42,28 @@ defmodule RavanshenasiWeb.UserLive.Login do
           action={~p"/users/log-in"}
           phx-submit="submit_magic"
         >
-          <.input
-            readonly={!!@current_scope}
-            field={f[:email]}
-            type="email"
-            label={gettext("Email")}
-            autocomplete="username"
-            spellcheck="false"
-            required
-            phx-mounted={JS.focus()}
-          />
-          <.button class="btn btn-primary w-full">
-            {gettext("Log in with email")} <span aria-hidden="true">→</span>
-          </.button>
+          <div class="space-y-4">
+            <.input
+              readonly={!!@current_scope}
+              field={f[:email]}
+              type="email"
+              label={gettext("Email")}
+              autocomplete="username"
+              spellcheck="false"
+              required
+              phx-mounted={JS.focus()}
+            />
+            <.button class="w-full">
+              {gettext("Log in with email")} <span aria-hidden="true">→</span>
+            </.button>
+          </div>
         </.form>
 
-        <div class="divider">{gettext("or")}</div>
+        <div class="relative flex items-center gap-3">
+          <div class="flex-1 border-t border-border"></div>
+          <span class="text-xs text-muted-foreground">{gettext("or")}</span>
+          <div class="flex-1 border-t border-border"></div>
+        </div>
 
         <.form
           :let={f}
@@ -67,31 +73,33 @@ defmodule RavanshenasiWeb.UserLive.Login do
           phx-submit="submit_password"
           phx-trigger-action={@trigger_submit}
         >
-          <.input
-            readonly={!!@current_scope}
-            field={f[:email]}
-            type="email"
-            label={gettext("Email")}
-            autocomplete="username"
-            spellcheck="false"
-            required
-          />
-          <.input
-            field={@form[:password]}
-            type="password"
-            label={gettext("Password")}
-            autocomplete="current-password"
-            spellcheck="false"
-          />
-          <.button class="btn btn-primary w-full" name={@form[:remember_me].name} value="true">
-            {gettext("Log in and stay logged in")} <span aria-hidden="true">→</span>
-          </.button>
-          <.button class="btn btn-primary btn-soft w-full mt-2">
-            {gettext("Log in only this time")}
-          </.button>
+          <div class="space-y-4">
+            <.input
+              readonly={!!@current_scope}
+              field={f[:email]}
+              type="email"
+              label={gettext("Email")}
+              autocomplete="username"
+              spellcheck="false"
+              required
+            />
+            <.input
+              field={@form[:password]}
+              type="password"
+              label={gettext("Password")}
+              autocomplete="current-password"
+              spellcheck="false"
+            />
+            <.button class="w-full" name={@form[:remember_me].name} value="true">
+              {gettext("Log in and stay logged in")} <span aria-hidden="true">→</span>
+            </.button>
+            <.button class="w-full mt-2" variant="outline">
+              {gettext("Log in only this time")}
+            </.button>
+          </div>
         </.form>
       </div>
-    </Layouts.app>
+    </Layouts.auth>
     """
   end
 
