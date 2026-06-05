@@ -23,26 +23,34 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
     ~H"""
     <Layouts.app flash={@flash} current_scope={@current_scope}>
       <.header>
-        {gettext("Dashboard")}
-        <:subtitle>{gettext("Overview of your clinical work")}</:subtitle>
+        {gettext("Hello, %{name} 👋", name: first_name(@current_scope))}
+        <:subtitle>{gettext("Here's what's happening in your practice today.")}</:subtitle>
       </.header>
 
       <div class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <.stat_card label={gettext("Active patients")} value={@active_count} icon="hero-users" />
+        <.stat_card
+          label={gettext("Active patients")}
+          value={@active_count}
+          icon="hero-users"
+          tone="bg-primary/10 text-primary"
+        />
         <.stat_card
           label={gettext("Pending review")}
           value={@pending_review_count}
           icon="hero-document-text"
+          tone="bg-amber-500/15 text-amber-600 dark:text-amber-400"
         />
         <.stat_card
           label={gettext("Recent audios")}
           value={length(@recent_audios)}
           icon="hero-microphone"
+          tone="bg-sky-500/15 text-sky-600 dark:text-sky-400"
         />
         <.stat_card
           label={gettext("Recent sessions")}
           value={length(@recent_sessions)}
           icon="hero-calendar-days"
+          tone="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
         />
       </div>
 
@@ -54,9 +62,10 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
             <li :for={r <- @pending_review} id={"pending-review-#{r.id}"}>
               <.link
                 navigate={~p"/pacientes/#{r.patient_id}/sessoes/#{r.session_id}"}
-                class="flex items-center justify-between gap-3 py-2.5 hover:text-primary"
+                class="-mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition hover:bg-muted/50"
               >
-                <span class="font-medium">{r.patient.name}</span>
+                <.avatar name={r.patient.name} class="size-8" />
+                <span class="flex-1 font-medium">{r.patient.name}</span>
                 <span class="text-sm text-muted-foreground">
                   {Calendar.strftime(r.inserted_at, "%d/%m/%Y")}
                 </span>
@@ -72,9 +81,10 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
             <li :for={a <- @recent_audios} id={"recent-audio-#{a.id}"}>
               <.link
                 navigate={~p"/pacientes/#{a.patient_id}/audios"}
-                class="flex items-center justify-between gap-3 py-2.5 hover:text-primary"
+                class="-mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition hover:bg-muted/50"
               >
-                <span class="min-w-0 truncate">
+                <.avatar name={a.patient.name} class="size-8" />
+                <span class="min-w-0 flex-1 truncate">
                   <span class="font-medium">{a.patient.name}</span>
                   <span class="text-muted-foreground">— {a.original_filename}</span>
                 </span>
@@ -91,9 +101,10 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
             <li :for={se <- @recent_sessions} id={"recent-session-#{se.id}"}>
               <.link
                 navigate={~p"/pacientes/#{se.patient_id}/sessoes/#{se.id}"}
-                class="flex items-center justify-between gap-3 py-2.5 hover:text-primary"
+                class="-mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition hover:bg-muted/50"
               >
-                <span class="font-medium">{se.patient.name}</span>
+                <.avatar name={se.patient.name} class="size-8" />
+                <span class="flex-1 font-medium">{se.patient.name}</span>
                 <span class="text-sm text-muted-foreground">
                   {session_date(se.date)} · {se.status}
                 </span>
@@ -109,9 +120,10 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
             <li :for={p <- @recent_patients} id={"active-patient-#{p.id}"}>
               <.link
                 navigate={~p"/pacientes/#{p.id}"}
-                class="flex items-center justify-between gap-3 py-2.5 hover:text-primary"
+                class="-mx-2 flex items-center gap-3 rounded-md px-2 py-2 transition hover:bg-muted/50"
               >
-                <span class="font-medium">{p.name}</span>
+                <.avatar name={p.name} class="size-8" />
+                <span class="flex-1 font-medium">{p.name}</span>
                 <.badge variant="outline">{p.status}</.badge>
               </.link>
             </li>
@@ -128,4 +140,12 @@ defmodule RavanshenasiWeb.DashboardLive.Index do
   defp audio_variant(:done), do: "success"
   defp audio_variant(:error), do: "destructive"
   defp audio_variant(_), do: "secondary"
+
+  defp first_name(%{user: %{name: name}}) when is_binary(name) and name != "",
+    do: name |> String.split(~r/\s+/, trim: true) |> List.first()
+
+  defp first_name(%{user: %{email: email}}) when is_binary(email),
+    do: email |> String.split("@") |> List.first()
+
+  defp first_name(_), do: "👋"
 end
